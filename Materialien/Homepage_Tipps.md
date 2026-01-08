@@ -8,6 +8,7 @@ Importiere zunächst in der <code><head></code>-Sektion die nötigen Resourcen w
 ```
 <br/>
 Sodann kannst du mit der folgenden Struktur Menüs aufbauen:
+
 ```html
 <header>
   <div class="menu-toggle">☰ Menu</div>
