@@ -1,4 +1,9 @@
 body {
   font-family: Verdana, 'sans-serif';
-  background: linear-gradient(145deg, purple, pink);
+  background: linear-gradient(145deg, purple 0%, pink 100%);
+}
+
+h1 {
+  position: center;
+  margin-top: 50px;
 }
