@@ -1,7 +1,7 @@
 # Homepage - Tipps
 ## für Menüs
 
-Importiere zunächst in der <code><head></code>-Sektion die nötigen Resourcen wiefolgt:
+Importiere zunächst in der <code>head</code>-Sektion die nötigen Resourcen wiefolgt:
 ```html
 <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/menu.css"/>
 <script type="text/javascript" src="https://leanderkafemann.github.io/Rosa-KI/js/menu.js"></script>
