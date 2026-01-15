@@ -1,0 +1,1489 @@
+# TURN THE BOX
+# Author: Alexander Wolf
+# Contact: wolf@canisius.de
+#
+# This programm is part of an introductory course AI
+# for Highschool Students. It is designed to illustrate
+# SEARCH TREES to solve a puzzle.
+# The puzzle is taken from the 2016 German CS-competition:
+# Link:https://bwinf.de/fileadmin/user_upload/BwInf/0_2016/35/1._Runde/Aufgaben/BWINF_35_Aufgaben_WEB.pdf
+
+
+# TODOS
+# Animate fallen blocks
+# Structure Multiline Text in class Text
+
+import simplegui
+import codeskulptor
+
+####################################################
+#Constants
+####################################################
+WINDOW = 800
+TIMEOUT = 600		#time delay for timeout message
+ANIMATE = False		#animation of solution
+BUTTON_A = False	#Button A is pressed 
+BUTTON_B = False	#Button B is pressed 
+COLORS = ('Red','Green','Yellow','Blue','Orange',\
+          'Purple','Lime','Silver','Aqua','Navy')
+VERTICAL = (1,0)
+HORIZONTAL = (0,1)
+TOPLEFT = (0,0)
+TOPRIGHT = (1,0)
+BOTTOMLEFT = (0,1)
+BOTTOMRIGHT = (1,1)
+ENABLE_SHORTCUTS = True
+
+KnuthIndex = 0
+####################################################
+#Helper Functions
+####################################################
+def getBoard( id ):
+    '''
+     returns string with predefined square board:
+     A board starts with an int that defines the
+     size, followed by the following chars:
+     # - wall
+     x - exit
+       - empty field
+     0..1 - bar id
+    '''
+    if id == 0 or id == '0':
+        board = "5###### 0 ##10 ##10 ####x#"
+    elif id == 1 or id == '1':
+        board = '8#########     0##     0##112222##33   4##55   4##666  4####x####'
+    elif id == 2 or id == '2':
+        board = '12#############          ##     01   ##     01   ##     01   ##    222222##  34    5 ##  34    5 ## 634    5 ## 63477775 ## 63888885 #######x#####'
+    elif id == 3 or id == '3':
+        board = '10###########        ##        ##        ##    7775##   11  5##   2 888##990233  ##44066666######x####'
+    else:
+        print "Error in getBoard(): no board with id=" + id + " defined."
+        board = "5###### 0 ##10 ##10 ####x#"
+        
+    return board
+
+def generate_primes():
+    """ 
+      Sieve of Eratosthenes
+      Code by David Eppstein, UC Irvine, 28 Feb 2002
+      http://code.activestate.com/recipes/117119/
+      
+      Generate an infinite sequence of prime numbers.
+      Maps composites to primes witnessing their compositeness.
+      This is memory efficient, as the sieve is not "run forward"
+      indefinitely, but only as long as required by the current
+      number being tested.
+    """
+    D = {}
+    
+    # The running integer that's checked for primeness
+    q = 2
+    
+    while True:
+        if q not in D:
+            # q is a new prime.
+            # Yield it and mark its first multiple that isn't
+            # already marked in previous iterations
+            # 
+            yield q
+            D[q * q] = [q]
+        else:
+            # q is composite. D[q] is the list of primes that
+            # divide it. Since we've reached q, we no longer
+            # need it in the map, but we'll mark the next 
+            # multiples of its witnesses to prepare for larger
+            # numbers
+            # 
+            for p in D[q]:
+                if D.has_key(p+q):
+                    D[p+q].append(p)
+                else:
+                    D[p+q] = [p]
+            del D[q]
+        
+        q += 1
+
+def searchSolution( board ):
+    tree = SearchTree(board)
+    tree.search()
+    return tree
+    
+####################################################
+#Class Definitions
+####################################################
+class Block:
+    def __init__(self, pos, size, color):
+        self._pos = pos
+        self._size = size
+        self._color = color
+        
+    def draw(self,canvas):
+        size = self._size
+        p = self._pos
+        q = (p[0] + size, p[1])
+        r = (p[0] + size, p[1] + size)
+        s = (p[0]       , p[1] + size)
+        canvas.draw_polygon([p,q,r,s], 1, "Black", self._color)
+
+class Board:
+    def __init__(self, boardidx, exit = 0):
+        self._opening = exit 
+        self._won = False
+        self._moves = 0
+        self._scale = 0.5
+        self._initBoard( boardidx )
+        self._pos = TOPLEFT
+        self._boardSize = None
+        self._boardPos = None
+        self._oldBoard = None
+        #self._blockSize = WINDOW / self.getSize()[0]
+        
+    def __str__(self):
+        size = self.getSize()
+        string = ''
+        for idx in range(size[0]):
+            for jdx in range(size[1]):
+                if self._board[idx][jdx] == -2:
+                    string += '#'
+                elif self._board[idx][jdx] == -1:
+                    string += ' '
+                elif self._board[idx][jdx] == -3:
+                    string += ' '
+                else:
+                    string += str(self._board[idx][jdx])
+            string += '\n'
+        return string
+
+    #### functions ####
+    def _initBoard(self, num):
+        '''
+        Converts a string to nxn list.
+        '''
+        string = getBoard( num )
+        offset = 0
+        while not string[offset] == '#':
+            offset += 1
+        rows = int(string[0:offset])
+        cols = (len(string)-offset ) / rows
+        board = [[]]
+        for i in range(rows):
+            temp = []
+            for j in range(cols):
+                symbol = string[i*rows + j + offset]
+                if symbol == ' ':
+                    temp.append(-1)
+                elif symbol == '#':
+                    temp.append(-2)
+                elif symbol == 'x':
+                    temp.append(-3)
+                else:
+                    temp.append(int(symbol))
+            board.append(temp)
+        board.pop(0)
+        self._board = board
+        self._haveWon()
+
+    def _haveWon(self):
+        '''
+        Test whether a block falls through the opening.
+        If this is the case, _won = True
+        '''
+        if self._opening == 0: 
+            idx = self.getSize()[0] - 1
+            jdx = self._board[idx].index(-3)
+
+            if not self._isEmpty((idx-1,jdx)):
+                curr = self._board[idx-1][jdx]
+                if self._board[idx-2][jdx] == curr:
+                    l = 2
+                    while self._board[idx-l][jdx] == curr:
+                        l += 1
+                    self._board[idx-l+1][jdx] = -1
+                    self._board[idx][jdx] = curr
+                    self._won = True
+    
+    def turnClockwise(self):
+        if not self._won:
+            size = self.getSize()
+            new = [[0 for x in range(size[1])] for y in range(size[0])]
+            for idx in range(size[0]):
+                temp = self._board[size[0]-1-idx]
+                for jdx in range(size[1]):
+                    new[jdx][idx] = temp[jdx]
+
+            #self._oldBoard = self._board
+            self._board = new
+            self._oldBoard = self.getClone()
+            
+            temp = Board(0)
+            temp.setBoard(self._oldBoard)
+            print "clockwise"
+            print self._oldBoard
+            
+            self._opening = (self._opening - 1) % 4
+            self.relaxBoard()
+            print self
+            self._haveWon()
+    
+    def turnCounterClockwise(self):
+        if not self._won:
+            size = self.getSize()
+            new = [[0 for x in range(size[1])] for y in range(size[0])]
+            for idx in range(size[0]):
+                temp = self._board[idx]
+                for jdx in range(size[1]):
+                    new[size[1]-1-jdx][idx] = temp[jdx]
+                
+            self._board = new
+            self._oldBoard = self.getClone()
+
+            temp = Board(0)
+            temp.setBoard(self._oldBoard)
+            print "cclockwise"
+            print self._oldBoard
+            
+            self._opening = (self._opening + 1) % 4
+            self.relaxBoard()
+            print self
+            self._haveWon()
+
+    def _relaxRow(self, idx, jdx):
+        y = idx
+        moved = False
+        while y >= 0 and self._isEmpty((y,jdx)):
+            y -= 1
+        if y > 0: 
+            curr = self._board[y][jdx]
+            if jdx > 1 and self._board[y][jdx-1] == curr:
+                #stick out to the left
+                return moved
+            width = 1
+            while (jdx+width < self.getSize()[1] and self._board[y][jdx+width] == curr):
+                width += 1
+            free = True
+            down = y+1
+            while down <= idx:
+                free = free and self._freeLine(down,jdx,width)
+                if not free: break
+                down += 1
+            if free:
+                moved = True
+                for w in range(width):
+                    self._board[y][jdx+w] = -1
+                    self._board[idx][jdx+w] = curr
+        return moved
+
+    def _relaxColumn(self, idx, jdx):
+        y = idx
+        moved = False
+        while y >=0 and self._isEmpty((y,jdx)):
+            y -= 1
+        if y > 0: 
+            curr = self._board[y][jdx]
+            if self._board[y-1][jdx] == curr:
+                count = 0
+                moved = True
+                while y-count > 0 and self._board[y-count][jdx] == curr:
+                    self._board[y-count][jdx] = -1
+                    self._board[idx-count][jdx] = curr
+                    count += 1
+        return moved       
+            
+    def relaxBoard(self):
+        self._moves += 1
+        size = self.getSize()
+        for idx in range(size[0]):
+            xdi = size[0] - 1 - idx
+            for jdx in range(size[1]):
+                if self._isEmpty((xdi,jdx)):
+                    relaxed = self._relaxColumn(xdi,jdx)
+                    if not relaxed: 
+                        self._relaxRow(xdi,jdx)
+    
+    def _isEmpty(self, pos):
+        return self._board[pos[0]][pos[1]]==-1
+    
+    def _freeLine(self, idx, jdx, width):
+        free = True
+        for w in range(width):
+            free = free and self._isEmpty((idx, jdx+w))
+            if not free: break
+        return free    
+   
+    #### setters/getters ####
+    def getClone(self):
+        string = self.getString()
+        temp = Board(0, self.getOpening())
+        temp.setBoard( self.getBoard() )
+        return temp
+
+    def getWon(self):
+        return self._won
+
+    def getSize(self):
+        return (len(self._board),len(self._board[0]))
+    
+    def getOpening(self):
+        # 0-unten
+        # 1-rechts
+        # 2-oben
+        # 3-links
+        return self._opening
+    
+    def getBoard(self):
+        return self._board
+    
+    def setBoard(self, board):
+        self._board = board
+
+    def getScale(self):
+        return self._scale
+    
+    def setScale(self, scale):
+        self._scale = scale
+
+    def setBoardSize(self, pixels):
+        self._boardSize = pixels
+
+    def setBoardPos(self, pos):
+        self._boardPos = pos
+        
+    def getBlockSize(self):
+        if self._boardSize:
+            return self._boardSize / self.getSize()[0] * self._scale
+        return WINDOW / self.getSize()[0] * self._scale
+
+    def getBlocks(self):
+        size = self.getSize()
+        board = self.getBoard()
+        blockSize = self.getBlockSize()
+        blocks = [[]]
+        
+        if self._boardPos is None: offset = (0,0)
+        else: offset = self._boardPos
+            
+        for i in range(size[0]):
+            y = blockSize * i + offset[1]
+            temp = []
+            for j in range(size[1]):
+                current = board[i][j]
+                x = blockSize * j + offset[0]
+                if current == -2:
+                    block = Block((x,y), blockSize, 'Black')
+                elif current == -1 or current == -3:
+                    block = None 
+                else:
+                    block = Block((x,y), blockSize, COLORS[current])
+                temp.append(block)
+            blocks.append(temp)
+        blocks.pop(0)
+        return blocks
+    
+    def draw(self,canvas):
+        blocks = self.getBlocks()
+        for blockline in blocks:
+            for block in blockline:
+                if not block == None:
+                    block.draw(canvas)
+
+    def getString(self):
+        size = self.getSize()
+        string = str( size[0] )
+        for idx in range(size[0]):
+            for jdx in range(size[1]):
+                if self._board[idx][jdx] == -2:
+                    string += '#'
+                elif self._board[idx][jdx] == -1:
+                    string += ' '
+                elif self._board[idx][jdx] == -3:
+                    string += 'x'
+                else:
+                    string += str(self._board[idx][jdx])                    
+        return string        
+
+class Text:
+    def __init__(self, pos = TOPRIGHT, size = 24, color = 'black', string=''):
+        self._text = [string]
+        self._pos = pos
+        self._size = size
+        self._color = color
+        self._font = "sans-serif" 	#supported serif and monospace
+        self._offset = (5,0) 		#(x,y) offset
+        self._scale = 0.5
+        self._center = False
+        self._fullwidth = False
+        
+    ### getter/setter ###
+    def setText(self, string):
+        self._text = string
+    def setColor(self, color):
+        self._color = color
+    def setFont(self, font):
+        self._font = font
+    def setSize(self, size):
+        self._size = size
+    def setPos(self, pos):
+        self._pos = pos
+    def setScale(self, scale):
+        self._scale = scale
+    def setOffset(self, offset):
+        self._offset = offset
+    def setCenter(self, center):
+        self._center = center
+    def setFullwidth(self, full):
+        self._fullwidth = full
+   
+        
+    def addLine(self, string):
+        self._text.append(string)
+        
+    def draw(self, canvas):
+        if self._fullwidth: width = WINDOW
+        else: width = WINDOW/2
+        #horizontal position
+        x = width *  self._pos[0] + self._offset[0]	
+        idx = 0
+        for line in self._text:
+            idx += 1
+            #vertical position
+            y = WINDOW / 2 *  self._pos[1] + self._offset[1] + self._size * idx
+            if self._center:
+                #horizontal position for centered text
+                textwidth = frame.get_canvas_textwidth(line, self._size)
+                x = x + width / 2 - textwidth / 2 - self._offset[0]	
+            canvas.draw_text(line, (x,y), self._size, self._color)
+
+class Image:
+    def __init__(self, size, url):
+        self._image = simplegui.load_image(url)
+        self._size = size
+        self._pos = (WINDOW/2, WINDOW/2)
+        
+    def draw(self, canvas):
+        center = (self._size[0]/2,self._size[1]/2)
+        canvas.draw_image(self._image, center, self._size, self._pos, self._size)
+        
+### KI - Search Tree ###
+class Node:
+    def __init__(self, board, steps, seq):
+        self._board = board
+        self._steps = steps
+        self._seq = seq
+        self._lc = None
+        self._rc = None
+
+    def __str__(self):
+        string = '\n' + 'Node at level:  ' + str(self._steps) + '\n'
+        string += 'Sequence: '
+        for idx in range(len(self._seq)):
+            if self._seq[idx] == -1:
+                string += 'l'
+            elif self._seq[idx] == 1:
+                string += 'r'
+            if not idx == len(self._seq)-1:
+                string += '->'
+        string += '\n' + 'Board: \n'
+        string += self._board.__str__()
+        return string
+    
+    def getString(self):
+        string = 'Loesungsfolge: '
+        for idx in range(len(self._seq)):
+            if self._seq[idx] == -1:
+                string += 'l'
+            elif self._seq[idx] == 1:
+                string += 'r'
+            if not idx == len(self._seq)-1:
+                string += ' - '
+        return string
+        
+    #### getter ####
+    def getLc(self):
+        return self._lc
+    def getRc(self):
+        return self._rc
+    def getBoard(self):
+        return self._board
+    def getSteps(self):
+        return self._steps
+    def getSeq(self):
+        return self._seq
+    def endNode(self):
+        return self._board.getWon()
+    #### setter ####
+    def setLc(self):
+        newBoard = self._board.getClone()
+        newBoard.turnCounterClockwise()
+        steps = self._steps + 1
+        seq = list(self._seq)
+        seq.append(-1)
+        self._lc = Node(newBoard,steps,seq)
+        return self._lc
+    def setRc(self):
+        newBoard = self._board.getClone()
+        newBoard.turnClockwise()
+        steps = self._steps + 1
+        seq = list(self._seq)
+        seq.append(1)
+        self._rc = Node(newBoard,steps,seq)
+        return self._rc
+
+class SearchTree:
+    def __init__(self, board):
+        self._nodes = 1
+        self._reject = 0
+        self._queue = [Node(board, 0, [])]
+        self._success = False
+        self._endNode = None
+        self._genPrimes(board.getString())
+        self._hashList = [self.hashBoard(board)]
+        
+    def search(self):
+        while not(not self._queue) and (not self._success):
+            curr = self._queue.pop(0)
+            if curr.endNode():
+                self._success = True
+                self._endNode = curr
+            else:
+                self._addToQueue(curr.setLc())
+                self._addToQueue(curr.setRc())
+            if not self._queue:
+                self._endNode = curr
+        return self._success
+                
+    def _addToQueue(self,node):
+        val = self.hashBoard(node.getBoard())
+        if not val in self._hashList:
+            self._nodes += 1
+            self._hashList.append(val)
+            self._queue.append(node)
+        else:
+            self._reject += 1
+          
+    def hashBoard(self, board):
+        h = 0
+        for idx in range(board.getSize()[0]):
+            for jdx in range(board.getSize()[1]):
+                curr = board.getBoard()[idx][jdx]
+                n = idx*board.getSize()[0] + jdx
+                h += curr * self._hashPrimes[n]
+        return h
+    
+    def _genPrimes(self, string):
+        offset = 0
+        while not string[offset] == '#':
+            offset += 1
+        n = len(string) - offset
+        self._hashPrimes = []
+        primes = generate_primes()
+        for i in range(n):
+            self._hashPrimes.append(primes.next())
+            
+    #### getter ####
+    def getSequence(self):
+        seq = None
+        if not self._endNode == None:
+            seq = self._endNode.getSeq()
+        return seq
+    
+    def getDepth(self):
+        steps = None
+        if not self._endNode == None:
+            steps = self._endNode.getSteps()
+        return steps
+        
+    def getNodes(self):
+         return self._nodes
+        
+    def printStats(self):
+        if not self._endNode == None:
+            print 'max depth: ', self.getDepth()
+            print 'max tree size: ', pow(2,self.getDepth())
+            print 'nodes expanded: ', self._nodes
+            print 'double states: ', self._reject
+
+### Tree Graph ###
+class DrawBinaryTree:
+    def __init__(self, board):
+        self.node = board 	#root
+        self.depth = 0
+        self.x = -1
+        self.y = self.depth
+        self.scale = 2.
+        self.lc = None
+        self.rc = None
+      
+    def buildTree(self, layers):
+        if layers == 0: return True
+        self.setLc()
+        self.setRc()
+        if self.lc:
+            self.lc.buildTree(layers - 1)
+        if self.rc:
+            self.rc.buildTree(layers - 1)
+            
+    def layoutTree(self):
+        global KnuthIndex
+        KnuthIndex = 0
+        self.knuthLayout(self, 0)
+            
+    def knuthLayout(self, tree, depth):
+        global KnuthIndex
+        if tree.lc: 
+            self.knuthLayout(tree.lc, depth+1)
+        tree.x = KnuthIndex
+        tree.y = depth
+        KnuthIndex += 1
+        if tree.rc: 
+            self.knuthLayout(tree.rc, depth+1)
+            
+    def setGraphOptions(self, width = WINDOW, height = WINDOW, pos = (0,0), level = None):
+        self.widthWin  = width
+        self.heightWin = height
+        self.posWin = pos
+        if level is None:
+            self.drawDepth = self.getHeight()
+        else:
+            self.drawDepth = level
+        
+    #### setter ####
+    def setDepth(self, d):
+        self.depth = d
+    def setLc(self):
+        if not self.node.getWon():
+            newBoard = self.node.getClone()
+            newBoard.turnCounterClockwise()
+            self.lc = DrawBinaryTree(newBoard)
+            self.lc.setDepth(self.depth + 1)
+    def setRc(self):
+        if not self.node.getWon():
+            newBoard = self.node.getClone()
+            newBoard.turnClockwise()
+            self.rc = DrawBinaryTree(newBoard)
+            self.rc.setDepth(self.depth + 1)
+        
+    def getHeight(self):
+        if self.lc: lHeight = self.lc.getHeight()
+        else: lHeight = self.depth
+        if self.rc: rHeight = self.rc.getHeight()
+        else: rHeight = self.depth
+            
+        return max(lHeight, rHeight)
+
+    def getWidth(self):
+        if self.lc: lWidth = self.lc.getWidth()
+        else: lWidth = self.x
+        if self.rc: rWidth = self.rc.getWidth()
+        else: rWidth = self.x
+            
+        return max(lWidth, rWidth)
+            
+    def draw(self, canvas):
+        if not hasattr(self, "posWin"): self.setGraphOptions()
+            
+        minEdgeHeight = 40
+
+        heightTree = self.getHeight() 
+        widthTree  = self.getWidth() + 1
+        if heightTree > 0:
+            widthNode  = self.widthWin / widthTree
+            heightNode = (self.heightWin - heightTree * minEdgeHeight) / (heightTree+1)
+            boardSize  = min(widthNode, heightNode)
+            #edges
+            edgeHeight = self.heightWin - (heightTree+1) * boardSize
+            edgeHeight = edgeHeight / heightTree
+        else:
+            boardSize = min(self.widthWin, self.heightWin)
+            edgeHeight = 1
+
+        self.drawNode(canvas, boardSize, edgeHeight, self.posWin, self.drawDepth)
+        self.drawEdges(canvas, boardSize, edgeHeight, self.posWin, self.drawDepth)
+        
+    def drawNode(self, canvas, size, edgeHeight, offset, drawDepth):
+        if self.depth <= drawDepth:
+            self.node.setBoardSize( size )
+            self.node.setScale( 1. )
+            pos = [0,0]
+            pos[0] = self.x * size + offset[0]
+            pos[1] = self.y * (size +  edgeHeight) + offset[1]
+            self.node.setBoardPos(pos)
+            self.node.draw(canvas)
+            if self.lc: self.lc.drawNode(canvas, size, edgeHeight, offset, drawDepth)
+            if self.rc: self.rc.drawNode(canvas, size, edgeHeight, offset, drawDepth)
+            
+    def drawEdges(self, canvas, size, height, offset, drawDepth):
+        if self.depth < drawDepth:
+            #start point
+            p = [0,0]
+            p[0] = self.x * size + size/2 + offset[0]
+            p[1] = (self.y + 1) * size + self.y * height + offset[1]
+            if self.lc: 
+                #end point
+                q = [0,0]
+                q[0] = self.lc.x * size + size/2 + offset[0]
+                q[1] = self.lc.y * (size + height) + offset[1]
+                #draw line
+                canvas.draw_line(p, q, 2, 'Black')
+                self.drawText(canvas,p,q,"L")
+                self.lc.drawEdges(canvas, size, height, offset, drawDepth)
+                if self.rc: 
+                    #end point
+                    q = [0,0]
+                    q[0] = self.rc.x * size + size/2 + offset[0]
+                    q[1] = self.rc.y * (size + height) + offset[1]
+                    #draw line
+                    canvas.draw_line(p, q, 2, 'Black')
+                    self.drawText(canvas,p,q,"R")
+                    self.rc.drawEdges(canvas, size, height, offset, drawDepth)
+
+    def drawText(self, canvas, p, q, text):
+        textSize = 18
+        textwidth = frame.get_canvas_textwidth(text, textSize)
+        s = [0,0]
+        s[0] = (p[0] + q[0]) / 2
+        s[1] = (p[1] + q[1]) / 2
+        if text == 'L':
+            s[0] = s[0] - 1.3*textwidth
+        else:
+            s[0] = s[0] + 0.3*textwidth
+        canvas.draw_text(text, s, textSize, 'black')
+
+### Chapters ###      
+class Chapter:
+    def __init__(self, title, boardId = 0):
+        self._title = title
+        self._items = []
+        self._boardId = boardId
+        self._board = Board( boardId )
+        self.clearInput()
+        self._showBoard = True
+        self._done = False
+        
+    def clear(self, idx = None):
+        if idx is None:
+            self._items = []
+        elif idx >= len(self._items):
+            print "Error in Chapter.clear(). Index out of range."
+        else:
+            del self._items[idx]
+
+    def clearInput(self, idx = None):
+        if not idx:
+            textInput0.set_text("")
+            textInput1.set_text("")
+            textInput2.set_text("")
+        elif idx == 0:
+            textInput0.set_text("")
+        elif idx == 1:
+            textInput1.set_text("")
+        elif idx == 2:
+            textInput2.set_text("")
+            
+    def done(self):
+        return self._done
+            
+    def boardOverride(self, idx):
+        if idx >= 0 and idx <= 3:
+            self._boardId = idx
+            self._board = Board( self._boardId )
+            
+    def keyhandler(self, key):
+        if key == 'left':
+            self._board.turnCounterClockwise()
+        elif key == 'right':
+            self._board.turnClockwise()
+
+    def resetButton(self):
+        self._board = Board( self._boardId )
+        
+    def buttonA(self):
+        pass
+        
+    def buttonB(self):
+        pass
+
+    def inputHandler(self, text, handlerId):
+        print "Input from handler ", handlerId, " was: ", text
+                
+    def tick(self):
+        pass
+    def winHandler(self):
+        pass
+        
+    def draw(self, canvas):
+        if self._showBoard: 
+            self._board.draw(canvas)
+            if self._board.getWon():
+                self.winHandler()
+        for item in self._items:
+            item.draw(canvas)
+
+class Intro( Chapter ):
+    def __init__(self):
+        Chapter.__init__(self, "Turn the Box")
+        self._state = 1
+        self.loadText()
+        
+    def loadText(self):
+        if self._state >= 0:
+            text = Text(string = self._title, size = 32)
+            text.setCenter(True)
+            self._items.append(text)
+            text = Text(size = 20)
+            text.addLine("Mit diesem Programm sollst du einen Einblick")
+            text.addLine("in das Loesen von Problemen mit Hilfe von")
+            text.addLine("Suchbaeumen bekommen.")
+            text.addLine("Dazu siehst du links eine schwarze Box mit")
+            text.addLine("zwei Balken.")
+            text.addLine("Ziel des Spiels ist es, einen Balken durch die")
+            text.addLine("Oeffnung unten rechts fallen zu lassen.")
+            text.setOffset((10,33))
+            self._items.append(text)
+        if self._state == 1:
+            text = Text(size = 20)
+            text.addLine("Rotiere nun die Box mit den Pfeiltasten")
+            text.addLine("'<-' und '->' auf der Tastatur.")
+            text.setOffset((10,250))
+            self._items.append(text)
+        elif self._state == 2:
+            text = Text(string = 'GESCHAFFT!!!', size = 28, color = 'red')
+            text.setCenter(True)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,30))
+            self._items.append(text)
+            
+            text = Text(size = 20)
+            text.setFullwidth(True)
+            #text.setCenter(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,100))
+            text.addLine("Um das Spiel neu zu starten, druecke den RESET Knopf!")
+            text.addLine("")
+            text.addLine("Das war natuerlich noch nicht alles!")
+            text.addLine("Mit 'B' kommst du zur geht's weiter.")
+            self._items.append(text)
+            
+    def resetButton(self):
+        self._state = 1
+        self.clear()
+        self.loadText()
+        Chapter.resetButton(self)
+                    
+    def buttonA(self):
+        if self._state == 0:
+            self._state = 1
+            self.loadText()
+
+    def buttonB(self):
+        if self._state == 2:
+            self._done = True
+            
+    def keyhandler(self, key):
+        if self._state > 0:
+            Chapter.keyhandler(self, key)
+            
+    def winHandler(self):
+        if self._state == 1:
+            self._state = 2
+            self.loadText()
+
+class Chapter1( Chapter ):
+    def __init__(self):
+        Chapter.__init__(self, "Selber Machen", boardId = 1)
+        self._state = 0
+        self._turns = 0		# number of turns for solution
+        self.loadText()
+        
+    def loadText(self):
+        if self._state == 0:
+            text = Text(string = self._title, size = 32)
+            text.setCenter(True)
+            self._items.append(text)
+            text = Text(size = 20)
+            text.addLine("Jetzt kannst du dich an einem schwierigeren")
+            text.addLine("Board versuchen. In wie vielen Versuchen")
+            text.addLine("schaffst du es, einen Balken herausfallen")
+            text.addLine("zu lassen?")
+            text.addLine("")
+            text.addLine("Hinweise: Zum Neustart druecke RESET.")
+            text.addLine("Wenn du Hilfe brauchst, druecke 'A'.")
+            text.addLine("")
+            text.setOffset((10,33))
+            self._items.append(text)
+        elif self._state == 11:
+            text = Text(string = 'Super!!!', size = 28, color = 'red')
+            text.setCenter(True)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,30))
+            self._items.append(text)
+            
+            text = Text(size = 20)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,100))
+            text.addLine("Du hast eine optimale Loesung gefunden.")
+            text.addLine("")
+            text.addLine("Dazu hast du 6 Schritte gebraucht.")
+            text.addLine("")
+            text.addLine("Druecke den RESET Knopf, um es noch einmal zu versuchen.")
+            text.addLine("Mit 'B' kommst du zur naechsten Aufgabe.")
+            self._items.append(text)
+        elif self._state == 12:
+            text = Text(string = 'Gut gemacht', size = 28)
+            text.setCenter(True)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,30))
+            self._items.append(text)
+
+            text = Text(size = 20)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,100))
+            text.addLine("Du hast eine Loesung gefunden.")
+            text.addLine("")
+            text.addLine("Dazu hast du " + str(self._turns) + " Schritte benoetigt.")
+            text.addLine("")
+            text.addLine("Es geht aber noch besser! Die Optimale Loesung hat 6 Schritte.")
+            text.addLine("Versuche es gleich nochmal, indem du den RESET Knopf drueckst.")
+            self._items.append(text)
+        elif self._state == 2:
+            text = Text(size = 20)
+            text.setOffset((5,250))
+            text.addLine("Starte mit LINKS - LINKS - LINKS!")
+            self._items.append(text)
+
+    def resetButton(self):
+        self._turns = 0
+        self._state = 0
+        self.clear()
+        self.loadText()
+        Chapter.resetButton(self)
+        
+    def buttonA(self):
+#        if self._state == 0:
+        self._state = 2
+        self.loadText()
+
+        
+    def buttonB(self):
+        if self._state == 11:
+            self._done = True
+                                            
+    def keyhandler(self, key):
+        self._turns += 1
+        Chapter.keyhandler(self, key)
+        
+    def winHandler(self):
+        if self._state == 0 or self._state == 2:
+            if self._turns == 6:
+                self._state = 11
+                self.loadText()
+            else:
+                self._state = 12
+                self.loadText()
+                
+class Chapter2( Chapter ):
+    def __init__(self):
+        Chapter.__init__(self, "Der Computer hilft!", boardId = 2)
+        self._state = 0
+        self._turns = 0		# number of turns for solution
+        self._trials = 0
+        self.loadText()
+        
+    def loadText(self):
+        if self._state == 0:
+            text = Text(string = self._title, size = 32)
+            text.setCenter(True)
+            self._items.append(text)
+            text = Text(size = 20)
+            text.addLine("Jetzt wird es noch schwieriger!")
+            text.addLine("Mal schauen, ob es diesmal klappt...")
+            text.addLine("")
+            text.addLine("Hinweise: Zum Neustart druecke RESET.")
+            text.addLine("")
+            text.addLine("Wenn der Computer helfen soll, druecke 'A'.")
+            text.setOffset((10,33))
+            self._items.append(text)
+        if self._state == 1:
+            text = Text(size = 20)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,100))
+            text.addLine("Der Computer hat folgende optimale Loesung gefunden:")
+            text.addLine(self._tree._endNode.getString())
+            text.addLine("")
+            text.addLine("Du kannst die Sequenz selber eingeben oder mit 'B' animieren.")
+            self._items.append(text)
+        if self._state == 2:
+            text = Text(size = 20)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,300))
+            text.addLine("Mit 'B' kommst du zur naechsten Aufgabe.")
+            self._items.append(text)
+
+    def resetButton(self):
+        if self._turns > 0:
+            self._trials += 1
+        self._state = 0
+        self._turns = 0
+        self.clear()
+        self.loadText()
+        timer.stop()
+        Chapter.resetButton(self)
+        
+    def buttonA(self):
+        timer.stop()
+        if self._state == 0:
+            self._state = 1
+            Chapter.resetButton(self)
+            self._tree = searchSolution(self._board)
+            self._tree.printStats()
+            self.loadText()
+                    
+    def buttonB(self):
+        if self._state == 1:
+            timer.start()
+        if self._state == 3:
+            self._done = True
+
+    def tick(self):
+        sequence = self._tree.getSequence()
+        if not(not sequence):
+            move = sequence.pop(0)
+            if move == -1:
+                self._board.turnCounterClockwise( )
+            elif move == 1:
+                self._board.turnClockwise( )
+            else:
+                print "Tick: Error in sequence."
+        else:
+            timer.stop()
+            self._state = 2
+            self.loadText()
+            self._state = 3
+            
+    def winHandler(self):
+        if self._state == 1:
+            self._state = 2
+            self.loadText()
+            self._state = 3
+        
+class Chapter3( Chapter ):
+    def __init__(self):
+        Chapter.__init__(self, "Der Suchbaum", boardId = 2)
+        self._showBoard = False
+        self._state = 0
+        self.loadText()
+        self._maxLayer = 4
+        self._showTo = 1
+        self.makeDrawTree(2, self._showTo)
+        
+    def loadText(self):
+        if self._state == 0:
+            text = Text(string = self._title, size = 32)
+            text.setCenter(True)
+            text.setPos(TOPLEFT)
+            self._items.append(text)
+            text = Text(size = 20)
+            text.addLine("Der Computer findet eine Loesung, ")
+            text.addLine("indem er alle Moeglichkeiten systematisch")
+            text.addLine("probiert.")
+            text.addLine("Beginnend mit der Ausgangssituation generiert")
+            text.addLine("der Computer die Folgezustaende durch rechts-")
+            text.addLine("bzw. linksdrehen.")
+            text.addLine("")
+            text.addLine("Um zu sehen, wie der Baum aufgebaut wird")
+            text.addLine("druecke mehrmals Knopf A.")
+            text.setPos(TOPLEFT)
+            text.setOffset((10,33))
+            self._items.append(text)
+        if self._state == 1:
+            text = Text(string = "Aufgabe:", size = 28)
+            text.setPos(TOPRIGHT)
+            text.setFont("monospace") 
+            self._items.append(text)
+            text.setCenter(True)
+            text = Text(size = 20)
+            text.addLine("a) Fertige eine Tabelle an:")
+            text.addLine("Ebene | neu |  total")
+            text.addLine("    0     |    1  |     1 ")
+            text.addLine("    1     |    2  |     3 ")
+            text.addLine("")
+            text.addLine("b) Wie lassen sich die Werte aus der")
+            text.addLine("Tabelle berechnen?")
+            text.addLine("c) Wie sieht die 8. Spalte der Tabelle")
+            text.addLine("aus? Gib die 3 Werte durch Leerzeichen")
+            text.addLine("getrennt in das Feld unter Knopf B ein!")
+            text.setFont("monospace") 
+            text.setPos(TOPRIGHT)
+            text.setOffset((20,28))
+            self._items.append(text)
+        if self._state == 5:
+            text = Text(string = 'Gut gemacht', size = 28)
+            text.setCenter(True)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,30))
+            self._items.append(text)
+
+            text = Text(size = 20)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,100))
+            text.addLine("Die Anzahl der Felder verdoppelt sich in jedem Schritt.")
+            text.addLine("Man kann die Anzahl in einer Ebene berechnen mit '2 hoch Ebene'.")
+            text.addLine("Die Gesamtzahl der Felder ist dann:")
+            text.addLine("")
+            text.addLine('2 hoch (Ebene+1) - 1')
+            text.addLine("")
+            text.addLine("Probier es aus!")
+            text.addLine("Weiter geht es mit Knopf B!")
+            self._items.append(text)
+        
+    def makeDrawTree(self, layer, showTo):
+        self._dTree = DrawBinaryTree(Board(2))            
+        self._dTree.buildTree(layer)
+        self._dTree.layoutTree()
+        self.updateDrawTree(showTo)
+
+    def updateDrawTree(self, level):
+        self._dTree.setGraphOptions(height = 2*WINDOW/3, pos = (0,WINDOW/3), level = self._showTo)
+
+    def resetButton(self):
+        self.__init__()
+       
+    def buttonA(self):
+        if self._state == 0:
+            self._showTo += 1
+            if self._showTo < 3:
+                self.updateDrawTree(self._showTo)
+            else:
+                self.makeDrawTree(self._showTo, self._showTo)
+            if self._showTo == self._maxLayer:
+                self._state = 1
+        elif self._state == 1:
+            self.loadText()
+            textInput0.set_text("Ebene")
+            textInput1.set_text("neu")
+            textInput2.set_text("total")
+            self._state = 2
+
+    def buttonB(self):
+        if self._state == 6:
+            self._done = True
+            
+    def inputHandler(self, text, handlerId):
+        if self._state > 1:
+            if not text.isdigit():
+                if handlerId == 0:
+                    textInput0.set_text("Nur Zahlen eingeben!")
+                elif handlerId == 1:
+                    textInput1.set_text("Nur Zahlen eingeben!")
+                elif handlerId == 2:
+                    textInput2.set_text("Nur Zahlen eingeben!")
+                return
+            if handlerId == 0:
+                if text == '7':
+                    textInput0.set_text("Korrekt: 7")
+                    self._state += 1
+                else:    
+                    textInput0.set_text("Falsch")
+            elif handlerId == 1:
+                if text == '128':
+                    textInput1.set_text("Korrekt: 128")
+                    self._state += 1
+                else:    
+                    textInput1.set_text("Falsch")
+            elif handlerId == 2:
+                if text == '255':
+                    textInput2.set_text("Korrekt: 255")
+                    self._state += 1
+                else:    
+                    textInput2.set_text("Falsch")
+            if self._state == 5:
+                self._dTree = None
+                self.loadText()
+                self._state = 6
+                    
+                                
+    def draw(self, canvas):      
+        Chapter.draw(self, canvas)
+        if self._dTree: self._dTree.draw(canvas)
+
+class Chapter4( Chapter ):
+    def __init__(self):
+        Chapter.__init__(self, "Intelligente Suche", boardId = 2)
+        self._state = 0
+        self._turns = 0		# number of turns for solution
+        self._trials = 0
+        self.loadText()
+        
+    def loadText(self):
+        if self._state == 0:
+            text = Text(string = self._title, size = 32)
+            text.setCenter(True)
+            self._items.append(text)
+            text = Text(size = 20)
+            text.addLine("Bei diesem Board bestand die kuerzeste")
+            text.addLine("Loesung aus 22 Drehungen.")
+            text.addLine("")
+            text.addLine("Der Computer musste also rund")
+            text.addLine("4 Millionen Wege ausprobieren.")
+            text.addLine("")
+            text.addLine("In Wirklichkeit hat der Algorithmus")
+            text.addLine("nur 120 Wege ausprobiert.")
+            text.addLine("")
+            text.addLine("Kannst du dir vorstellen warum? Diskutiere!")
+            text.addLine("Weiter mit 'A' ...")
+            text.setOffset((10,33))
+            self._items.append(text)
+        if self._state == 1:
+            text = Text(size = 20)
+            text.addLine("Richtig, der Computer hat Zustaende erkannt,")
+            text.addLine("die schon mal da waren.")
+            text.addLine("")
+            text.setOffset((10,270))
+            self._items.append(text)
+
+            text2 = Text(size = 32, color = 'red')
+            #text2.setFullwidth(True)
+            #text2.setPos(BOTTOMLEFT)
+            text2.setOffset((10,310))
+            text2.addLine("Ziemlich intelligent, oder!?")
+            self._items.append(text2)
+
+            text3 = Text(size = 30)
+            text3.setFullwidth(True)
+            text3.setPos(BOTTOMLEFT)
+            text3.setOffset((300,30))
+            text3.addLine("Weiter mit 'B'...")
+            self._items.append(text3)
+
+    def resetButton(self):
+        self._state = 0
+        self.clear()
+        self.loadText()
+        Chapter.resetButton(self)
+        
+    def buttonA(self):
+        timer.stop()
+        if self._state == 0:
+            self._state = 1
+            self.loadText()
+                    
+    def buttonB(self):
+        if self._state == 1:
+            self._done = True
+            
+class Chapter5( Chapter ):
+    def __init__(self):
+        Chapter.__init__(self, "Das letzte Board!", boardId = 3)
+        self._state = 0
+        self._turns = 0		# number of turns for solution
+        self._trials = 0
+        self.loadText()
+        
+    def loadText(self):
+        if self._state == 0:
+            text = Text(string = self._title, size = 32)
+            text.setCenter(True)
+            self._items.append(text)
+            text = Text(size = 20)
+            text.addLine("Bei diesem Board gibt es keine Loesung.")
+            text.addLine("Was musst du tun, um diese Behauptung")
+            text.addLine("zu beweisen?")
+            text.addLine("")
+            text.addLine("Wenn es der Computer probieren soll,")
+            text.addLine("druecke 'A'.")
+            text.addLine("")
+            text.addLine("WARNUNG: DAS PROGRAMM KANN")
+            text.addLine("SEHR LANGE LAUFEN.")
+            text.addLine("")
+            text.addLine("Falls es zu lange dauert, starte")
+            text.addLine("das Programm neu und ueberspringe")
+            text.addLine("die Lektionen mit 'n'.")
+            text.setOffset((10,33))
+            self._items.append(text)
+            
+            text = Text(size = 20)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,10))
+            text.addLine("Fuer eine Besprechung des Problems druecke 'B':")
+            self._items.append(text)
+
+        if self._state == 3:
+            text = Text(size = 20)
+            text.setFullwidth(True)
+            text.setPos(BOTTOMLEFT)
+            text.setOffset((5,100))
+            text.addLine("Erst nach 81 Drehen findet der Computer keine"
+                          " Wiederholungen mehr.")
+            self._items.append(text)
+
+    def resetButton(self):
+        if self._turns > 0:
+            self._trials += 1
+        self._state = 0
+        self._turns = 0
+        self.clear()
+        self.loadText()
+        timer.stop()
+        Chapter.resetButton(self)
+        
+    def buttonA(self):
+        timer.stop()
+        if self._state == 0:
+            self._state = 1
+            Chapter.resetButton(self)
+            self._tree = searchSolution(self._board)
+            self._tree.printStats()
+            self.loadText()
+                    
+    def buttonB(self):
+        if self._state <= 1:
+            self._state = 3
+            self.loadText()
+
+    def tick(self):
+        sequence = self._tree.getSequence()
+        if not(not sequence):
+            move = sequence.pop(0)
+            if move == -1:
+                self._board.turnCounterClockwise( )
+            elif move == 1:
+                self._board.turnClockwise( )
+            else:
+                print "Tick: Error in sequence."
+        else:
+            timer.stop()
+            self._state = 3
+            
+    def winHandler(self):
+        if self._state == 1:
+            self._state = 3
+            
+class ToDo( Chapter ):
+    def __init__(self):
+        Chapter.__init__(self, "Baustelle", boardId = 0)
+        self._showBoard = False
+        self._items = []
+        im = Image((548, 480),'https://upload.wikimedia.org/wikipedia/commons/thumb/f/f4/Baustelle.svg/548px-Baustelle.svg.png')
+        self._items.append(im)
+                       
+class Lecture():
+    def __init__(self):
+        self._chapters = []
+        self._done = False
+        self.loadChapters()
+        
+    def loadChapters(self):
+
+        self._chapters.append(Intro())
+        self._chapters.append(Chapter1())
+        self._chapters.append(Chapter2())
+        self._chapters.append(Chapter3())
+        self._chapters.append(Chapter4())
+        self._chapters.append(Chapter5())
+        self._chapters.append(ToDo())
+        
+    def getChapter(self):
+        if len(self._chapters) > 0:
+            return self._chapters.pop(0)
+        else:
+            self._done = True
+            
+    def done(self):
+        return self._done
+
+####################################################
+#Event Handlers
+####################################################
+def draw(canvas):
+    global current
+    #dTree.draw(canvas)
+
+    if not lecture.done():
+        current.draw(canvas)
+        if current.done():
+            current = lecture.getChapter()
+    
+def keyhandler(key):
+    global current
+    if simplegui.KEY_MAP['left'] == key:
+        current.keyhandler('left')
+    elif simplegui.KEY_MAP['right'] == key:
+        current.keyhandler('right')
+    # "0" = 49, "1" = 50, ...
+    elif key >= 48 and key <= 51:  
+        if ENABLE_SHORTCUTS:
+            current.boardOverride(key - 48)
+    elif simplegui.KEY_MAP['n'] == key:
+        if ENABLE_SHORTCUTS:
+            if not lecture.done():
+                current = lecture.getChapter()
+    elif simplegui.KEY_MAP['a'] == key or simplegui.KEY_MAP['A'] == key:
+        current.buttonA()
+    elif simplegui.KEY_MAP['b'] == key or simplegui.KEY_MAP['B'] == key:
+        current.buttonB()
+    
+def inputHandler0(text):
+    global current
+    current.inputHandler(text, 0)
+def inputHandler1(text):
+    global current
+    current.inputHandler(text, 1)
+def inputHandler2(text):
+    global current
+    current.inputHandler(text, 2)
+
+### animation timer ###        
+def tick():
+    global current
+    current.tick()
+
+def reset():
+    #timer.start()
+    current.resetButton()
+    
+def buttonA():
+    current.buttonA()
+    
+def buttonB():
+    current.buttonB()
+    
+    
+####################################################
+#Setup Graphics
+####################################################
+frame = simplegui.create_frame("Home", WINDOW, WINDOW)
+frame.set_canvas_background('White')
+frame.set_draw_handler(draw)
+buttonR = frame.add_button('Reset', reset, 150)
+buttonA = frame.add_button('A', buttonA, 150)
+buttonB = frame.add_button('B', buttonB, 150)
+frame.add_label('',150)
+frame.add_label('Eingaben',150)
+textInput0 = frame.add_input('', inputHandler0, 150)
+frame.add_label('',150)
+textInput1 = frame.add_input('', inputHandler1, 150)
+frame.add_label('',150)
+textInput2 = frame.add_input('', inputHandler2, 150)
+frame.set_keydown_handler(keyhandler)
+
+timer = simplegui.create_timer(800, tick)
+
+####################################################
+#Setup Global Variables
+####################################################
+lecture = Lecture()
+current = lecture.getChapter()
+        
+codeskulptor.set_timeout(TIMEOUT)
+frame.start()
+
+
