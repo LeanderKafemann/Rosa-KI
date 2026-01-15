@@ -1,12 +1,32 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
-  <head>
+<head>
     <title>Rosa-KI</title>
-    <meta name="author" content="IN_GK_5"/>
+    <meta charset="utf-8" />
+    <meta name="author" content="IN_GK_5" />
 
-    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/main.css"/>
-  </head>
-  <body>
+    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/main.css" />
+    <link rel="stylesheet" href="styling/menu.css" />
+</head>
+<body>
+    <header>
+        <div class="menu-toggle">☰ Menu</div>
+        <ul class="menu">
+            <li class="menu-item"><a href="#home">Start</a></li>
+            <li class="menu-item has-submenu">
+                Services
+                <ul class="submenu">
+                    <li class="menu-item"><a href="#svc1">Service 1</a></li>
+                    <li class="menu-item"><a href="#svc2">Service 2</a></li>
+                </ul>
+            </li>
+            <li class="menu-item"><a href="#about">Über uns</a></li>
+            <li class="menu-item"><a href="#kontakt">Kontakt</a></li>
+        </ul>
+    </header>
+
     <h1>Hallo Welt</h1>
-  </body>
+
+    <script type="text/javascript" src="js/menu.js"></script>
+</body>
 </html>
