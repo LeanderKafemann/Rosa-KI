@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Rotate Box - AI Partner</title>
+    <link rel="stylesheet" href="rotateblock.css">
+</head>
+<body>
+    <div id="container">
+        <aside id="menu">
+            <h2>Einstellungen</h2>
+            <div class="control-group">
+                <label for="boardSelect">Level wählen:</label>
+                <select id="boardSelect">
+                    <option value="0">Beispiel 0 (Einfach)</option>
+                    <option value="1">Beispiel 1 (Mittel)</option>
+                    <option value="2">Beispiel 2 (Schwer)</option>
+                    <option value="3">Beispiel 3 (Unlösbar)</option>
+                </select>
+            </div>
+            
+            <div class="stats-panel">
+                <p>Schritte: <span id="moveCount">0</span></p>
+                <button id="resetBtn">Reset Board</button>
+                <hr>
+                <button id="solveBtn" class="primary-btn">KI Lösung suchen</button>
+            </div>
+
+            <div id="aiOutput" class="hidden">
+                <h3>KI Statistik</h3>
+                <p id="aiStats"></p>
+                <h3>Lösungsweg:</h3>
+                <p id="solutionPath"></p>
+            </div>
+
+            <p id="winMessage" class="hidden">GEWONNEN!</p>
+        </aside>
+
+        <main id="game-area">
+            <canvas id="gameCanvas"></canvas>
+            <p class="hint">Steuerung: Pfeiltasten Links/Rechts</p>
+        </main>
+    </div>
+    <script src="rotateblock.js"></script>
+</body>
+</html>
