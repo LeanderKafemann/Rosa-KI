@@ -1,8 +1,8 @@
-﻿# Allgemeine Seitenstruktur für Rosa-KI
+# Allgemeine Seitenstruktur für Rosa-KI
 
 Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
 
-´´´html
+```html
 <!DOCTYPE html>
 <html>
 <head>
@@ -35,4 +35,4 @@ Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
     <script type="text/javascript" src="js/menu.js"></script>
 </body>
 </html>
-´´´
+```
