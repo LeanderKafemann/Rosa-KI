@@ -12,8 +12,8 @@ Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
     <meta name="keywords" content="KI Rosa RLG Rosa-Luxemburg-Gymnasium Leander Kafemann" />
 
     <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/main.css" />
-    <link rel="stylesheet" href="styling/menu.css" />
-    <link rel="icon" href="images/favicon.png" />
+    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/menu.css" />
+    <link rel="icon" href="https://leanderkafemann.github.io/Rosa-KI/images/favicon.png" />
 </head>
 <body>
     <header>
