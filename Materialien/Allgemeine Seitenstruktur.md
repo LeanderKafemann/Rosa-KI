@@ -1,4 +1,9 @@
-﻿<!DOCTYPE html>
+# Allgemeine Seitenstruktur für Rosa-KI
+
+Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
+
+```html
+<!DOCTYPE html>
 <html>
 <head>
     <title>Rosa-KI</title>
@@ -7,14 +12,14 @@
     <meta name="keywords" content="KI Rosa RLG Rosa-Luxemburg-Gymnasium Leander Kafemann" />
 
     <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/main.css" />
-    <link rel="stylesheet" href="styling/menu.css" />
-    <link rel="icon" href="images/favicon.png" />
+    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/menu.css" />
+    <link rel="icon" href="https://leanderkafemann.github.io/Rosa-KI/images/favicon.png" />
 </head>
 <body>
     <header>
         <div class="menu-toggle">☰ Menu</div>
         <ul class="menu">
-            <li class="menu-item"><a href="#home">Start</a></li>
+            <li class="menu-item"><a href="https://leanderkafemann.github.io/Rosa-KI/">Start</a></li>
             <li class="menu-item has-submenu">
                 Spiele
                 <ul class="submenu">
@@ -27,14 +32,13 @@
         </ul>
     </header>
 
-    <h1>Hallo Welt</h1>
-
-    <p style="font-size: 16px;">
-        <u>Developer News</u><br />
-        -15.1.: RotateBlock hinzugefügt (Spiele/RotateBlock)<br />
-        -15.1.: TTT hinzugefügt (Spiele/TicTacToe)<br />
-    </p>
-    <p style="font-size: 8px;">Version 26.01.15.3</p>
     <script type="text/javascript" src="js/menu.js"></script>
 </body>
 </html>
+```
+
+Wenn du deine Seite mit einem <code>iFrame</code> in diese Struktur einbinden willst, nutze:<br/>
+
+```html
+<iframe src="http://URL_HERE.html" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+```
