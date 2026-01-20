@@ -19,7 +19,7 @@ Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
     <header>
         <div class="menu-toggle">☰ Menu</div>
         <ul class="menu">
-            <li class="menu-item"><a href="#home">Start</a></li>
+            <li class="menu-item"><a href="https://leanderkafemann.github.io/Rosa-KI/">Start</a></li>
             <li class="menu-item has-submenu">
                 Spiele
                 <ul class="submenu">
