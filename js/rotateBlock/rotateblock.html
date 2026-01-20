@@ -15,8 +15,14 @@
                     <option value="0">Beispiel 0 (Einfach)</option>
                     <option value="1">Beispiel 1 (Mittel)</option>
                     <option value="2">Beispiel 2 (Schwer)</option>
-                    <option value="3">Beispiel 3 (Unlösbar)</option>
+                    <option value="3">Beispiel 3 (Extreme)</option>
                 </select>
+            </div>
+            
+            <div class="control-group">
+                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                    <input type="checkbox" id="animateToggle" checked> Fall-Animation an/aus
+                </label>
             </div>
             
             <div class="stats-panel">
@@ -27,19 +33,40 @@
             </div>
 
             <div id="aiOutput" class="hidden">
-                <h3>KI Statistik</h3>
-                <p id="aiStats"></p>
-                <h3>Lösungsweg:</h3>
-                <p id="solutionPath"></p>
-            </div>
+                <div class="ai-header">
+                    <h3>KI Analyse</h3>
+                    <span id="pathWarning" class="warning-tag hidden">Pfad verlassen!</span>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-item">Tiefe: <b id="stat-depth">-</b></div>
+                    <div class="stat-item">Knoten: <b id="stat-nodes">-</b></div>
+                </div>
 
+                <div id="solutionContainer">
+                    <div id="solutionPath"></div>
+                </div>
+
+                <div class="animation-controls">
+                    <div class="slider-row">
+                        <label>Speed:</label>
+                        <input type="range" id="speedSlider" min="100" max="2000" value="1500" step="100">
+                    </div>
+                    <button id="animateBtn" class="primary-btn">Lösung animieren</button>
+                </div>
+            </div>
             <p id="winMessage" class="hidden">GEWONNEN!</p>
         </aside>
 
         <main id="game-area">
-            <canvas id="gameCanvas"></canvas>
-            <p class="hint">Steuerung: Pfeiltasten Links/Rechts</p>
-        </main>
+        <div class="instructions">
+            <h3>Ziel des Spiels</h3>
+            <p>Rotiere die Box so, dass <strong>ein beliebiger farbiger Balken</strong> durch die rote Öffnung fällt.</p>
+            <p><small>Steuerung: Pfeiltasten <strong>Links / Rechts</strong></small></p>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+    </main>
+
     </div>
     <script src="rotateblock.js"></script>
 </body>
