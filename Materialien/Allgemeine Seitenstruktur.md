@@ -36,3 +36,9 @@ Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
 </body>
 </html>
 ```
+
+Wenn du deine Seite mit einem <code>iFrame</code> in diese Struktur einbinden willst, nutze:<br/>
+
+```html
+<iframe src="http://URL_HERE.html" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+```
