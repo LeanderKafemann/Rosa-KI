@@ -5,8 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tic Tac Toe - OOP</title>
     <link rel="stylesheet" href="style.css">
+
+    <meta name="author" content="IN_GK_5" />
+    <meta name="keywords" content="KI Rosa RLG Rosa-Luxemburg-Gymnasium Leander Kafemann" />
+
+    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/main.css" />
+    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/menu.css" />
+    <link rel="icon" href="https://leanderkafemann.github.io/Rosa-KI/images/favicon.png" />
 </head>
 <body>
+    <header>
+        <div class="menu-toggle">☰ Menu</div>
+        <ul class="menu">
+            <li class="menu-item"><a href="#home">Start</a></li>
+            <li class="menu-item has-submenu">
+                Spiele
+                <ul class="submenu">
+                    <li class="menu-item"><a href="https://leanderkafemann.github.io/Rosa-KI/TTT/">TicTacToe</a></li>
+                    <li class="menu-item"><a href="https://leanderkafemann.github.io/Rosa-KI/js/rotateBlock">RotateBlock</a></li>
+                </ul>
+            </li>
+            <li class="menu-item"><a href="#about">Über uns</a></li>
+            <li class="menu-item"><a href="#kontakt">Kontakt</a></li>
+        </ul>
+    </header>
+
+    <script type="text/javascript" src="js/menu.js"></script>
+
     <div class="container">
         <h1>Tic Tac Toe</h1>
         <div id="game-status">Player X's turn</div>
@@ -28,3 +53,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
