@@ -62,7 +62,7 @@ h1 {
     color: #3498db;
 }
 
-#reset-btn {
+button {
     padding: 10px 20px;
     font-size: 16px;
     background-color: #4CAF50;
@@ -73,8 +73,9 @@ h1 {
     transition: background-color 0.3s;
 }
 
-#reset-btn:hover {
+button:hover {
     background-color: #45a049;
 }
+
 
 
