@@ -10,10 +10,11 @@ body {
 
 .container {
     text-align: center;
-    background-color: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    background-color: white;
+    opacity: 0.9;
 }
 
 h1 {
@@ -75,4 +76,5 @@ h1 {
 #reset-btn:hover {
     background-color: #45a049;
 }
+
 
