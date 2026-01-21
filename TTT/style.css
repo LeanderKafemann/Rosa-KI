@@ -5,7 +5,7 @@ body {
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #f0f0f0;
+    background: transparent;
 }
 
 .container {
@@ -75,3 +75,4 @@ h1 {
 #reset-btn:hover {
     background-color: #45a049;
 }
+
