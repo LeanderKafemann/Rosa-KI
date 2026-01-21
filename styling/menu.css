@@ -22,10 +22,12 @@
     z-index: 10;
     width: auto;
     transform: translateX(-50%);
-    box-shadow: 0 4px 8px #bbb;
+    box-shadow: 0 4px 12px #bbb;
     border-radius: 8px;
-    opacity: 0.7;
-    backdrop-filter: blur(5px);
+    opacity: 0.5;
+    backdrop-filter: blur(7px);
+    margin-bottom: 10px;
+    border: 1px solid black;
 }
 
 /* menu item containers */
@@ -39,6 +41,8 @@
     user-select: none;
     transition-duration: 0.3s;
     box-shadow: 0 2px 4px #bbb;
+    margin: 2px;
+    border: 1px solid black;
 }
 
     /* Hover / Active */
