@@ -13,6 +13,7 @@ Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
 
     <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/main.css" />
     <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/menu.css" />
+    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/iFrame.css" />
     <link rel="icon" href="https://leanderkafemann.github.io/Rosa-KI/images/favicon.png" />
 </head>
 <body>
@@ -42,3 +43,12 @@ Wenn du deine Seite mit einem <code>iFrame</code> in diese Struktur einbinden wi
 ```html
 <iframe src="http://URL_HERE.html" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
 ```
+sowie die oben bereits eingebundene <code>iFrame.css</code> Datei.<br/>
+
+Bei deinen Seiten selbst ist darauf zu achten, dass der Hintergrund transparent bleibt, damit die Seiten korrekt eingebunden werden können.<br/>
+
+ˋˋˋcss
+body {
+    background: transparent;
+}
+ˋˋˋ
