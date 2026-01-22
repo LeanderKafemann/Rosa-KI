@@ -1,13 +1,19 @@
-/* WICHTIG: Hintergrund MUSS transparent bleiben */
+/* =====================================================
+   GLOBAL – HINTERGRUND MUSS TRANSPARENT BLEIBEN
+   ===================================================== */
 html, body {
     margin: 0;
     padding: 0;
-    background: transparent;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Seite zentrieren, ohne JS-Styles zu zerstören */
+/* =====================================================
+   SEITENLAYOUT
+   ===================================================== */
 body {
-    font-family: Arial, sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     min-height: 100vh;
 
     display: flex;
@@ -15,45 +21,182 @@ body {
     align-items: center;
 }
 
-/* Root-Container deines Tic-Tac-Toe-Skripts */
+/* =====================================================
+   ROOT-CONTAINER AUS DEM JAVASCRIPT
+   (wird dynamisch erzeugt)
+   ===================================================== */
 #ttt {
-    background: rgba(255, 255, 255, 0.9); /* leicht transparent */
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 30px 40px;
+    border-radius: 20px;
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 800px;
+    width: 100%;
 }
 
-/* Überschriften (falls vorhanden) */
+/* =====================================================
+   TEXTE & TITEL
+   ===================================================== */
 .title {
-    font-weight: bold;
-    margin-bottom: 6px;
     text-align: center;
+    font-weight: 700;
+    font-size: 18px;
+    color: #fff;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 10px;
 }
 
-/* Panel links (Level, Text, Button) */
 .panel {
     text-align: center;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.2);
 }
 
-/* Erklärungstext */
-#levelDesc,
-#moveExplain {
-    font-size: 12px;
-    color: #444;
-    margin-top: 6px;
-    white-space: pre-line;
+#levelName {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #fff;
 }
 
-/* Buttons & Select optisch etwas schöner,
-   ohne Funktion zu verändern */
-button, select {
+#levelDesc {
     font-size: 14px;
-    padding: 6px;
-    border-radius: 6px;
-    border: 1px solid #aaa;
+    color: #ddd;
+    margin-top: 5px;
+    line-height: 1.4;
 }
 
-/* Legende unten */
+#moveExplain {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #fff;
+    white-space: pre-line;
+    background: rgba(0,0,0,0.2);
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* =====================================================
+   FORMULARELEMENTE
+   ===================================================== */
+select,
+button {
+    width: 100%;
+    padding: 12px 16px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+button {
+    margin-top: 10px;
+    background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+    border: none;
+    box-shadow: 0 4px 15px rgba(255,107,107,0.3);
+}
+
+button:hover {
+    background: linear-gradient(135deg, #ee5a24, #ff6b6b);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(255,107,107,0.4);
+}
+
+select:hover {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.5);
+}
+
+/* =====================================================
+   SPIELBEREICHE (JS regelt GRID & FELDER!)
+   ===================================================== */
+.boards {
+    display: flex;
+    gap: 30px;
+    justify-content: center;
+    margin: 20px 0;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 80px);
+    gap: 8px;
+    background: rgba(255,255,255,0.1);
+    padding: 20px;
+    border-radius: 15px;
+    border: 1px solid rgba(255,255,255,0.2);
+}
+
+.cell {
+    width: 80px;
+    height: 80px;
+    border: 2px solid rgba(255,255,255,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 36px;
+    cursor: pointer;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    color: #fff;
+    font-weight: bold;
+}
+
+.cell:hover {
+    background: rgba(255,255,255,0.2);
+    transform: scale(1.05);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* =====================================================
+   LEGENDE
+   ===================================================== */
 .legend {
-    margin-top: 12px;
+    font-size: 14px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    color: #fff;
+    background: rgba(0,0,0,0.2);
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.1);
+    margin-top: 10px;
+}
+
+.color-box {
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgba(255,255,255,0.5);
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: middle;
+}
+
+/* =====================================================
+   RESPONSIVE – HANDY & KLEINE BILDSCHIRME
+   ===================================================== */
+@media (max-width: 600px) {
+    .boards {
+        flex-direction: column;
+        gap: 16px;
+    }
+
+    #ttt {
+        padding: 16px;
+    }
 }
