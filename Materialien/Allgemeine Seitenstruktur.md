@@ -15,6 +15,7 @@ Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
     <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/static/styling/menu.css" />
     <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/static/styling/iFrame.css" />
     <link rel="icon" href="https://leanderkafemann.github.io/Rosa-KI/static/images/favicon.png" />
+    <link rel=manifest" href="https://leanderkafemann.github.io/Rosa-KI/static/others/manifest.json" />
 </head>
 <body>
     <header>
