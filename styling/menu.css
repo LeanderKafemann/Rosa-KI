@@ -28,7 +28,13 @@
     backdrop-filter: blur(7px);
     margin-bottom: 10px;
     border: 1px solid black;
+    background-color: white;
 }
+
+    .menu :hover {
+        opacity: 0.7;
+        box-shadow: 0 6px 16px #bbb;
+    }
 
 /* menu item containers */
 
@@ -40,9 +46,10 @@
     transition: background 0.25s ease, transform 0.2s ease;
     user-select: none;
     transition-duration: 0.3s;
-    box-shadow: 0 2px 4px #bbb;
+    /*box-shadow: 0 2px 4px #bbb;*/
     margin: 2px;
-    border: 1px solid black;
+    /*border: 1px solid black;*/
+    opacity: 1;
 }
 
     /* Hover / Active */
@@ -51,7 +58,7 @@
     .menu-item.active {
         background: #ffc0cb22; /* leichte rosa Tönung */
         transform: translateY(-2px);
-        box-shadow: 0 2px 8px #bbb;
+        /*box-shadow: 0 2px 8px #bbb;*/
     }
 
 /* dropdown submenus */
