@@ -1,0 +1,16 @@
+{
+  "lang": "de-de",
+  "name": "Rosa KI",
+  "short_name": "RosaKI",
+  "description": "Interaktive Website zum Lernen von KI",
+  "orientation": "landscape-primary",
+  "start_url": "https://leanderkafemann.github.io/Rosa-KI/",
+  "display": "standalone",
+  "icons": [
+    {
+      "src": "https://leanderkafemann.github.io/Rosa-KI/static/images/favicon.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ]
+}
