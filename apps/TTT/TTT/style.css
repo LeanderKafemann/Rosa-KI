@@ -1,0 +1,59 @@
+/* WICHTIG: Hintergrund MUSS transparent bleiben */
+html, body {
+    margin: 0;
+    padding: 0;
+    background: transparent;
+}
+
+/* Seite zentrieren, ohne JS-Styles zu zerstören */
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Root-Container deines Tic-Tac-Toe-Skripts */
+#ttt {
+    background: rgba(255, 255, 255, 0.9); /* leicht transparent */
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
+}
+
+/* Überschriften (falls vorhanden) */
+.title {
+    font-weight: bold;
+    margin-bottom: 6px;
+    text-align: center;
+}
+
+/* Panel links (Level, Text, Button) */
+.panel {
+    text-align: center;
+}
+
+/* Erklärungstext */
+#levelDesc,
+#moveExplain {
+    font-size: 12px;
+    color: #444;
+    margin-top: 6px;
+    white-space: pre-line;
+}
+
+/* Buttons & Select optisch etwas schöner,
+   ohne Funktion zu verändern */
+button, select {
+    font-size: 14px;
+    padding: 6px;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+}
+
+/* Legende unten */
+.legend {
+    margin-top: 12px;
+}
