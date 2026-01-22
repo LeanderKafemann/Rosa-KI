@@ -22,18 +22,18 @@
     z-index: 10;
     width: auto;
     transform: translateX(-50%);
-    box-shadow: 0 4px 12px #bbb;
-    border-radius: 8px;
-    opacity: 0.5;
-    backdrop-filter: blur(7px);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15), 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     margin-bottom: 10px;
-    border: 1px solid black;
-    background-color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.75);
 }
 
-    .menu :hover {
-        opacity: 0.7;
-        box-shadow: 0 6px 16px #bbb;
+    .menu:hover {
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2), 0 4px 12px rgba(0, 0, 0, 0.12);
+        background: rgba(255, 255, 255, 0.85);
     }
 
 /* menu item containers */
@@ -42,23 +42,19 @@
     position: relative;
     cursor: pointer;
     padding: 0.8rem 1rem;
-    border-radius: 4px;
-    transition: background 0.25s ease, transform 0.2s ease;
+    border-radius: 6px;
+    transition: background 0.25s ease, transform 0.2s ease, box-shadow 0.25s ease;
     user-select: none;
-    transition-duration: 0.3s;
-    /*box-shadow: 0 2px 4px #bbb;*/
     margin: 2px;
-    /*border: 1px solid black;*/
-    opacity: 1;
 }
 
     /* Hover / Active */
 
     .menu-item:hover,
     .menu-item.active {
-        background: #ffc0cb22; /* leichte rosa Tönung */
+        background: rgba(255, 192, 203, 0.25);
         transform: translateY(-2px);
-        /*box-shadow: 0 2px 8px #bbb;*/
+        box-shadow: 0 4px 12px rgba(233, 30, 99, 0.15);
     }
 
 /* dropdown submenus */
@@ -68,9 +64,12 @@
     top: 100%;
     left: 0;
     min-width: 150px;
-    background: #fff;
-    border-radius: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
@@ -108,7 +107,7 @@
         gap: 0.5rem;
         width: 100%;
         padding: 1rem;
-        background: #fff;
+        background: rgba(255, 255, 255, 0.9);
     }
 
         .menu.active {
@@ -141,8 +140,9 @@
 
 .menu,
 .menu a {
-    color: #222;
+    color: #1a1a1a;
     text-decoration: none;
     font-size: 1rem;
-    font-weight: 500;
+    font-weight: 600;
+    text-shadow: 0 1px 2px rgba(255, 255, 255, 0.5);
 }
