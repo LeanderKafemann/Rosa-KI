@@ -11,10 +11,10 @@ Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
     <meta name="author" content="IN_GK_5" />
     <meta name="keywords" content="KI Rosa RLG Rosa-Luxemburg-Gymnasium Leander Kafemann" />
 
-    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/main.css" />
-    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/menu.css" />
-    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/styling/iFrame.css" />
-    <link rel="icon" href="https://leanderkafemann.github.io/Rosa-KI/images/favicon.png" />
+    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/static/styling/main.css" />
+    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/static/styling/menu.css" />
+    <link rel="stylesheet" href="https://leanderkafemann.github.io/Rosa-KI/static/styling/iFrame.css" />
+    <link rel="icon" href="https://leanderkafemann.github.io/Rosa-KI/static/images/favicon.png" />
 </head>
 <body>
     <header>
@@ -24,8 +24,8 @@ Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
             <li class="menu-item has-submenu">
                 Spiele
                 <ul class="submenu">
-                    <li class="menu-item"><a href="https://leanderkafemann.github.io/Rosa-KI/TTT/">TicTacToe</a></li>
-                    <li class="menu-item"><a href="https://leanderkafemann.github.io/Rosa-KI/js/rotateBlock">RotateBlock</a></li>
+                    <li class="menu-item"><a href="https://leanderkafemann.github.io/Rosa-KI/apps/TTT/">TicTacToe</a></li>
+                    <li class="menu-item"><a href="https://leanderkafemann.github.io/Rosa-KI/apps/rotateBlock">RotateBlock</a></li>
                 </ul>
             </li>
             <li class="menu-item"><a href="#about">Über uns</a></li>
