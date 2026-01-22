@@ -42,14 +42,14 @@ Folge dieser HTML-Formatvorlage, wenn du neue Seiten erstellst:<br/>
 Wenn du deine Seite mit einem <code>iFrame</code> in diese Struktur einbinden willst, nutze:<br/>
 
 ```html
-<iframe src="http://URL_HERE.html" onload='javascript:(function(o){o.style.height=o.contentWindow.document.body.scrollHeight+"px";}(this));' style="height:200px;width:100%;border:none;overflow:hidden;"></iframe>
+    <iframe src="https://leanderkafemann.github.io/Rosa-KI/apps/TTT/ttt.html" allowtransparency="true"></iframe>
 ```
 sowie die oben bereits eingebundene <code>iFrame.css</code> Datei.<br/>
 
 Bei deinen Seiten selbst ist darauf zu achten, dass der Hintergrund transparent bleibt, damit die Seiten korrekt eingebunden werden können.<br/>
 
-ˋˋˋcss
+```css
 body {
     background: transparent;
 }
-ˋˋˋ
+```
