@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Lektion 1: Einführung - Minimax</title>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .lesson {
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 10px;
+        }
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+        }
+        .content {
+            background: #f8f9fa;
+            padding: 20px;
+            border-left: 4px solid #667eea;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .example {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #ffc107;
+        }
+        .quiz {
+            background: #e7f3ff;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            border-left: 4px solid #2196F3;
+        }
+        .quiz-question {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .option {
+            margin: 8px 0;
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 3px;
+        }
+        .option:hover {
+            background: #d0e8ff;
+        }
+        .option input[type="radio"] {
+            margin-right: 8px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 15px;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .progress {
+            background: #e0e0e0;
+            height: 10px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: #667eea;
+            height: 100%;
+            width: 17%;
+        }
+        .key-concept {
+            background: #f3e5f5;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #764ba2;
+        }
+        .key-concept strong {
+            color: #764ba2;
+        }
+    </style>
+</head>
+<body>
+    <div class="lesson">
+        <h1>🎮 Lektion 1: Wie denken Computer?</h1>
+        
+        <div class="progress">
+            <div class="progress-bar"></div>
+        </div>
+        
+        <section class="content">
+            <h2>Willkommen zum Minimax-Kurs!</h2>
+            <p>In diesem Kurs lernst du, wie Computer Spiele spielen und dabei immer den optimalen Zug finden.</p>
+            <p><strong>Frage:</strong> Wie schafft es ein Computer-Schach-Engine, 20 Züge im Voraus zu denken?</p>
+            <p><strong>Antwort:</strong> Mit dem <strong>Minimax-Algorithmus</strong> - dem Herzen der KI in Spielen!</p>
+        </section>
+
+        <section class="content">
+            <h2>📚 Das Problem</h2>
+            <p>Stell dir vor, du spielst Tic-Tac-Toe gegen einen Computer:</p>
+            
+            <div class="example">
+                <p><strong>Scenario:</strong></p>
+                <pre>
+X | 2 | O
+---------
+4 | X | 6
+---------
+7 | 8 | 9
+
+Du bist am Zug (X).
+Welchen Zug wählst du? (2, 4, 6, 7, 8, 9?)
+                </pre>
+            </div>
+
+            <p>Es gibt viele Möglichkeiten! Wie weiß der Computer, welcher Zug der beste ist?</p>
+            
+            <div class="key-concept">
+                <strong>💡 Key Insight:</strong> Der Computer kann alle möglichen Spiele voraus denken und den Zug wählen, der zu einem Gewinn führt!
+            </div>
+        </section>
+
+        <section class="content">
+            <h2>🌳 Der Spielbaum</h2>
+            <p>Ein <strong>Spielbaum</strong> zeigt alle möglichen Züge und deren Konsequenzen:</p>
+            
+            <div class="example">
+                <pre>
+                    [Aktuelle Position]
+                         /  |  \
+                      /     |     \
+                   Zug1   Zug2   Zug3
+                   /       |       \
+                 P1       P2       P3
+                / \      / \      / \
+              Zug X Zug Y ...
+                
+Die Tiefe zeigt: "Wie viele Züge im Voraus?"
+Die Blätter zeigen: "Wer gewinnt?"
+                </pre>
+            </div>
+
+            <p><strong>Beispiel mit echtem Tic-Tac-Toe:</strong></p>
+            <ul>
+                <li>Level 0: Aktuelle Position (9 mögliche Züge)</li>
+                <li>Level 1: Nach meinem Zug (dein Computer zieht)</li>
+                <li>Level 2: Nach deinem Gegenzug</li>
+                <li>... bis Level 9 (Spiel endet)</li>
+            </ul>
+
+            <p>Der Computer bewertet dann jeden <strong>Blatt-Knoten</strong> (Spielende):</p>
+            <ul>
+                <li>Computer gewinnt: Score = <strong>+10</strong></li>
+                <li>Remis: Score = <strong>0</strong></li>
+                <li>Gegner gewinnt: Score = <strong>-10</strong></li>
+            </ul>
+        </section>
+
+        <section class="content">
+            <h2>👥 Min vs. Max</h2>
+            <p>Das Spiel wechselt die Spieler ab:</p>
+            
+            <div class="example">
+                <p><strong>MAX-Ebene (Computer)</strong>: Ich will den höchsten Score!</p>
+                <pre>
+Max wählt: max(+10, -5, +3) = +10 ✓
+                </pre>
+            </div>
+
+            <div class="example">
+                <p><strong>MIN-Ebene (Gegner)</strong>: Der Gegner will meinen Score minimieren!</p>
+                <pre>
+Min wählt: min(+10, -5, +3) = -5 ✓
+(Gegner spielt den Zug, der mir am meisten schadet)
+                </pre>
+            </div>
+
+            <div class="key-concept">
+                <strong>💡 Key Insight:</strong> Beide Spieler spielen optimal! Max versucht zu maximieren, Min zu minimieren. Das Ergebnis ist ein <strong>Game-Theoretically Optimal</strong> Move!
+            </div>
+        </section>
+
+        <section class="quiz">
+            <h2>❓ Verständnis-Check</h2>
+            
+            <div class="quiz-question">Frage 1: In einem Spielbaum mit Tiefe 3, wie viele Ebenen gibt es?</div>
+            <div class="option">
+                <input type="radio" name="q1" value="a"> A) 2 (Max und Min)
+            </div>
+            <div class="option">
+                <input type="radio" name="q1" value="b"> B) 3 (wie die Tiefe)
+            </div>
+            <div class="option">
+                <input type="radio" name="q1" value="c"> C) 4 (Tiefe + 1, Root zählt!)
+            </div>
+            <button onclick="checkQ1()">Antwort prüfen</button>
+            <div id="feedback1"></div>
+
+            <br><br>
+
+            <div class="quiz-question">Frage 2: Wenn Max den Zug wählt, was tut Min?</div>
+            <div class="option">
+                <input type="radio" name="q2" value="a"> A) Den gleichen Zug wählen
+            </div>
+            <div class="option">
+                <input type="radio" name="q2" value="b"> B) Den Zug mit dem niedrigsten Score für Max
+            </div>
+            <div class="option">
+                <input type="radio" name="q2" value="c"> C) Zufällig wählen
+            </div>
+            <button onclick="checkQ2()">Antwort prüfen</button>
+            <div id="feedback2"></div>
+        </section>
+
+        <section class="content">
+            <h2>🎯 Zusammenfassung dieser Lektion</h2>
+            <ul>
+                <li>✅ Spiele können als Bäume visualisiert werden</li>
+                <li>✅ Computer bewertet Spielenden (Blätter)</li>
+                <li>✅ Max will maximieren, Min will minimieren</li>
+                <li>✅ Das Ergebnis: Optimale Züge!</li>
+            </ul>
+        </section>
+
+        <section class="content" style="text-align: center; background: #f0f4ff;">
+            <p><strong>Bereit für Lektion 2?</strong></p>
+            <button onclick="window.location='02-spielbäume.html'">Nächste Lektion: Spielbäume im Detail</button>
+        </section>
+    </div>
+
+    <script>
+        function checkQ1() {
+            const selected = document.querySelector('input[name="q1"]:checked');
+            const feedback = document.getElementById('feedback1');
+            
+            if (!selected) {
+                feedback.textContent = '⚠️ Bitte eine Antwort wählen!';
+                feedback.style.color = 'orange';
+                return;
+            }
+            
+            if (selected.value === 'c') {
+                feedback.textContent = '✅ Richtig! Mit Tiefe 3 gibt es 4 Ebenen (0, 1, 2, 3). Die Root-Ebene zählt mit!';
+                feedback.style.color = 'green';
+            } else {
+                feedback.textContent = '❌ Falsch. Die Root (aktuelle Position) ist Ebene 0. Also 4 Ebenen insgesamt!';
+                feedback.style.color = 'red';
+            }
+        }
+
+        function checkQ2() {
+            const selected = document.querySelector('input[name="q2"]:checked');
+            const feedback = document.getElementById('feedback2');
+            
+            if (!selected) {
+                feedback.textContent = '⚠️ Bitte eine Antwort wählen!';
+                feedback.style.color = 'orange';
+                return;
+            }
+            
+            if (selected.value === 'b') {
+                feedback.textContent = '✅ Richtig! Min spielt den Zug, der Max am meisten schadet (niedrigster Score für Max).';
+                feedback.style.color = 'green';
+            } else {
+                feedback.textContent = '❌ Falsch. Min ist der gegnerische Spieler und versucht, deinen Score zu minimieren!';
+                feedback.style.color = 'red';
+            }
+        }
+
+        // Auto-save progress
+        document.addEventListener('DOMContentLoaded', function() {
+            const courseId = 'minimax-basics';
+            const lessonId = 1;
+            const key = `course_${courseId}_lesson_${lessonId}`;
+            localStorage.setItem(key, JSON.stringify({
+                completed: true,
+                completedAt: new Date().toISOString()
+            }));
+            console.log('Lektion 1 Fortschritt gespeichert!');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lektion 2: Suchräume und Spielbäume</title>
+    <link rel="stylesheet" href="../../../css/style.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .lesson-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        h2 {
+            color: #764ba2;
+            margin-top: 35px;
+        }
+        .progress-bar {
+            background: #e0e0e0;
+            height: 8px;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            height: 100%;
+            width: 29%;
+        }
+        .content-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            border-left: 4px solid #667eea;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+        .code-label {
+            color: #aaa;
+            font-size: 11px;
+            margin-bottom: 8px;
+        }
+        .interactive-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .key-insight {
+            background: #f3e5f5;
+            border-left: 4px solid #764ba2;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .example-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            margin-top: 15px;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #764ba2;
+        }
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .btn-back {
+            background: #6c757d;
+        }
+        .btn-back:hover {
+            background: #5a6268;
+        }
+        .btn-next {
+            margin-left: auto;
+        }
+        .coding-exercise {
+            background: #fff9e6;
+            border: 2px solid #ffc107;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        .exercise-title {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 10px;
+        }
+        textarea {
+            width: 100%;
+            padding: 10px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            min-height: 150px;
+            margin: 10px 0;
+        }
+        .output-box {
+            background: #f0f0f0;
+            padding: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-top: 10px;
+            display: none;
+        }
+        .output-box.show {
+            display: block;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background: #667eea;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <div class="lesson-container">
+        <a href="../../viewer.html" style="color: #667eea; text-decoration: none;">← Zurück zum Kurs</a>
+        
+        <h1>🌳 Lektion 2: Suchräume und Spielbäume</h1>
+        
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
+        </div>
+
+        <section class="content-box">
+            <h2>Von Zustand zu Baum</h2>
+            <p>Lassen Sie uns verstehen, wie ein Suchproblem als <strong>Baum-Datenstruktur</strong> dargestellt wird.</p>
+            
+            <div class="key-insight">
+                <strong>💡 Kernidee:</strong><br>
+                Ein <strong>Suchbaum</strong> ist eine abstrakte Darstellung aller möglichen Wege vom <strong>Start</strong> zum <strong>Ziel</strong>.
+            </div>
+
+            <p><strong>Komponenten eines Suchbaums:</strong></p>
+            <table>
+                <tr>
+                    <th>Begriff</th>
+                    <th>Bedeutung</th>
+                    <th>Beispiel (Rotatebox)</th>
+                </tr>
+                <tr>
+                    <td><strong>Knoten</strong></td>
+                    <td>Ein Zustand des Problems</td>
+                    <td>Die Farben aller Felder: 🔴🟢🔴...</td>
+                </tr>
+                <tr>
+                    <td><strong>Kante</strong></td>
+                    <td>Ein möglicher Zug/Aktion</td>
+                    <td>Drehe Feld 3 nach links</td>
+                </tr>
+                <tr>
+                    <td><strong>Blatt</strong></td>
+                    <td>Ein Endknoten (keine Kinder)</td>
+                    <td>Max. Tiefe erreicht oder Ziel gefunden</td>
+                </tr>
+                <tr>
+                    <td><strong>Tiefe</strong></td>
+                    <td>Entfernung vom Root</td>
+                    <td>Anzahl der bisher gemachten Züge</td>
+                </tr>
+                <tr>
+                    <td><strong>Branching Factor</strong></td>
+                    <td>Anzahl Kinder pro Knoten</td>
+                    <td>Bei 3×3 Grid: bis zu 2 (links/rechts pro Feld)</td>
+                </tr>
+            </table>
+        </section>
+
+        <section class="content-box">
+            <h2>🔬 Kleine Beispiele</h2>
+            
+            <div class="example-box">
+                <strong>Sehr vereinfachtes Rotatebox-Baum-Beispiel (Tiefe=2):</strong>
+                <pre>
+                        [Start]
+                         /   \
+                    [L1]       [R1]      ← Tiefe 1 (1 Zug)
+                   /   \      /   \
+                 [L2] [R2]  [L2] [R2]    ← Tiefe 2 (2 Züge)
+                
+Start: 🔴🔴🔴 🔴🟢🔴 🔴🔴🔴
+L1 (Drehe oben-links):    🟢🔴🔴 🟢🟢🔴 🔴🔴🔴
+R1 (Drehe oben-rechts):   🔴🔴🟢 🔴🟢🟢 🔴🔴🔴
+...
+                </pre>
+            </div>
+
+            <p><strong>Wie viele Knoten im Baum?</strong></p>
+            <ul>
+                <li>Tiefe 0: <code>1</code> Knoten (Start)</li>
+                <li>Tiefe 1: <code>2</code> Knoten (2 mögliche Züge)</li>
+                <li>Tiefe 2: <code>4</code> Knoten (2 × 2)</li>
+                <li>Tiefe N: <code>2^N</code> Knoten (exponentielles Wachstum!)</li>
+            </ul>
+
+            <div class="key-insight">
+                <strong>⚠️ Exponentielles Wachstum:</strong><br>
+                Bei nur Tiefe 20 haben wir bereits <code>2^20 = 1 Millionen</code> Knoten!
+                Bei Tiefe 30: <code>1 Milliarde</code> Knoten!<br>
+                <strong>Wir können nicht alle Knoten generieren - wir brauchen intelligente Strategien!</strong>
+            </div>
+        </section>
+
+        <section class="content-box">
+            <h2>💾 Repräsentation eines Knoten im Code</h2>
+            
+            <div class="code-box">
+                <div class="code-label">JavaScript: TreeNode Klasse</div>
+                <pre>class TreeNode {
+  constructor(id, state, depth, move = null) {
+    this.id = id;              // Eindeutige ID
+    this.state = state;        // Der Spielzustand (z.B. RotateBoard)
+    this.depth = depth;        // Wie tief im Baum?
+    this.move = move;          // Welcher Zug führte hier hin?
+    this.children = [];        // Nachfolger-Knoten
+    this.parent = null;        // Eltern-Knoten
+    this.isSolution = false;   // Ist das eine Lösung?
+    this.isDuplicate = false;  // Haben wir diesen Zustand schon?
+  }
+
+  isGoal() {
+    return this.state.won === true;
+  }
+}</pre>
+            </div>
+
+            <p><strong>In WolfsWorld haben wir diesen TreeNode bereits in `js/viz/tree-engine.js`!</strong></p>
+        </section>
+
+        <section class="interactive-box">
+            <h2>🎯 Übung 1: Suchbaum generieren (Pseudocode)</h2>
+            <p>Schreib eine Funktion, die einen Suchbaum generiert:</p>
+            
+            <div class="coding-exercise">
+                <div class="exercise-title">✏️ Aufgabe: Implementiere generateTree()</div>
+                <p>Ergänze diese Pseudocode-Funktion:</p>
+                
+                <div class="code-box">
+                    <div class="code-label">Pseudocode zum Ausfüllen</div>
+                    <pre>function generateTree(startState, maxDepth) {
+  let nodeCount = 0;
+  const root = new TreeNode(nodeCount++, startState, 0);
+  
+  // TODO: Generiere alle Knoten bis zur maxDepth
+  // Hinweis: Nutze eine Queue oder Stack
+  // Hinweis: Für jeden Knoten: generiere alle Nachfolger
+  
+  return root;
+}</pre>
+                </div>
+
+                <p><strong>Lösung später anschauen:</strong></p>
+                <button onclick="toggleSolution1()">💡 Lösung zeigen</button>
+                <div id="solution1" style="display: none; margin-top: 15px;">
+                    <div class="code-box">
+                        <div class="code-label">Eine mögliche Lösung</div>
+                        <pre>function generateTree(startState, maxDepth) {
+  let nodeId = 0;
+  const root = new TreeNode(nodeId++, startState, 0);
+  
+  // Queue für BFS
+  let toVisit = [root];
+  
+  while (toVisit.length > 0) {
+    const current = toVisit.shift();  // Hole erstes Element
+    
+    // Stoppe wenn max Tiefe erreicht
+    if (current.depth >= maxDepth) continue;
+    
+    // Generiere alle Nachfolger
+    const successors = current.state.getAllValidMoves();
+    
+    for (let move of successors) {
+      const nextState = current.state.clone();
+      nextState.makeMove(move);
+      
+      const child = new TreeNode(
+        nodeId++, 
+        nextState, 
+        current.depth + 1, 
+        move
+      );
+      
+      current.children.push(child);
+      child.parent = current;
+      
+      toVisit.push(child);  // Für später
+    }
+  }
+  
+  return root;
+}</pre>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content-box">
+            <h2>🔗 Verknüpfung mit WolfsWorld</h2>
+            <p>In WolfsWorld haben wir bereits:</p>
+            
+            <ul>
+                <li><strong>TreeNode</strong> Klasse in <code>js/viz/tree-engine.js</code></li>
+                <li><strong>RotateBoxAdapter</strong> in <code>js/games/rotatebox/tree-adapter.js</code></li>
+                <li><strong>Live-Visualisierung</strong> in <code>playground/rotatebox-viz.html</code></li>
+            </ul>
+
+            <p>Das bedeutet: <strong>Du kannst sofort sehen wie Suchbäume funktionieren!</strong></p>
+
+            <button onclick="openVisualization()">🎮 Jetzt ausprobieren: Rotatebox-Visualisierung</button>
+        </section>
+
+        <section class="key-insight">
+            <h2>🎓 Zusammenfassung</h2>
+            <ul>
+                <li>✅ Ein <strong>Suchbaum</strong> repräsentiert alle möglichen Wege</li>
+                <li>✅ Jeder <strong>Knoten</strong> ist ein Zustand</li>
+                <li>✅ Jede <strong>Kante</strong> ist ein möglicher Zug</li>
+                <li>✅ Der Baum wächst <strong>exponentiell</strong></li>
+                <li>✅ Wir brauchen <strong>intelligente Suchstrategien</strong> (BFS/DFS)</li>
+            </ul>
+        </section>
+
+        <div class="nav-buttons">
+            <button class="btn-back" onclick="window.location='01-rotatebox-intro.html'">← Zurück</button>
+            <button class="btn-next" onclick="window.location='03-bfs.html'">BFS →</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleSolution1() {
+            const sol = document.getElementById('solution1');
+            sol.style.display = sol.style.display === 'none' ? 'block' : 'none';
+        }
+
+        function openVisualization() {
+            window.open('../../../playground/rotatebox-viz.html', '_blank');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            localStorage.setItem('lesson_2_completed', JSON.stringify({
+                completed: true,
+                timestamp: new Date().toISOString()
+            }));
+        });
+    </script>
+</body>
+</html>

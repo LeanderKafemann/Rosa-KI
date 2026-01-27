@@ -1,0 +1,106 @@
+{
+  "title": "Minimax-Algorithmus verstehen",
+  "description": "Lerne den Minimax-Algorithmus von Grund auf: Spielbäume, Min/Max-Schichten, und optimale Entscheidungen in Spielen",
+  "author": "SCHÜLER_NAME",
+  "duration": 120,
+  "difficulty": "mittel",
+  "prerequisites": ["JavaScript Grundlagen", "Rekursion"],
+  "learningOutcomes": [
+    "Verstehe, wie Computer Spiele durch Baumsuche gewinnen",
+    "Implementiere Minimax für ein einfaches Spiel",
+    "Erkenne Optimierungsmöglichkeiten (Alpha-Beta Pruning)",
+    "Visualisiere den Entscheidungsprozess"
+  ],
+  "lessons": [
+    {
+      "id": 1,
+      "title": "Einführung: Wie denken Computer?",
+      "duration": 15,
+      "type": "lecture",
+      "file": "lessons/01-einführung.html",
+      "learning_points": [
+        "Spiele sind deterministische Entscheidungsprobleme",
+        "Computer erkunden mögliche Züge voraus",
+        "Bewertungsfunktionen bestimmen beste Züge"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Spielbäume: Die Struktur",
+      "duration": 20,
+      "type": "interactive",
+      "file": "lessons/02-spielbäume.html",
+      "exercise_id": 1,
+      "learning_points": [
+        "Root = aktuelle Spielposition",
+        "Knoten = mögliche Zustände",
+        "Kanten = Spielzüge",
+        "Blätter = Spielende"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Min- und Max-Schichten",
+      "duration": 25,
+      "type": "interactive",
+      "file": "lessons/03-min-max.html",
+      "exercise_id": 2,
+      "learning_points": [
+        "Max-Spieler maximiert seinen Score",
+        "Min-Spieler minimiert gegnerischen Score",
+        "Werte werden von unten nach oben propagiert",
+        "Alternierende Schichten im Baum"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Der Minimax-Algorithmus",
+      "duration": 30,
+      "type": "coding",
+      "file": "lessons/04-algorithmus.html",
+      "exercise_id": 3,
+      "learning_points": [
+        "Recursion: Problem in kleinere Subprobleme zerlegen",
+        "Base Case: Spielende bewerten",
+        "Recursive Case: Zustand evaluieren",
+        "Return: Bestbewerteter Zug"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Optimierung: Alpha-Beta Pruning",
+      "duration": 20,
+      "type": "lecture+quiz",
+      "file": "lessons/05-optimierung.html",
+      "exercise_id": 4,
+      "learning_points": [
+        "Nicht alle Züge müssen erforscht werden",
+        "Alpha: beste Wertung für Max",
+        "Beta: beste Wertung für Min",
+        "Pruning: abschneiden von Ästen"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Projekt: Implementiere Minimax für TicTacToe",
+      "duration": 45,
+      "type": "project",
+      "file": "lessons/06-projekt.html",
+      "exercise_id": 5,
+      "learning_points": [
+        "Code von Grund auf schreiben",
+        "Tests für Korrektheit",
+        "Performance messen",
+        "Gegner spielen gegen eigene KI"
+      ]
+    }
+  ],
+  "metadata": {
+    "version": "1.0",
+    "created": "2026-01-27",
+    "updated": "2026-01-27",
+    "totalWords": 5000,
+    "estimated_hours": 2,
+    "exercises_count": 5
+  }
+}
