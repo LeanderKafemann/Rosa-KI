@@ -1,0 +1,14 @@
+{
+  "name": "ki-lernplattform",
+  "version": "1.0.0",
+  "description": "Interaktive Lernplattform für KI-Algorithmen",
+  "scripts": {
+    "doc": "jsdoc -c jsdoc.json",
+    "serve-doc": "npx http-server docs -o"
+  },
+  "devDependencies": {
+    "docdash": "^2.0.2",
+    "jsdoc": "^4.0.5",
+    "jsdoc-to-markdown": "^9.1.3"
+  }
+}

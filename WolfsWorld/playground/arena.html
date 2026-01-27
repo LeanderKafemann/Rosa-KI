@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>KI Arena</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .arena-card { background: white; padding: 20px; border-radius: 8px; width: 280px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 10px; }
+        .vs-badge { font-size: 2rem; font-weight: bold; color: #bdc3c7; margin: 0 20px; }
+        .result-box { display: flex; justify-content: space-between; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 1.1rem; }
+    </style>
+</head>
+<body>
+    <div class="viz-toolbar">
+        <a href="../index.html" class="viz-btn btn-back">⬅ Menü</a>
+        <span style="margin-left:10px; font-weight:bold; color:white;">KI Arena Simulator</span>
+    </div>
+
+    <div class="main-area" style="flex-direction: row; align-items: flex-start; gap: 30px; padding-top: 40px; flex-wrap: wrap; justify-content: center;">
+        
+        <div class="arena-card">
+            <h3 style="color:#3498db; margin:0; border-bottom:2px solid #3498db; padding-bottom:5px;">Spieler 1 (Blau)</h3>
+            <div class="viz-control-group">
+                <label class="viz-label">Agent Typ</label>
+                <select id="p1Select" class="viz-select">
+                    <option value="random">Random Agent</option>
+                    <option value="rulebased">Rule Based Agent</option>
+                </select>
+            </div>
+            <div class="result-box">
+                <span>Siege:</span>
+                <strong id="resP1" style="color:#3498db">0</strong>
+            </div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; align-items:center; gap:15px; background:white; padding:20px; border-radius:8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <div class="vs-badge">VS</div>
+            <div class="viz-control-group" style="width: 100%;">
+                <label class="viz-label">Spielart</label>
+                <select id="gameTypeSelect" class="viz-select">
+                    <option value="regular">TTT Klassik</option>
+                    <option value="ultimate">Ultimate TTT</option>
+                    <option value="3d">3D TTT</option>
+                </select>
+            </div>
+            <div class="viz-control-group" style="width: 100%;">
+                <label class="viz-label">Runden Anzahl</label>
+                <input type="number" id="roundsInput" value="100" class="viz-input">
+            </div>
+            <button class="viz-btn btn-action" style="width:100%" onclick="runArena()">Simulation Starten</button>
+            
+            <div id="status" style="margin-top:10px; color:#7f8c8d; font-size:0.9rem;">Bereit</div>
+            
+            <div class="result-box" style="width: 100%; box-sizing: border-box;">
+                <span>Remis:</span>
+                <strong id="resDraw">0</strong>
+            </div>
+             <div class="result-box" style="width: 100%; box-sizing: border-box;">
+                <span>Zeit:</span>
+                <strong id="resTime">-</strong>
+            </div>
+        </div>
+
+        <div class="arena-card">
+            <h3 style="color:#e74c3c; margin:0; border-bottom:2px solid #e74c3c; padding-bottom:5px;">Spieler 2 (Rot)</h3>
+            <div class="viz-control-group">
+                <label class="viz-label">Agent Typ</label>
+                <select id="p2Select" class="viz-select">
+                    <option value="random" selected>Random Agent</option>
+                    <option value="rulebased">Rule Based Agent</option>
+                </select>
+            </div>
+            <div class="result-box">
+                <span>Siege:</span>
+                <strong id="resP2" style="color:#e74c3c">0</strong>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="../js/core/game-state.js"></script>
+    <script src="../js/core/agent.js"></script>
+    <script src="../js/ai/agents/random-agent.js"></script>
+    <script src="../js/ai/agents/rule-based-agent.js"></script>
+    <script src="../js/ai/rules/rule-structure.js"></script>
+    <script src="../js/ai/rules/ttt-rules.js"></script>
+    <script src="../js/games/tictactoe/logic.js"></script>
+    <script src="../js/ai/arena.js"></script>
+
+    <script>
+        async function runArena() {
+            const rounds = parseInt(document.getElementById('roundsInput').value);
+            const gameType = document.getElementById('gameTypeSelect').value;
+            const status = document.getElementById('status');
+            
+            // Factory Pattern für die Spiele
+            const factory = {
+                create: () => {
+                    if (gameType === 'regular') return new TTTRegularBoard();
+                    if (gameType === 'ultimate') return new UltimateBoard();
+                    if (gameType === '3d') return new TTT3DBoard();
+                }
+            };
+
+            // Agent Factory
+            const createAgent = (type) => {
+                if (type === 'random') return new RandomAgent();
+                if (type === 'rulebased') return new RuleBasedAgent(createStrategyTree(gameType));
+            };
+
+            const p1 = createAgent(document.getElementById('p1Select').value);
+            const p2 = createAgent(document.getElementById('p2Select').value);
+
+            status.innerText = "Simuliere " + rounds + " Spiele...";
+            
+            const arena = new Arena(factory, p1, p2);
+            
+            // Start
+            const res = await arena.runSeries(rounds);
+            
+            // Ergebnisse
+            document.getElementById('resP1').innerText = res.stats[1];
+            document.getElementById('resP2').innerText = res.stats[2];
+            document.getElementById('resDraw').innerText = res.stats[0];
+            document.getElementById('resTime').innerText = res.duration.toFixed(0) + "ms";
+            
+            status.innerText = "Simulation beendet.";
+        }
+    </script>
+</body>
+</html>

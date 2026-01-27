@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>KI Regel-Labor</title>
+    <link rel="stylesheet" href="../css/lab-style.css">
+    <style>
+        /* Spezifische Overrides für das Lab Layout */
+        .col-game {
+            /* Fixe Breite etwas verkleinert, damit Platz für Regeln bleibt */
+            flex: 0 0 420px; 
+            min-width: 420px;
+        }
+        
+        /* Damit Canvas nicht ausbricht */
+        .canvas-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+        
+        canvas {
+            max-width: 100%;
+            height: auto; /* Aspect Ratio erhalten */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* 3D Container Anpassung */
+        .iso-container {
+            margin-top: 15px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            padding: 5px;
+            background: #fafafa;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lab-toolbar">
+        <a href="../index.html" class="viz-btn viz-btn-back">⬅ Menü</a>
+        
+        <div class="viz-control-group" style="margin-left: 20px;">
+            <label class="viz-label">Szenario:</label>
+            <select id="gameTypeSelector" class="viz-select" onchange="Lab.changeGameType()">
+                <option value="regular">Klassik 3x3</option>
+                <option value="3d">3D 3x3x3</option>
+                <option value="ultimate">Ultimate</option>
+            </select>
+        </div>
+
+        <div style="flex-grow: 1;"></div> 
+
+        <div class="viz-control-group">
+            <button class="viz-btn viz-btn-action" onclick="Lab.stepAI()">▶ Schritt</button>
+            <button class="viz-btn viz-btn-action" id="btnAuto" onclick="Lab.toggleAutoMatch()">⏩ Auto</button>
+            <button class="viz-btn viz-btn-restart" onclick="Lab.reset()">↺ Reset</button>
+        </div>
+    </div>
+
+    <div class="lab-grid">
+        
+        <div class="col-tree">
+            <div class="panel-header" style="border-left: 5px solid #3498db;">
+                <span>🧠</span> KI Blau
+            </div>
+            <div class="tree-container" id="treeDisplayP1"></div>
+        </div>
+
+        <div class="col-game">
+            <div class="game-card">
+                <div id="controls3D" class="view-controls hidden">
+                    <button class="view-btn active" onclick="Lab.setAxis('z')">Ebenen</button>
+                    <button class="view-btn" onclick="Lab.setAxis('y')">Vorne</button>
+                    <button class="view-btn" onclick="Lab.setAxis('x')">Seite</button>
+                </div>
+
+                <div class="canvas-container">
+                    <canvas id="gameCanvas" width="400" height="400"></canvas>
+                </div>
+                
+                <div id="isoWrapper" class="iso-container hidden">
+                    <div style="font-size:0.7rem; color:#888; text-align:center; margin-bottom:2px;">3D Vorschau</div>
+                    <canvas id="isoCanvas" width="200" height="200"></canvas>
+                </div>
+
+                <div id="statusText" class="stats-display" style="margin-top:10px;">Bereit</div>
+            </div>
+
+            <div class="log-box" id="log">
+                <div class="log-line">System bereit.</div>
+            </div>
+        </div>
+
+        <div class="col-tree">
+            <div class="panel-header" style="border-left: 5px solid #e74c3c;">
+                <span>🤖</span> KI Rot
+            </div>
+            <div class="tree-container" id="treeDisplayP2"></div>
+        </div>
+    </div>
+
+    <script src="../js/core/game-state.js"></script>
+    
+    <script src="../js/games/tictactoe/logic.js"></script>
+    <script src="../js/games/tictactoe/renderer.js"></script>
+    
+    <script src="../js/ai/rules/rule-structure.js"></script>
+    <script src="../js/ai/rules/ttt-rules.js"></script>
+    
+    <script src="../js/viz/flowchart-visualizer.js"></script>
+
+    <script>
+        const Lab = {
+            game: null, canvas: null, isoCanvas: null,
+            vizP1: null, vizP2: null, trees: { 1: null, 2: null },
+            gameType: 'regular', axis3D: 'z', isAuto: false,
+            
+            // Verzögerung für Auto-Mode (in ms)
+            // Länger, damit man das Highlighting sieht
+            delay: 600, 
+
+            init() {
+                this.canvas = document.getElementById('gameCanvas');
+                this.isoCanvas = document.getElementById('isoCanvas');
+                this.canvas.addEventListener('mousedown', (e) => this.handleClick(e));
+                this.changeGameType();
+            },
+
+            changeGameType() {
+                this.gameType = document.getElementById('gameTypeSelector').value;
+                const controls = document.getElementById('controls3D');
+                const isoWrap = document.getElementById('isoWrapper');
+                
+                // Canvas Größen Reset
+                this.canvas.width = 400; 
+                this.canvas.height = 400;
+
+                if (this.gameType === '3d') {
+                    controls.classList.remove('hidden');
+                    isoWrap.classList.remove('hidden');
+                    // Slices brauchen weniger Höhe (rechteckig)
+                    this.canvas.height = 250; 
+                } else if (this.gameType === 'ultimate') {
+                    controls.classList.add('hidden');
+                    isoWrap.classList.add('hidden');
+                    // Ultimate braucht mehr Details -> Größeres internes Canvas (wird per CSS runterskaliert)
+                    this.canvas.width = 600; 
+                    this.canvas.height = 600;
+                } else {
+                    controls.classList.add('hidden');
+                    isoWrap.classList.add('hidden');
+                }
+
+                // Bäume neu laden
+                this.trees[1] = createStrategyTree(this.gameType);
+                this.trees[2] = createStrategyTree(this.gameType);
+                
+                this.vizP1 = new FlowchartVisualizer('treeDisplayP1', this.trees[1], (n) => this.toggleRule(1, n));
+                this.vizP2 = new FlowchartVisualizer('treeDisplayP2', this.trees[2], (n) => this.toggleRule(2, n));
+                
+                this.vizP1.render();
+                this.vizP2.render();
+                
+                this.reset();
+            },
+
+            reset() {
+                if(this.gameType === 'regular') this.game = new TTTRegularBoard();
+                else if(this.gameType === '3d') this.game = new TTT3DBoard(3);
+                else this.game = new UltimateBoard();
+                
+                this.isAuto = false;
+                document.getElementById('btnAuto').innerText = "⏩ Auto";
+                document.getElementById('log').innerHTML = ''; // Log leeren
+                this.log("--- NEUES SPIEL ---");
+                
+                this.vizP1.clearHighlights();
+                this.vizP2.clearHighlights();
+                this.draw();
+                this.updateStatus();
+            },
+
+            toggleRule(player, name) {
+                const toggle = (n) => {
+                    if (n.name === name) n.active = !n.active;
+                    if (n.children) n.children.forEach(toggle);
+                    if (n.thenNode) toggle(n.thenNode);
+                    if (n.elseNode) toggle(n.elseNode);
+                };
+                toggle(this.trees[player].root);
+                if(player===1) this.vizP1.render(); else this.vizP2.render();
+            },
+
+            setAxis(axis) {
+                this.axis3D = axis;
+                document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+                // Button Index Hack (z=0, y=1, x=2)
+                const idx = axis==='z'?0 : axis==='y'?1 : 2;
+                document.querySelectorAll('.view-btn')[idx].classList.add('active');
+                this.draw();
+            },
+
+            /** Input Handler mit korrekter 3D-Berechnung */
+            handleClick(e) {
+                if (this.game.winner !== 0 || this.isAuto) return;
+
+                const rect = this.canvas.getBoundingClientRect();
+                const scaleX = this.canvas.width / rect.width;
+                const scaleY = this.canvas.height / rect.height;
+                const mx = (e.clientX - rect.left) * scaleX;
+                const my = (e.clientY - rect.top) * scaleY;
+
+                let success = false;
+
+                if (this.gameType === '3d') {
+                    // 3D Layout Berechnung (Analog Renderer)
+                    const s = 3; 
+                    const w = this.canvas.width, h = this.canvas.height;
+                    const pad = 20;
+                    const availW = w - (pad*2), availH = h - (pad*2);
+                    const boxSize = Math.min(availW/s, availH); // Max Boxgröße
+                    const gap = boxSize * 0.1;
+                    const boardS = boxSize - gap;
+                    
+                    // Zentrierung
+                    const startX = (w - s*boxSize)/2 + gap/2;
+                    const startY = (h - boardS)/2 + 10;
+
+                    for(let k=0; k<s; k++) {
+                        const ox = startX + k*boxSize;
+                        if(mx >= ox && mx <= ox+boardS && my >= startY && my <= startY+boardS) {
+                            const c = Math.floor((mx-ox)/(boardS/s));
+                            const r = Math.floor((my-startY)/(boardS/s));
+                            let x,y,z;
+                            if(this.axis3D==='z') { z=k; y=r; x=c; }
+                            else if(this.axis3D==='y') { y=k; x=c; z=(s-1)-r; }
+                            else { x=k; y=c; z=(s-1)-r; }
+                            success = this.game.makeMove(z*9 + y*3 + x);
+                            break;
+                        }
+                    }
+                } 
+                else if (this.gameType === 'ultimate') {
+                    const bigS = this.canvas.width/3, smallS = bigS/3;
+                    const bx = Math.floor(mx/bigS), by = Math.floor(my/bigS);
+                    const sx = Math.floor((mx%bigS)/smallS), sy = Math.floor((my%bigS)/smallS);
+                    if(bx>=0 && bx<3 && by>=0 && by<3) {
+                        success = this.game.makeMove(by*3+bx, sy*3+sx);
+                    }
+                } 
+                else { // Regular
+                    const s = this.canvas.width/3;
+                    const c = Math.floor(mx/s), r = Math.floor(my/s);
+                    if(c>=0 && c<3 && r>=0 && r<3) success = this.game.makeMove(r*3+c);
+                }
+
+                if(success) {
+                    this.draw();
+                    this.checkWin();
+                }
+            },
+
+            draw() {
+                const c = this.canvas;
+                if(this.gameType === 'regular') TTTRenderer.drawRegular(c, this.game);
+                else if(this.gameType === 'ultimate') TTTRenderer.drawUltimate(c, this.game);
+                else {
+                    TTTRenderer.draw3DSlices(c, this.game, this.axis3D);
+                    TTTRenderer.drawIsoView(this.isoCanvas, this.game);
+                }
+            },
+
+            // --- KI ---
+            async stepAI(fast = false) {
+                if(this.game.winner !== 0) return;
+                const p = this.game.currentPlayer;
+                const viz = (p===1) ? this.vizP1 : this.vizP2;
+                const tree = this.trees[p];
+
+                viz.clearHighlights();
+                this.updateStatus(`KI ${p===1?'Blau':'Rot'} rechnet...`);
+
+                // Visualisierung mit Delay, auch im Auto-Mode (wenn Auto nicht zu schnell sein soll)
+                // Hier nutzen wir 'evaluateVisual' direkt, um den Pfad zu zeigen
+                
+                const move = await this.evaluateVisual(tree.root, this.game, viz, fast ? 0 : this.delay);
+
+                if (move) {
+                    if (this.gameType === 'ultimate' && typeof move === 'object') 
+                        this.game.makeMove(move.big, move.small);
+                    else 
+                        this.game.makeMove(move);
+                    
+                    this.draw();
+                    this.checkWin();
+                } else {
+                    this.log(`KI ${p} findet keinen Zug!`);
+                }
+            },
+
+            async evaluateVisual(node, gameState, viz, ms) {
+                if (!node || !node.active) return null;
+                
+                if (ms > 0) {
+                    viz.highlightCheck(node.name);
+                    await new Promise(r => setTimeout(r, ms));
+                }
+
+                // Condition
+                if (node.conditionFn) {
+                    const res = node.conditionFn(gameState);
+                    if (res) return await this.evaluateVisual(node.thenNode, gameState, viz, ms);
+                    else return await this.evaluateVisual(node.elseNode, gameState, viz, ms);
+                }
+                
+                // Group
+                if (node.children && node.children.length > 0) {
+                    for (const child of node.children) {
+                        const result = await this.evaluateVisual(child, gameState, viz, ms);
+                        if (result) return result;
+                    }
+                    return null;
+                }
+
+                // Rule
+                const result = node.evaluate(gameState);
+                if (result) {
+                    if (ms > 0) viz.highlightSuccess(node.name);
+                    return result.move;
+                }
+                return null;
+            },
+
+            toggleAutoMatch() {
+                this.isAuto = !this.isAuto;
+                const btn = document.getElementById('btnAuto');
+                if (this.isAuto) {
+                    btn.innerHTML = "⏹ Stopp";
+                    btn.style.background = "#c0392b";
+                    this.loop();
+                } else {
+                    btn.innerHTML = "⏩ Auto";
+                    btn.style.background = "#8e44ad";
+                }
+            },
+
+            loop() {
+                if(!this.isAuto || this.game.winner !== 0) {
+                    this.isAuto = false;
+                    document.getElementById('btnAuto').innerText = "⏩ Auto";
+                    document.getElementById('btnAuto').style.background = "#8e44ad";
+                    return;
+                }
+                // Wir rufen stepAI mit fast=false auf, damit man das Highlighting sieht!
+                // Aber wir warten, bis der Step fertig ist (Async)
+                this.stepAI(false).then(() => {
+                    if(this.isAuto) setTimeout(() => this.loop(), 200);
+                });
+            },
+
+            checkWin() {
+                if(this.game.winner) {
+                    const w = this.game.winner;
+                    const msg = w===3 ? "Remis" : `Sieg ${w===1?'Blau':'Rot'}`;
+                    this.updateStatus(msg);
+                    this.log(msg);
+                } else {
+                    const p = this.game.currentPlayer;
+                    this.updateStatus(`${p===1?'Blau':'Rot'} ist dran`);
+                }
+            },
+            updateStatus(msg) { document.getElementById('statusText').innerText = msg || "Bereit"; },
+            log(msg) { 
+                const l = document.getElementById('log'); 
+                l.innerHTML += `<div class="log-entry">${msg}</div>`; 
+                l.scrollTop = l.scrollHeight;
+            }
+        };
+        window.onload = () => Lab.init();
+    </script>
+</body>
+</html>

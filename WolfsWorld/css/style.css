@@ -1,0 +1,129 @@
+/* css/style.css */
+
+:root {
+    --bg-color: #f0f2f5;
+    --sidebar-bg: #ffffff;
+    --text-main: #2c3e50;
+    --text-muted: #7f8c8d;
+    --accent-blue: #3498db;
+    --accent-blue-hover: #2980b9;
+    --accent-red: #e74c3c;
+    --accent-green: #2ecc71;
+    --accent-yellow: #f1c40f;
+    --border-color: #ddd;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;
+    display: flex; /* Globales Flex-Layout */
+}
+
+/* --- Globales Layout: Sidebar & Game Area --- */
+
+.sidebar {
+    width: 320px;
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+}
+
+.sidebar-header {
+    padding: 20px;
+    background: #34495e;
+    color: white;
+}
+
+.sidebar-header h2 { margin: 10px 0 0 0; font-size: 1.5rem; }
+
+.sidebar-content {
+    padding: 20px;
+    overflow-y: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.game-area {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #dfe6e9;
+    position: relative;
+}
+
+/* --- UI Komponenten --- */
+
+.control-section {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+}
+
+.viz-label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.viz-select, .viz-input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+/* Buttons */
+.viz-btn {
+    border: none;
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: inline-block;
+    transition: filter 0.2s;
+    text-align: center;
+}
+.viz-btn:hover { filter: brightness(90%); }
+.viz-btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); }
+
+.btn-back { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 5px 10px; font-size: 0.8rem; }
+.btn-action { background: var(--accent-blue); color: white; width: 100%; }
+.btn-restart { background: var(--accent-yellow); color: #333; width: 100%; }
+.btn-danger { background: var(--accent-red); color: white; width: 100%; }
+
+/* Stats Display */
+.stats-display {
+    text-align: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text-main);
+}
+
+/* Canvas Styling */
+canvas {
+    background: white;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+    border-radius: 4px;
+    /* Damit es nicht riesig wird: */
+    max-width: 95%;
+    max-height: 95%;
+}

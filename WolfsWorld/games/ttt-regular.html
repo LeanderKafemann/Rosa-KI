@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic-Tac-Toe Regular</title>
+    <link rel="stylesheet" href="../css/style.css">
+    </head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="tictactoe-menu.html" class="viz-btn btn-back">⬅ TTT Menü</a>
+            <h2>Regular (3x3)</h2>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="control-section">
+                <label class="viz-label">Spieler 1 (Blau)</label>
+                <select id="p1Type" class="viz-select">
+                    <option value="human" selected>Mensch</option>
+                    <option value="random">KI: Zufall</option>
+                    <option value="rulebased">KI: Regeln</option>
+                </select>
+                
+                <label class="viz-label" style="margin-top:10px;">Spieler 2 (Rot)</label>
+                <select id="p2Type" class="viz-select">
+                    <option value="human">Mensch</option>
+                    <option value="random" selected>KI: Zufall</option>
+                    <option value="rulebased">KI: Regeln</option>
+                </select>
+            </div>
+
+            <div class="control-section">
+                <label class="viz-label">KI Geschwindigkeit</label>
+                <input type="range" id="aiSpeed" min="0" max="2000" step="100" value="500">
+            </div>
+
+            <div class="control-section" style="text-align:center;">
+                <div id="statusText" class="stats-display">Bereit</div>
+            </div>
+
+            <button class="viz-btn btn-restart" onclick="RegularController.reset()">Neues Spiel</button>
+        </div>
+    </aside>
+
+    <main class="game-area">
+        <canvas id="gameCanvas" width="500" height="500"></canvas>
+    </main>
+
+    <script src="../js/core/game-state.js"></script>
+    <script src="../js/core/agent.js"></script>
+    <script src="../js/ai/agents/random-agent.js"></script>
+    <script src="../js/ai/agents/rule-based-agent.js"></script>
+    <script src="../js/ai/rules/rule-structure.js"></script>
+    <script src="../js/ai/rules/ttt-rules.js"></script>
+    
+    <script src="../js/games/tictactoe/logic.js"></script>
+    <script src="../js/games/tictactoe/renderer.js"></script>
+    <script src="../js/games/tictactoe/regular-controller.js"></script>
+</body>
+</html>
