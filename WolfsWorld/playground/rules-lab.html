@@ -134,7 +134,6 @@
             changeGameType() {
                 this.gameType = document.getElementById('gameTypeSelector').value;
                 const controls = document.getElementById('controls3D');
-                const isoWrap = document.getElementById('isoWrapper');
                 
                 // Canvas Größen Reset
                 this.canvas.width = 400; 
@@ -142,18 +141,15 @@
 
                 if (this.gameType === '3d') {
                     controls.classList.remove('hidden');
-                    isoWrap.classList.remove('hidden');
                     // Slices brauchen weniger Höhe (rechteckig)
                     this.canvas.height = 250; 
                 } else if (this.gameType === 'ultimate') {
                     controls.classList.add('hidden');
-                    isoWrap.classList.add('hidden');
                     // Ultimate braucht mehr Details -> Größeres internes Canvas (wird per CSS runterskaliert)
                     this.canvas.width = 600; 
                     this.canvas.height = 600;
                 } else {
                     controls.classList.add('hidden');
-                    isoWrap.classList.add('hidden');
                 }
 
                 // Bäume neu laden
@@ -319,60 +315,53 @@
             async evaluateVisual(node, gameState, viz, ms) {
                 if (!node || !node.active) return null;
                 
-                // Punkt j) FIX: Tracking für korrekte Cleanup
-                const traverse = async (n) => {
-                    if (!n || !n.active) return null;
-                    
-                    // Highlighting
-                    if (ms > 0) {
-                        viz.highlightCheck(n.name);
-                        await new Promise(r => setTimeout(r, ms));
-                    }
+                // Punkt j) FIX: Inline-Logik ohne verschachtelte Funktionen
+                if (ms > 0) {
+                    viz.highlightCheck(node.name);
+                    await new Promise(r => setTimeout(r, ms));
+                }
 
-                    // Condition (If-Then-Else)
-                    if (n.conditionFn) {
-                        const res = n.conditionFn(gameState);
-                        const targetNode = res ? n.thenNode : n.elseNode;
-                        const result = await traverse(targetNode);
-                        
-                        // Wenn nicht erfolgreich, cleanup
-                        if (!result && ms > 0) {
-                            viz._removeClass(n.name, 'checking');
-                        }
-                        return result;
-                    }
+                // Condition (If-Then-Else)
+                if (node.conditionFn) {
+                    const res = node.conditionFn(gameState);
+                    const targetNode = res ? node.thenNode : node.elseNode;
+                    const result = await this.evaluateVisual(targetNode, gameState, viz, ms);
                     
-                    // Group (iterate children with cleanup)
-                    if (n.children && n.children.length > 0) {
-                        for (const child of n.children) {
-                            const result = await traverse(child);
-                            if (result) {
-                                return result;  // Nur Gewinner-Pfad
-                            }
-                            // Child nicht erfolgreich → cleanup
-                            if (ms > 0) {
-                                viz._removeClass(child.name, 'checking');
-                            }
-                        }
-                        // Keine Kinder erfolgreich
-                        if (ms > 0) viz._removeClass(n.name, 'checking');
-                        return null;
+                    // Wenn nicht erfolgreich, cleanup
+                    if (!result && ms > 0) {
+                        viz._removeClass(node.name, 'checking');
                     }
-
-                    // Rule (atomic)
-                    const result = n.evaluate(gameState);
-                    if (result) {
-                        // SUCCESS!
-                        if (ms > 0) viz.highlightSuccess(n.name);
-                        return result.move;
-                    } else {
-                        // Rule nicht erfolgreich
-                        if (ms > 0) viz._removeClass(n.name, 'checking');
-                        return null;
-                    }
-                };
+                    return result;
+                }
                 
-                return await traverse(node);
+                // Group (iterate children with cleanup)
+                if (node.children && node.children.length > 0) {
+                    for (const child of node.children) {
+                        const result = await this.evaluateVisual(child, gameState, viz, ms);
+                        if (result) {
+                            return result;  // Nur Gewinner-Pfad
+                        }
+                        // Child nicht erfolgreich → cleanup
+                        if (ms > 0) {
+                            viz._removeClass(child.name, 'checking');
+                        }
+                    }
+                    // Keine Kinder erfolgreich
+                    if (ms > 0) viz._removeClass(node.name, 'checking');
+                    return null;
+                }
+
+                // Rule (atomic)
+                const result = node.evaluate(gameState);
+                if (result) {
+                    // SUCCESS!
+                    if (ms > 0) viz.highlightSuccess(node.name);
+                    return result.move;
+                } else {
+                    // Rule nicht erfolgreich
+                    if (ms > 0) viz._removeClass(node.name, 'checking');
+                    return null;
+                }
             },
 
             toggleAutoMatch() {
