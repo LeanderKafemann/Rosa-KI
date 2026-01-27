@@ -98,10 +98,11 @@ class MinimaxEngine {
         const stateId = this.nodesVisited; // Pseudo ID für Trace
         
         // 1. Blatt-Prüfung (Sieg, Remis oder Max-Tiefe)
-        // Nutzt isGameOver (wenn vorhanden) oder winner check
-        const isOver = state.isGameOver || state.winner !== 0;
+        // Prüfe auf Spielende: winner !== 0 oder keine gültigen Züge
+        const hasValidMoves = state.getAllValidMoves && state.getAllValidMoves().length > 0;
+        const isTerminal = (state.winner !== undefined && state.winner !== 0) || !hasValidMoves;
         
-        if (depth === 0 || isOver) {
+        if (depth === 0 || isTerminal) {
             const score = this.heuristicFn(state, rootPlayer);
             if (this.captureTrace) {
                 this.traceLog.push({ type: 'LEAF', id: stateId, score: score, depth: this.maxDepth - depth });
@@ -121,7 +122,8 @@ class MinimaxEngine {
             
             for (const move of validMoves) {
                 const childState = state.clone();
-                if (typeof move === 'object' && move.big !== undefined) {
+                // Unterstütze beide Move-Formate: {big, small} und einfache Zahlen
+                if (typeof move === 'object' && move.big !== undefined && move.small !== undefined) {
                     childState.makeMove(move.big, move.small);
                 } else {
                     childState.makeMove(move);
@@ -159,7 +161,8 @@ class MinimaxEngine {
             
             for (const move of validMoves) {
                 const childState = state.clone();
-                if (typeof move === 'object' && move.big !== undefined) {
+                // Unterstütze beide Move-Formate: {big, small} und einfache Zahlen
+                if (typeof move === 'object' && move.big !== undefined && move.small !== undefined) {
                     childState.makeMove(move.big, move.small);
                 } else {
                     childState.makeMove(move);

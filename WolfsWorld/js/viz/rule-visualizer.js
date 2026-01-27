@@ -81,4 +81,12 @@ class RuleVisualizer {
             if (cls === 'checking') el.scrollIntoView({ behavior: "smooth", block: "nearest" });
         }
     }
+    
+    _removeClass(name, cls) {
+        const id = `${this.prefix}-${name.replace(/\s+/g, '-')}`;
+        const el = document.getElementById(id);
+        if (el) {
+            el.classList.remove(cls);
+        }
+    }
 }

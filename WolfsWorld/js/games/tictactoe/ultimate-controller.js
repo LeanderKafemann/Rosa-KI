@@ -26,7 +26,9 @@ const UltimateController = {
         this.updateUI();
         if (current !== 'human') {
             this.isProcessing = true;
-            const speed = document.getElementById('aiSpeed').value;
+            const sliderValue = parseInt(document.getElementById('aiSpeed').value);
+            // Invertierte Logik: 0 = schnell, 2000 = langsam
+            const speed = 2000 - sliderValue;
             setTimeout(() => {
                 let agent;
                 if (current === 'random') {
@@ -34,8 +36,8 @@ const UltimateController = {
                 } else if (current === 'rulebased') {
                     agent = new RuleBasedAgent(createStrategyTree('ultimate'));
                 } else if (current === 'minimax') {
-                    // Ultimate: Nutze "Smart" Heuristik
-                    // Tiefe 4 ist meist ein guter Kompromiss aus Zeit und Spielstärke
+                    // Ultimate: Nutze erweiterte Heuristik mit Makro- und Mikro-Board Bewertung
+                    // Tiefe 4-5 ist ein guter Kompromiss aus Performance und Spielstärke
                     agent = new MinimaxAgent({
                         name: "Smart Minimax",
                         maxDepth: 4,

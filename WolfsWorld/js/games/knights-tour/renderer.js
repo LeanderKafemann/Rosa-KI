@@ -13,6 +13,7 @@ const KnightRenderer = {
         const ctx = canvas.getContext('2d');
         const size = board.size;
         const showMoves = config.showPossibleMoves || false;
+        const showWarnsdorf = config.showWarnsdorf || false;
         
         // --- NEUES FARBSCHEMA ---
         const COLORS = {
@@ -23,6 +24,7 @@ const KnightRenderer = {
             visitedText: '#ffffff',
             current:  '#e67e22', // Orange für den Springer
             possible: 'rgba(52, 152, 219, 0.6)', // Blau transparent
+            warnsdorfText: '#3498db', // Blau für Zahlen
             coord:    '#7f8c8d'
         };
 
@@ -88,15 +90,32 @@ const KnightRenderer = {
         // 3. Mögliche Züge (Vorschau)
         if (showMoves && !board.won && !config.hideHints) {
             const moves = board.getPossibleMoves();
-            moves.forEach(m => {
-                const cx = m.c * cellSize + cellSize/2;
-                const cy = m.r * cellSize + cellSize/2;
-                
-                ctx.beginPath();
-                ctx.fillStyle = COLORS.possible;
-                ctx.arc(cx, cy, cellSize * 0.2, 0, Math.PI * 2);
-                ctx.fill();
-            });
+            
+            if (showWarnsdorf) {
+                // Zeige Warnsdorf-Zahlen statt Punkte
+                moves.forEach(m => {
+                    const cx = m.c * cellSize + cellSize/2;
+                    const cy = m.r * cellSize + cellSize/2;
+                    const degree = board.getDegree(m.r, m.c);
+                    
+                    ctx.fillStyle = COLORS.warnsdorfText;
+                    ctx.font = `bold ${cellSize * 0.35}px sans-serif`;
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.fillText(degree, cx, cy);
+                });
+            } else {
+                // Zeige blaue Punkte
+                moves.forEach(m => {
+                    const cx = m.c * cellSize + cellSize/2;
+                    const cy = m.r * cellSize + cellSize/2;
+                    
+                    ctx.beginPath();
+                    ctx.fillStyle = COLORS.possible;
+                    ctx.arc(cx, cy, cellSize * 0.2, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+            }
         }
 
         // 4. Springer (Aktuelle Position)

@@ -26,18 +26,23 @@
 
             <div class="control-section">
                 <label class="viz-label">Geschwindigkeit</label>
-                <input type="range" id="solveSpeed" min="0" max="200" step="10" value="50" style="width:100%">
+                <input type="range" id="solveSpeed" min="0" max="200" step="1" value="100" style="width:100%">
                 
                 <div style="margin-top:10px;">
                     <label style="display:flex; align-items:center; cursor:pointer;">
                         <input type="checkbox" id="chkShowMoves" checked> 
                         <span style="margin-left:8px;">Mögliche Züge zeigen</span>
                     </label>
+                    <label style="display:flex; align-items:center; cursor:pointer; margin-top:8px;">
+                        <input type="checkbox" id="chkShowWarnsdorf"> 
+                        <span style="margin-left:8px;">Warnsdorf Heuristik</span>
+                    </label>
                 </div>
             </div>
 
             <div class="control-section" style="text-align:center;">
                 <div id="stats" class="stats-display">Züge: 0 / 64</div>
+                <div id="aiStats" class="stats-display" style="margin-top:10px; font-size:0.9em; color:#7f8c8d;">KI Knoten: 0</div>
             </div>
 
             <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">

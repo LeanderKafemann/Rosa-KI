@@ -143,10 +143,12 @@ class RotateBoard {
             for (let c = 0; c < this.cols; c++) {
                 if (this.grid[r][c] === id) {
                     // Prüfen ob Ziel erreicht (-3)
-                    if (this.grid[r + 1][c] === -3) reachedExit = true;
-                    
-                    // Box an neue Position setzen (außer sie verschwindet im Ziel)
-                    if (this.grid[r + 1][c] !== -3) {
+                    if (this.grid[r + 1][c] === -3) {
+                        reachedExit = true;
+                        // Block bleibt sichtbar auf der Öffnung stehen
+                        this.grid[r + 1][c] = id;
+                    } else {
+                        // Box an neue Position setzen
                         this.grid[r + 1][c] = id;
                     }
                     
@@ -161,8 +163,12 @@ class RotateBoard {
     /**
      * Lässt alle Boxen fallen, bis sie stabil liegen.
      * Wird synchron ausgeführt (ohne Animation), z.B. für KI-Vorberechnung.
+     * Wenn das Spiel bereits gewonnen ist, werden keine Blöcke mehr bewegt.
      */
     relaxBoardSync() {
+        // Wenn das Spiel bereits gewonnen ist, nicht weiter fallen lassen
+        if (this.won) return;
+        
         let changed = true;
         while (changed) {
             changed = false;

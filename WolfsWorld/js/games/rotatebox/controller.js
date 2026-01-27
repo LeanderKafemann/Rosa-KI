@@ -124,6 +124,7 @@ const RotateController = {
             document.getElementById('aiOutput').classList.remove('hidden');
             document.getElementById('stat-depth').innerText = result.path.length;
             document.getElementById('stat-nodes').innerText = result.nodes;
+            document.getElementById('stat-duplicates').innerText = result.duplicates || 0;
             
             const pathDiv = document.getElementById('solutionPath');
             pathDiv.innerHTML = '';

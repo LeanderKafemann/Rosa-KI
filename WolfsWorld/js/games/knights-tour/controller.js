@@ -21,6 +21,7 @@ const Game = {
         
         document.getElementById('sizeSelect').onchange = () => this.reset();
         document.getElementById('chkShowMoves').onchange = () => this.draw();
+        document.getElementById('chkShowWarnsdorf').onchange = () => this.draw();
 
         this.reset();
     },
@@ -47,6 +48,9 @@ const Game = {
         this.canvas.width = 600; 
         this.canvas.height = 600; 
         
+        // KI-Counter zurücksetzen
+        document.getElementById('aiStats').innerText = 'KI Knoten: 0';
+        
         this.updateUI();
         this.draw();
     },
@@ -67,10 +71,14 @@ const Game = {
      * Startet die KI-Lösung.
      */
     async solveFast() {
+        // Wenn kein Startfeld definiert ist, setze den Springer automatisch unten links
         if (!this.board.currentPos) {
-            alert("Bitte setze zuerst eine Startfigur auf das Brett!");
-            return;
+            const startRow = this.board.size - 1;  // Unten
+            const startCol = 0;                     // Links
+            this.board.move(startRow, startCol);
+            this.draw();
         }
+        
         if (this.board.won) return;
 
         // Status setzen
@@ -78,28 +86,36 @@ const Game = {
         this.stopRequested = false;
         this.updateUI();
 
+        // Warnsdorf-Checkbox prüfen
+        const useWarnsdorf = document.getElementById('chkShowWarnsdorf').checked;
+
         // Engine konfigurieren
         const engine = new SearchEngine({
             strategy: 'DFS', 
             maxDepth: 2000,
             checkDuplicates: true, // Zyklen vermeiden
             
-            // Warnsdorf-Heuristik: Wähle Feld mit wenigsten Nachfolgern
-            sortSuccessors: (nodeA, nodeB) => {
+            // Warnsdorf-Heuristik: Wähle Feld mit wenigsten Nachfolgern (nur wenn aktiviert)
+            sortSuccessors: useWarnsdorf ? (nodeA, nodeB) => {
                 const degA = nodeA.state.getPossibleMoves().length;
                 const degB = nodeB.state.getPossibleMoves().length;
                 return degA - degB;
-            },
+            } : null,
             
             // Callback pro Schritt (für Animation & Abbruch)
-            onStep: async (state) => {
+            onStep: async (state, openListSize, nodesVisited) => {
                 // 1. Abbruch prüfen
                 if (this.stopRequested) {
                     return 'STOP'; // Signal an SearchEngine
                 }
 
-                // 2. Zeichnen
-                const delay = parseInt(document.getElementById('solveSpeed').value);
+                // 2. Counter aktualisieren
+                document.getElementById('aiStats').innerText = `KI Knoten: ${nodesVisited}`;
+
+                // 3. Zeichnen
+                const sliderValue = parseInt(document.getElementById('solveSpeed').value);
+                // Invertierte Logik: 0 = schnell, 200 = langsam
+                const delay = 200 - sliderValue;
                 
                 // Um Performance zu sparen bei 0 Delay nicht jeden Frame zeichnen
                 if (delay > 0 || Math.random() < 0.05) {
@@ -193,10 +209,11 @@ const Game = {
 
     draw() {
         const showMoves = document.getElementById('chkShowMoves').checked;
+        const showWarnsdorf = document.getElementById('chkShowWarnsdorf').checked;
         
         KnightRenderer.draw(this.canvas, this.board, { 
             showPossibleMoves: showMoves,
-            showWarnsdorf: false, 
+            showWarnsdorf: showWarnsdorf, 
             highContrast: false 
         });
     }

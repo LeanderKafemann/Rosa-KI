@@ -27,7 +27,7 @@ class SearchEngine {
     /**
      * Startet die Suche nach einem Zielzustand.
      * @param {GameState} startState 
-     * @returns {Promise<{success: boolean, path: Array, nodesVisited: number, stopped: boolean}>}
+     * @returns {Promise<{success: boolean, path: Array, nodesVisited: number, duplicatesFound: number, stopped: boolean}>}
      */
     async solve(startState) {
         let openList = [];
@@ -36,6 +36,7 @@ class SearchEngine {
         openList.push(root);
 
         let visited = new Set();
+        let duplicatesFound = 0;
         if (this.checkDuplicates && startState.getStateKey) {
             visited.add(startState.getStateKey());
         }
@@ -50,9 +51,9 @@ class SearchEngine {
             // VISUALISIERUNG CALLBACK
             if (this.onStep) {
                 // Wir warten auf den Callback (für Animationen)
-                const result = await this.onStep(currentNode.state, openList.length);
+                const result = await this.onStep(currentNode.state, openList.length, nodesVisited);
                 if (result === 'STOP') {
-                    return { success: false, nodesVisited, stopped: true, path: [] };
+                    return { success: false, nodesVisited, duplicatesFound, stopped: true, path: [] };
                 }
             }
 
@@ -63,7 +64,7 @@ class SearchEngine {
                                 : currentNode.state.won;
 
             if (reachedGoal) {
-                return { success: true, path: currentNode.path, nodesVisited, stopped: false };
+                return { success: true, path: currentNode.path, nodesVisited, duplicatesFound, stopped: false };
             }
 
             if (currentNode.depth >= this.maxDepth) continue;
@@ -83,7 +84,10 @@ class SearchEngine {
             for (const item of successors) {
                 if (this.checkDuplicates) {
                     const key = item.state.getStateKey();
-                    if (visited.has(key)) continue;
+                    if (visited.has(key)) {
+                        duplicatesFound++;
+                        continue;
+                    }
                     visited.add(key);
                 }
 
@@ -109,6 +113,6 @@ class SearchEngine {
             }
         }
 
-        return { success: false, nodesVisited, path: [], stopped: false };
+        return { success: false, nodesVisited, duplicatesFound, path: [], stopped: false };
     }
 }

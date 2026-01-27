@@ -155,7 +155,64 @@ const TTTRulesLibrary = {
             // (Nachbar: Index-Differenz ist 1, size, size*size etc...)
             // Sehr vereinfacht:
             return validMoves[0]; // Platzhalter für echte Linien-Logik
-        })
+        }),
+
+        // NEU: Punkt n) - Bedingte 3D-Strategien
+        blockDiagonal: new AtomicRule(
+            "Raum-Diagonal Blocken",
+            "Gegner hat 2 in 3D-Diagonal",
+            (game) => {
+                const opp = game.currentPlayer === 1 ? 2 : 1;
+                // 3D Raumdiagonalen (durch Kern = Index 13)
+                const diagonals = [
+                    [0, 13, 26],   // Ecke zu Ecke
+                    [2, 13, 24],
+                    [6, 13, 20],
+                    [8, 13, 18],
+                    [18, 13, 8],   // Gespiegelt
+                    [20, 13, 6],
+                    [24, 13, 2],
+                    [26, 13, 0]
+                ];
+                
+                for (let line of diagonals) {
+                    let oppCount = 0, emptyIdx = -1;
+                    for (let idx of line) {
+                        if (game.grid[idx] === opp) oppCount++;
+                        if (game.grid[idx] === 0) emptyIdx = idx;
+                    }
+                    if (oppCount === 2 && emptyIdx >= 0) return emptyIdx;
+                }
+                return null;
+            }
+        ),
+
+        coreExpand: new AtomicRule(
+            "Kern Expansion",
+            "Baue vom Kern aus",
+            (game) => {
+                const size = game.size;
+                const center = Math.floor(size * size * size / 2);
+                const me = game.currentPlayer;
+                
+                // Wenn Kern besetzt ist (von mir), setze Nachbarn
+                if (game.grid[center] === me) {
+                    // Alle direkten Nachbarn des Kerns (26 bei 3x3x3)
+                    const neighbors = [];
+                    for (let i = 0; i < game.grid.length; i++) {
+                        if (game.grid[i] === 0) {
+                            // Manuell: nähe zum Kern checken
+                            const dist = Math.abs(i - center);
+                            if (dist <= size + 1) neighbors.push(i);
+                        }
+                    }
+                    const validMoves = game.getAllValidMoves();
+                    const expansion = neighbors.filter(n => validMoves.includes(n));
+                    return expansion.length > 0 ? expansion[0] : null;
+                }
+                return null;
+            }
+        )
     },
 
     // --- ULTIMATE SPEZIFISCH ---
@@ -187,7 +244,51 @@ const TTTRulesLibrary = {
             // Bessere Strategie wäre: Schicke ihn in ein Board, das ICH schon habe.
             const candidates = moves.filter(m => game.macroBoard[m.small] !== 0);
             return candidates.length > 0 ? candidates[0] : null;
-        })
+        }),
+
+        // Punkt o) NEU - Ultimate Strategiephase Bedingungen
+        winGlobal: new AtomicRule(
+            "Global Sieg",
+            "Gewinne ein Board für Sieg-Pfad",
+            (game) => {
+                // Wenn ich in den letzten 3 Boards führe, versuche den Sieg abzusichern
+                const me = game.currentPlayer;
+                let myBoardWins = 0;
+                for (let b = 0; b < 9; b++) {
+                    if (game.macroBoard[b] === me) myBoardWins++;
+                }
+                // Wenn ich 2+ Boards habe, versuche 3. zu gewinnen
+                if (myBoardWins >= 2) {
+                    for (let m of game.getAllValidMoves()) {
+                        const sim = [...game.boards[m.big]];
+                        sim[m.small] = me;
+                        if (checkSmallWin(sim)) return m;
+                    }
+                }
+                return null;
+            }
+        ),
+
+        blockGlobal: new AtomicRule(
+            "Global Block",
+            "Blockiere Gegner vor Sieg",
+            (game) => {
+                const opp = game.currentPlayer === 1 ? 2 : 1;
+                let oppBoardWins = 0;
+                for (let b = 0; b < 9; b++) {
+                    if (game.macroBoard[b] === opp) oppBoardWins++;
+                }
+                // Wenn Gegner 2+ Boards hat, blockiere seinen 3.
+                if (oppBoardWins >= 2) {
+                    for (let m of game.getAllValidMoves()) {
+                        const sim = [...game.boards[m.big]];
+                        sim[m.small] = opp;
+                        if (checkSmallWin(sim)) return m;
+                    }
+                }
+                return null;
+            }
+        )
     }
 };
 
@@ -219,30 +320,58 @@ function createStrategyTree(type = 'regular') {
         tactic.add(TTTRulesLibrary.regular.corner);
         root.add(tactic);
     }else if (type === 'ultimate') {
-        // Verzweigung: Kann ich lokal was reißen?
+        // Punkt o) NEU - Ultimate mit echten Bedingungen
         const localTactics = new RuleGroup("Lokale Taktik");
         localTactics.add(TTTRulesLibrary.ultimate.winLocal);
         localTactics.add(TTTRulesLibrary.ultimate.blockLocal);
         
-        // Bedingung: Wenn wir lokal nichts Dringendes haben, spielen wir strategisch
-        const strategyBranch = new ConditionNode(
-            "Strategie Phase", 
-            "Lokal sicher?",
-            (game) => true, // Dummy Bedingung (immer wahr -> geht in THEN)
-            new RuleGroup("Positionierung", "", [
+        // Bedingung: Hat der Gegner Chance auf Sieg?
+        const strategyPhase = new ConditionNode(
+            "Gegner Vorsprung?", 
+            "Hat Gegner 2+ Boards gewonnen?",
+            (game) => {
+                const opp = game.currentPlayer === 1 ? 2 : 1;
+                let oppWins = 0;
+                for (let b = 0; b < 9; b++) {
+                    if (game.macroBoard[b] === opp) oppWins++;
+                }
+                return oppWins >= 2;
+            },
+            // THEN: Gegner nah am Sieg → DEFENSIVE
+            new RuleGroup("🛡️ Defensive Strategie", "", [
+                TTTRulesLibrary.ultimate.blockGlobal,
                 TTTRulesLibrary.ultimate.sendToTrash,
                 TTTRulesLibrary.basics.random
             ]),
-            null // Else
+            // ELSE: Wir im Vorteil oder gleich → OFFENSIVE
+            new RuleGroup("⚔️ Offensive Strategie", "", [
+                TTTRulesLibrary.ultimate.winGlobal,
+                TTTRulesLibrary.ultimate.sendToTrash,
+                TTTRulesLibrary.basics.random
+            ])
         );
         
         root.add(localTactics);
-        root.add(strategyBranch);
+        root.add(strategyPhase);
 
     } else if (type === '3d') {
+        // Punkt n) - Bedingte Strategien für 3D
+        const coreControl = new ConditionNode(
+            "Kern frei?",
+            "Ist die Raummitte noch nicht besetzt?",
+            (game) => game.grid[Math.floor(game.size * game.size * game.size / 2)] === 0,
+            // THEN: Kern frei → nimm ihn
+            TTTRulesLibrary.dimension3.centerCore,
+            // ELSE: Kern besetzt → baue Linie aus
+            new RuleGroup("Nach-Kern Strategie", "", [
+                TTTRulesLibrary.dimension3.coreExpand,
+                TTTRulesLibrary.dimension3.blockDiagonal,
+                TTTRulesLibrary.dimension3.createSetup
+            ])
+        );
+
         const spaceTactics = new RuleGroup("Raum Taktik");
-        spaceTactics.add(TTTRulesLibrary.dimension3.centerCore);
-        // Hier könnte man bedingte Regeln für Linienaufbau einfügen
+        spaceTactics.add(coreControl);
         root.add(spaceTactics);
     } else {
         // Regular

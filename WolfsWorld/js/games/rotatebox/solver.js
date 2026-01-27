@@ -7,7 +7,7 @@
  * Findet den kürzesten Weg mittels Breitensuche (BFS).
  * Wrapper für SearchEngine, der asynchron läuft um das UI nicht zu blockieren.
  * * @param {RotateBoard} startBoard - Der Startzustand.
- * @returns {Promise<{path: string[], nodes: number}|null>} Das Ergebnisobjekt oder null.
+ * @returns {Promise<{path: string[], nodes: number, duplicates: number}|null>} Das Ergebnisobjekt oder null.
  */
 async function solveBFS(startBoard) {
     if (!startBoard) return null;
@@ -28,7 +28,8 @@ async function solveBFS(startBoard) {
             if (result.success) {
                 resolve({
                     path: result.path, // Array von Zügen ['L', 'R', ...]
-                    nodes: result.nodesVisited
+                    nodes: result.nodesVisited,
+                    duplicates: result.duplicatesFound || 0
                 });
             } else {
                 resolve(null);

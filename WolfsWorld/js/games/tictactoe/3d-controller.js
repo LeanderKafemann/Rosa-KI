@@ -62,7 +62,9 @@ const ThreeDController = {
         this.updateUI();
         if (current !== 'human') {
             this.isProcessing = true;
-            const speed = document.getElementById('aiSpeed').value;
+            const sliderValue = parseInt(document.getElementById('aiSpeed').value);
+            // Invertierte Logik: 0 = schnell, 2000 = langsam
+            const speed = 2000 - sliderValue;
             setTimeout(() => {
                 // KI Instanzieren
                 let agent;
@@ -71,16 +73,15 @@ const ThreeDController = {
                 } else if (current === 'rulebased') {
                     agent = new RuleBasedAgent(createStrategyTree('3d'));
                 } else if (current === 'minimax') {
-                    // 3D ist sehr komplex (Branching Factor hoch). 
-                    // Tiefe muss stark begrenzt sein (2-3), sonst hängt der Browser.
-                    // Da wir keine spezielle 3D-Heuristik haben, nutzen wir winLoss,
-                    // was bei geringer Tiefe "kurzsichtig" ist, aber besser als Random.
+                    // 3D ist komplexer (Branching Factor ~20-25).
+                    // Mit verbesserter Heuristik kann jetzt Tiefe 3 spielbar sein!
+                    // Tiefe 3: ~15.000 Knoten, ~1-2s
+                    // Tiefe 4: ~375.000 Knoten, ~10s (zu langsam)
                     agent = new MinimaxAgent({ 
                         name: "Minimax 3D",
-                        maxDepth: 2, 
+                        maxDepth: 3,  // War: 2, jetzt verbessert!
                         useAlphaBeta: true,
-                        // Optional: Hier könnte man eine Heuristik injecten, die Linien zählt
-                        heuristicFn: HeuristicsLibrary.winLoss 
+                        heuristicFn: HeuristicsLibrary.threeDTTT 
                     });
                 }
                 

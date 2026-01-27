@@ -59,6 +59,13 @@
             <button class="viz-btn viz-btn-action" id="btnAuto" onclick="Lab.toggleAutoMatch()">⏩ Auto</button>
             <button class="viz-btn viz-btn-restart" onclick="Lab.reset()">↺ Reset</button>
         </div>
+
+        <div class="viz-control-group" style="margin-left: 20px;">
+            <label class="viz-label">⏱ KI Tempo:</label>
+            <input type="range" id="speedSlider" min="50" max="1500" value="600" 
+                   style="width:150px; cursor:pointer;" onchange="Lab.setDelay(this.value)">
+            <span id="speedLabel" style="min-width: 45px;">600ms</span>
+        </div>
     </div>
 
     <div class="lab-grid">
@@ -82,11 +89,6 @@
                     <canvas id="gameCanvas" width="400" height="400"></canvas>
                 </div>
                 
-                <div id="isoWrapper" class="iso-container hidden">
-                    <div style="font-size:0.7rem; color:#888; text-align:center; margin-bottom:2px;">3D Vorschau</div>
-                    <canvas id="isoCanvas" width="200" height="200"></canvas>
-                </div>
-
                 <div id="statusText" class="stats-display" style="margin-top:10px;">Bereit</div>
             </div>
 
@@ -125,7 +127,6 @@
 
             init() {
                 this.canvas = document.getElementById('gameCanvas');
-                this.isoCanvas = document.getElementById('isoCanvas');
                 this.canvas.addEventListener('mousedown', (e) => this.handleClick(e));
                 this.changeGameType();
             },
@@ -268,71 +269,110 @@
                 const c = this.canvas;
                 if(this.gameType === 'regular') TTTRenderer.drawRegular(c, this.game);
                 else if(this.gameType === 'ultimate') TTTRenderer.drawUltimate(c, this.game);
-                else {
-                    TTTRenderer.draw3DSlices(c, this.game, this.axis3D);
-                    TTTRenderer.drawIsoView(this.isoCanvas, this.game);
-                }
+                else TTTRenderer.draw3DSlices(c, this.game, this.axis3D);
             },
 
             // --- KI ---
+            setDelay(value) {
+                this.delay = parseInt(value);
+                document.getElementById('speedLabel').innerText = value + 'ms';
+            },
+
             async stepAI(fast = false) {
                 if(this.game.winner !== 0) return;
-                const p = this.game.currentPlayer;
-                const viz = (p===1) ? this.vizP1 : this.vizP2;
-                const tree = this.trees[p];
-
-                viz.clearHighlights();
-                this.updateStatus(`KI ${p===1?'Blau':'Rot'} rechnet...`);
-
-                // Visualisierung mit Delay, auch im Auto-Mode (wenn Auto nicht zu schnell sein soll)
-                // Hier nutzen wir 'evaluateVisual' direkt, um den Pfad zu zeigen
                 
-                const move = await this.evaluateVisual(tree.root, this.game, viz, fast ? 0 : this.delay);
+                // Button-Blockierung während KI läuft (Punkt l)
+                const stepBtn = document.querySelector('[onclick="Lab.stepAI()"]');
+                stepBtn.disabled = true;
+                stepBtn.style.opacity = '0.5';
+                stepBtn.style.cursor = 'not-allowed';
+                
+                try {
+                    const p = this.game.currentPlayer;
+                    const viz = (p===1) ? this.vizP1 : this.vizP2;
+                    const tree = this.trees[p];
 
-                if (move) {
-                    if (this.gameType === 'ultimate' && typeof move === 'object') 
-                        this.game.makeMove(move.big, move.small);
-                    else 
-                        this.game.makeMove(move);
-                    
-                    this.draw();
-                    this.checkWin();
-                } else {
-                    this.log(`KI ${p} findet keinen Zug!`);
+                    viz.clearHighlights();
+                    this.updateStatus(`KI ${p===1?'Blau':'Rot'} rechnet...`);
+
+                    const move = await this.evaluateVisual(tree.root, this.game, viz, fast ? 0 : this.delay);
+
+                    if (move) {
+                        if (this.gameType === 'ultimate' && typeof move === 'object') 
+                            this.game.makeMove(move.big, move.small);
+                        else 
+                            this.game.makeMove(move);
+                        
+                        this.draw();
+                        this.checkWin();
+                    } else {
+                        this.log(`KI ${p} findet keinen Zug!`);
+                    }
+                } finally {
+                    // Button wieder aktivieren
+                    stepBtn.disabled = false;
+                    stepBtn.style.opacity = '1';
+                    stepBtn.style.cursor = 'pointer';
                 }
             },
 
             async evaluateVisual(node, gameState, viz, ms) {
                 if (!node || !node.active) return null;
                 
-                if (ms > 0) {
-                    viz.highlightCheck(node.name);
-                    await new Promise(r => setTimeout(r, ms));
-                }
-
-                // Condition
-                if (node.conditionFn) {
-                    const res = node.conditionFn(gameState);
-                    if (res) return await this.evaluateVisual(node.thenNode, gameState, viz, ms);
-                    else return await this.evaluateVisual(node.elseNode, gameState, viz, ms);
-                }
-                
-                // Group
-                if (node.children && node.children.length > 0) {
-                    for (const child of node.children) {
-                        const result = await this.evaluateVisual(child, gameState, viz, ms);
-                        if (result) return result;
+                // Punkt j) FIX: Tracking für korrekte Cleanup
+                const traverse = async (n) => {
+                    if (!n || !n.active) return null;
+                    
+                    // Highlighting
+                    if (ms > 0) {
+                        viz.highlightCheck(n.name);
+                        await new Promise(r => setTimeout(r, ms));
                     }
-                    return null;
-                }
 
-                // Rule
-                const result = node.evaluate(gameState);
-                if (result) {
-                    if (ms > 0) viz.highlightSuccess(node.name);
-                    return result.move;
-                }
-                return null;
+                    // Condition (If-Then-Else)
+                    if (n.conditionFn) {
+                        const res = n.conditionFn(gameState);
+                        const targetNode = res ? n.thenNode : n.elseNode;
+                        const result = await traverse(targetNode);
+                        
+                        // Wenn nicht erfolgreich, cleanup
+                        if (!result && ms > 0) {
+                            viz._removeClass(n.name, 'checking');
+                        }
+                        return result;
+                    }
+                    
+                    // Group (iterate children with cleanup)
+                    if (n.children && n.children.length > 0) {
+                        for (const child of n.children) {
+                            const result = await traverse(child);
+                            if (result) {
+                                return result;  // Nur Gewinner-Pfad
+                            }
+                            // Child nicht erfolgreich → cleanup
+                            if (ms > 0) {
+                                viz._removeClass(child.name, 'checking');
+                            }
+                        }
+                        // Keine Kinder erfolgreich
+                        if (ms > 0) viz._removeClass(n.name, 'checking');
+                        return null;
+                    }
+
+                    // Rule (atomic)
+                    const result = n.evaluate(gameState);
+                    if (result) {
+                        // SUCCESS!
+                        if (ms > 0) viz.highlightSuccess(n.name);
+                        return result.move;
+                    } else {
+                        // Rule nicht erfolgreich
+                        if (ms > 0) viz._removeClass(n.name, 'checking');
+                        return null;
+                    }
+                };
+                
+                return await traverse(node);
             },
 
             toggleAutoMatch() {

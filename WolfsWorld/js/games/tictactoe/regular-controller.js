@@ -33,7 +33,9 @@ const RegularController = {
         
         if (current !== 'human') {
             this.isProcessing = true;
-            const speed = document.getElementById('aiSpeed').value;
+            const sliderValue = parseInt(document.getElementById('aiSpeed').value);
+            // Invertierte Logik: 0 = schnell, 2000 = langsam
+            const speed = 2000 - sliderValue;
             setTimeout(() => {
                 // KI Zug
                 let agent;
@@ -46,7 +48,8 @@ const RegularController = {
                     agent = new MinimaxAgent({ 
                         name: "Minimax God",
                         maxDepth: 9, 
-                        useAlphaBeta: true 
+                        useAlphaBeta: true,
+                        heuristicFn: HeuristicsLibrary.regularTTT 
                     });
                 }
 
