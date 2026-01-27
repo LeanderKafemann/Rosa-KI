@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <title>KI Regel-Labor</title>
-    <link rel="stylesheet" href="../css/lab-style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <style>
         /* Spezifische Overrides für das Lab Layout */
         .col-game {
             /* Fixe Breite etwas verkleinert, damit Platz für Regeln bleibt */
             flex: 0 0 420px; 
             min-width: 420px;
+            width: 420px; /* Explizit setzen */
         }
         
         /* Damit Canvas nicht ausbricht */
@@ -38,7 +39,7 @@
         }
     </style>
 </head>
-<body>
+<body class="lab-page">
 
     <div class="lab-toolbar">
         <a href="../index.html" class="viz-btn viz-btn-back">⬅ Menü</a>
