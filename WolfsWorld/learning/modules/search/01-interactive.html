@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Suchbäume verstehen - Interaktiv</title>
+    <link rel="stylesheet" href="../../../css/style.css">
+    <style>
+        /* Override globale CSS für Learning Path */
+        html, body {
+            height: auto !important;
+            overflow: visible !important;
+            display: block !important;
+            flex: none !important;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        
+        .lesson-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        
+        h1 {
+            color: #667eea;
+            border-bottom: 3px solid #667eea;
+            padding-bottom: 15px;
+        }
+        
+        h2 {
+            color: #764ba2;
+            margin-top: 30px;
+        }
+        
+        .content-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 5px;
+        }
+        
+        .interactive-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .game-panel, .info-panel {
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .game-title, .info-title {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        
+        canvas {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            display: block;
+            margin: 10px 0;
+        }
+        
+        .controls {
+            margin: 15px 0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #764ba2;
+        }
+        
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        
+        .stats-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            font-family: monospace;
+            font-size: 13px;
+        }
+        
+        .key-insight {
+            background: #f3e5f5;
+            border-left: 4px solid #764ba2;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        
+        .key-insight strong {
+            color: #764ba2;
+        }
+        
+        .code-box {
+            background: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 15px 0;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .btn-back {
+            background: #6c757d;
+        }
+        
+        .btn-back:hover {
+            background: #5a6268;
+        }
+        
+        .btn-next {
+            margin-left: auto;
+        }
+        
+        .level-select {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin: 15px 0;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            background: #f0f0f0;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            font-size: 14px;
+        }
+        
+        .tab.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 20px 0;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @media (max-width: 1000px) {
+            .interactive-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="lesson-container">
+        <a href="index.html" style="color: #667eea; text-decoration: none;">← Zurück zur Kursübersicht</a>
+        
+        <h1>🌳 Suchbäume verstehen - Mit echtem Spiel!</h1>
+        
+        <section class="content-box">
+            <h2>Das Konzept: Spielen → Verstehen → Implementieren</h2>
+            <p>Anstatt nur Theorie zu lernen, wirst du:</p>
+            <ul>
+                <li><strong>1. Spielen:</strong> Das Rotatebox-Puzzle selber lösen</li>
+                <li><strong>2. Visualisieren:</strong> Sehen wie der Computer nach der Lösung sucht</li>
+                <li><strong>3. Verstehen:</strong> Was BFS und DFS wirklich machen</li>
+                <li><strong>4. Codieren:</strong> Deine eigene Suche schreiben</li>
+            </ul>
+        </section>
+        
+        <section class="content-box">
+            <h2>🎮 Interaktives Experiment</h2>
+            <p><strong>Unten:</strong> Das Rotatebox-Spiel. Versuche zu lösen, oder nutze "AI Lösen" um den Algorithmus zu sehen.</p>
+            
+            <div class="interactive-grid">
+                <div class="game-panel">
+                    <div class="game-title">🎮 Spiel</div>
+                    <div class="controls">
+                        <label>Level:
+                            <select id="levelSelect" class="level-select">
+                                <option value="easy">Einfach</option>
+                                <option value="medium">Mittel</option>
+                                <option value="hard">Schwer</option>
+                            </select>
+                        </label>
+                        <button onclick="resetGame()">🔄 Neues Spiel</button>
+                        <button onclick="solveGame('BFS')">AI (BFS)</button>
+                        <button onclick="solveGame('DFS')">AI (DFS)</button>
+                    </div>
+                    <canvas id="gameCanvas" width="300" height="300"></canvas>
+                    <div id="gameStatus" style="margin-top: 10px; font-size: 14px; color: #666;"></div>
+                </div>
+                
+                <div class="info-panel">
+                    <div class="info-title">📊 Statistiken</div>
+                    <div class="stats-box">
+                        <div>🎯 Züge gemacht: <strong id="moveCount">0</strong></div>
+                        <div>🌳 Suchbaum-Knoten: <strong id="nodesCount">0</strong></div>
+                        <div>📏 Max Tiefe: <strong id="depthCount">0</strong></div>
+                        <div>⚡ Duplikate: <strong id="duplicateCount">0</strong></div>
+                        <div>⏱️ Zeit: <strong id="timeCount">0ms</strong></div>
+                    </div>
+                    
+                    <div id="solutionSteps" style="display: none; margin-top: 20px;">
+                        <strong>💡 Lösungsschritte:</strong>
+                        <div id="stepsContent" style="font-family: monospace; font-size: 12px; background: #f0f0f0; padding: 10px; border-radius: 5px; max-height: 150px; overflow-y: auto;"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section class="content-box">
+            <h2>🔍 Was passiert gerade?</h2>
+            
+            <div class="tabs">
+                <button class="tab active" onclick="switchTab('bfs')">BFS erklärt</button>
+                <button class="tab" onclick="switchTab('dfs')">DFS erklärt</button>
+                <button class="tab" onclick="switchTab('hashing')">Duplikat-Erkennung</button>
+            </div>
+            
+            <div id="bfs" class="tab-content active">
+                <h3>Breitensuche (BFS)</h3>
+                <p><strong>Strategie:</strong> Erkunde ALLE Züge einer Tiefe bevor du tiefer gehst.</p>
+                
+                <div class="code-box">
+function bfs(startState) {
+  let queue = [startState];
+  let visited = new Set();
+  
+  while (queue.length > 0) {
+    let current = queue.shift();  // FIFO: erstes Element
+    
+    if (isSolution(current)) {
+      return current;
+    }
+    
+    // Generiere alle Nachfolger
+    let moves = getAllMoves(current);
+    for (let move of moves) {
+      let next = makeMove(current, move);
+      let key = hash(next);
+      
+      if (!visited.has(key)) {
+        visited.add(key);
+        queue.push(next);  // Hinten anhängen
+      }
+    }
+  }
+}
+                </div>
+                
+                <div class="key-insight">
+                    <strong>✅ BFS Vorteil:</strong> Findet IMMER den kürzesten Weg!<br>
+                    <strong>❌ BFS Problem:</strong> Braucht viel Speicher (exponentiell)
+                </div>
+            </div>
+            
+            <div id="dfs" class="tab-content">
+                <h3>Tiefensuche (DFS)</h3>
+                <p><strong>Strategie:</strong> Folge EINEM Weg bis zum Ende, dann backtrack.</p>
+                
+                <div class="code-box">
+function dfs(state, visited = new Set()) {
+  let key = hash(state);
+  
+  if (visited.has(key)) return null;  // Duplikat
+  visited.add(key);
+  
+  if (isSolution(state)) {
+    return state;
+  }
+  
+  // Probiere jeden Nachfolger
+  let moves = getAllMoves(state);
+  for (let move of moves) {
+    let next = makeMove(state, move);
+    let result = dfs(next, visited);  // Rekursion!
+    
+    if (result) {
+      return result;  // Gefunden!
+    }
+  }
+  
+  return null;  // Keine Lösung in diesem Ast
+}
+                </div>
+                
+                <div class="key-insight">
+                    <strong>✅ DFS Vorteil:</strong> Braucht wenig Speicher!<br>
+                    <strong>❌ DFS Problem:</strong> Könnte langen Weg nehmen
+                </div>
+            </div>
+            
+            <div id="hashing" class="tab-content">
+                <h3>Duplikat-Erkennung</h3>
+                <p>Das gleiche Spielfeld kann auf verschiedenen Wegen erreicht werden. Wie erkennt der Computer das?</p>
+                
+                <div class="code-box">
+// Konvertiere Board zu eindeutiger ID
+function hashBoard(board) {
+  let hash = 0;
+  let primes = [2, 3, 5, 7, 11, 13, ...];  // Primzahlen
+  
+  for (let i = 0; i < board.length; i++) {
+    if (board[i] === 1) {  // Grün
+      hash += primes[i];
+    }
+  }
+  
+  return hash;
+}
+
+// Speichere alle besuchten Zustände
+let visited = new Set();
+
+for (let state of searchQueue) {
+  let stateId = hashBoard(state);
+  
+  if (visited.has(stateId)) {
+    continue;  // Duplikat - überspringen!
+  }
+  
+  visited.add(stateId);
+  // ... weiter mit der Suche
+}
+                </div>
+                
+                <div class="key-insight">
+                    <strong>💡 Warum ist das wichtig?</strong><br>
+                    Ohne Duplikat-Erkennung müsste der Computer 2^64 Zustände erkunden.<br>
+                    MIT Duplikat-Erkennung: Nur ~1000 Zustände! 🚀
+                </div>
+            </div>
+        </section>
+        
+        <section class="key-insight">
+            <h2>🎯 Zusammenfassung</h2>
+            <ul>
+                <li>✅ <strong>Suchbaum:</strong> Alle möglichen Züge von Start zum Ziel</li>
+                <li>✅ <strong>BFS:</strong> Breitensuche - garantiert kürzesten Weg</li>
+                <li>✅ <strong>DFS:</strong> Tiefensuche - spart Speicher</li>
+                <li>✅ <strong>Hashing:</strong> Duplikate erkennen - Performance!</li>
+            </ul>
+        </section>
+        
+        <div class="nav-buttons">
+            <button class="btn-back" onclick="window.location='index.html'">← Zurück zur Übersicht</button>
+            <button class="btn-next" onclick="nextLesson()">Implementierung →</button>
+        </div>
+    </div>
+
+    <script src="../../../js/core/game-state.js"></script>
+    <script src="../../../js/games/rotatebox/logic.js"></script>
+    
+    <script>
+        // Canvas Setup
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let gameState = null;
+        let moveCount = 0;
+        let searchStats = { nodes: 0, depth: 0, duplicates: 0, time: 0 };
+        
+        // Erstelle Startspiel
+        function resetGame() {
+            const level = document.getElementById('levelSelect').value;
+            const levelDef = {
+                easy: { rows: 3, cols: 3, seed: 5 },
+                medium: { rows: 3, cols: 3, seed: 8 },
+                hard: { rows: 3, cols: 3, seed: 12 }
+            };
+            
+            const def = levelDef[level];
+            gameState = new RotateBoard(def.rows, def.cols);
+            
+            // Setze random state
+            for (let i = 0; i < def.seed; i++) {
+                const moves = gameState.getAllValidMoves();
+                const move = moves[Math.floor(Math.random() * moves.length)];
+                gameState.makeMove(move);
+            }
+            
+            moveCount = 0;
+            updateUI();
+        }
+        
+        // Löse mit BFS oder DFS
+        function solveGame(algorithm) {
+            const startTime = performance.now();
+            
+            if (algorithm === 'BFS') {
+                solveBFS();
+            } else {
+                solveDFS();
+            }
+            
+            const endTime = performance.now();
+            searchStats.time = Math.round(endTime - startTime);
+            updateUI();
+        }
+        
+        function solveBFS() {
+            let queue = [gameState.clone()];
+            let visited = new Set();
+            let path = [];
+            let current = null;
+            
+            searchStats.nodes = 1;
+            searchStats.depth = 0;
+            searchStats.duplicates = 0;
+            
+            visited.add(gameState.getStateKey());
+            
+            while (queue.length > 0 && !current) {
+                const node = queue.shift();
+                
+                if (node.won) {
+                    current = node;
+                    break;
+                }
+                
+                const moves = node.getAllValidMoves();
+                for (let move of moves) {
+                    const next = node.clone();
+                    next.makeMove(move);
+                    const key = next.getStateKey();
+                    
+                    if (!visited.has(key)) {
+                        visited.add(key);
+                        queue.push(next);
+                        searchStats.nodes++;
+                    } else {
+                        searchStats.duplicates++;
+                    }
+                }
+                
+                searchStats.depth = Math.max(searchStats.depth, queue.length);
+            }
+            
+            if (current) {
+                document.getElementById('solutionSteps').style.display = 'block';
+                document.getElementById('stepsContent').textContent = 
+                    'Gelöst in ' + searchStats.nodes + ' Knoten!';
+            }
+        }
+        
+        function solveDFS() {
+            let visited = new Set();
+            let depth = 0;
+            
+            searchStats.nodes = 1;
+            searchStats.depth = 0;
+            searchStats.duplicates = 0;
+            
+            function dfsHelper(state, d) {
+                if (state.won) return true;
+                if (d > 20) return false;  // Max depth
+                
+                depth = Math.max(depth, d);
+                searchStats.depth = depth;
+                
+                const moves = state.getAllValidMoves();
+                for (let move of moves) {
+                    const next = state.clone();
+                    next.makeMove(move);
+                    const key = next.getStateKey();
+                    
+                    if (!visited.has(key)) {
+                        visited.add(key);
+                        searchStats.nodes++;
+                        
+                        if (dfsHelper(next, d + 1)) {
+                            return true;
+                        }
+                    } else {
+                        searchStats.duplicates++;
+                    }
+                }
+                
+                return false;
+            }
+            
+            const found = dfsHelper(gameState, 0);
+            if (found) {
+                document.getElementById('solutionSteps').style.display = 'block';
+                document.getElementById('stepsContent').textContent = 
+                    'Gelöst mit DFS in ' + searchStats.nodes + ' Knoten!';
+            }
+        }
+        
+        function updateUI() {
+            // Zeichne Game
+            drawBoard();
+            
+            // Update Stats
+            document.getElementById('moveCount').textContent = moveCount;
+            document.getElementById('nodesCount').textContent = searchStats.nodes;
+            document.getElementById('depthCount').textContent = searchStats.depth;
+            document.getElementById('duplicateCount').textContent = searchStats.duplicates;
+            document.getElementById('timeCount').textContent = searchStats.time + 'ms';
+            
+            // Update Status
+            const status = gameState.won ? '✅ GELÖST!' : '🎮 Spielend...';
+            document.getElementById('gameStatus').textContent = status;
+        }
+        
+        function drawBoard() {
+            const size = canvas.width;
+            const grid = gameState.rows;
+            const cellSize = size / grid;
+            
+            ctx.clearRect(0, 0, size, size);
+            
+            // Zeichne Gitter
+            for (let r = 0; r < grid; r++) {
+                for (let c = 0; c < grid; c++) {
+                    const x = c * cellSize;
+                    const y = r * cellSize;
+                    const value = gameState.grid[r][c];
+                    
+                    // Farbe je nach Wert
+                    ctx.fillStyle = value === 1 ? '#2ecc71' : '#e74c3c';
+                    ctx.fillRect(x, y, cellSize, cellSize);
+                    
+                    ctx.strokeStyle = '#333';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(x, y, cellSize, cellSize);
+                }
+            }
+        }
+        
+        function switchTab(tabName) {
+            // Hide all
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(el => {
+                el.classList.remove('active');
+            });
+            
+            // Show selected
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        function nextLesson() {
+            alert('Nächste Lektion: Implementiere deinen eigenen Solver!');
+        }
+        
+        // Initialize
+        resetGame();
+    </script>
+</body>
+</html>
