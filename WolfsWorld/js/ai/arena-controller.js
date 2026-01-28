@@ -83,11 +83,6 @@ class ArenaController {
                 (current, total) => this.updateProgress(current, total)
             );
 
-            // Erste Spiel-Visualisierung
-            if (document.getElementById('showFirstGame').checked) {
-                this.showFirstGameVisualization();
-            }
-
             // Ergebnisse anzeigen
             this.displayResults(stats, agentBlue.name, agentRed.name);
 
@@ -126,10 +121,10 @@ class ArenaController {
      * Zeigt das erste Spiel als Visualisierung
      */
     showFirstGameVisualization() {
-        document.getElementById('gameSection').style.display = 'block';
         // Placeholder - kann später mit echter Spiel-Visualisierung erweitert werden
-        document.getElementById('gameStatus').textContent = 
-            `Erstes Spiel: ${this.arena.firstGameReplay?.toString() || 'Keine Daten'}`;
+        if (this.arena.firstGameReplay) {
+            console.log('Erstes Spiel Replay:', this.arena.firstGameReplay);
+        }
     }
 
     /**
@@ -172,7 +167,6 @@ class ArenaController {
      */
     resetUI() {
         document.getElementById('resultsSection').style.display = 'none';
-        document.getElementById('gameSection').style.display = 'none';
         document.getElementById('progressSection').style.display = 'none';
         document.getElementById('errorSection').style.display = 'none';
         document.getElementById('startButton').disabled = false;

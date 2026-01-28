@@ -11,6 +11,70 @@
     <div class="viz-toolbar">
         <a href="../index.html" class="viz-btn btn-back">⬅ Menü</a>
         <span style="margin-left:10px; font-weight:bold; color:white;">🤖 KI Arena Playground</span>
+
+        <!-- Spiel-Auswahl -->
+        <div class="viz-control-group">
+            <label class="viz-label">Spiel:</label>
+            <select id="gameSelect" class="viz-select">
+                <option value="TTT Regular">Tic-Tac-Toe (3×3)</option>
+                <option value="TTT 3D">Tic-Tac-Toe 3D</option>
+                <option value="TTT Ultimate">Tic-Tac-Toe Ultimate</option>
+            </select>
+        </div>
+
+        <!-- Agent 1 -->
+        <div class="viz-control-group">
+            <label class="viz-label">Agent 1 (Blau):</label>
+            <select id="agent1Select" class="viz-select">
+                <option value="minimaxCautious">Minimax (Vorsichtig)</option>
+                <option value="minimaxBalanced" selected>Minimax (Ausgewogen)</option>
+                <option value="minimaxAggressive">Minimax (Aggressiv)</option>
+                <option value="minimaxHeuristicCentered">Minimax (Zentral)</option>
+                <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
+                <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
+                <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
+                <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
+                <option value="random">Zufalls-KI</option>
+            </select>
+        </div>
+
+        <!-- Agent 2 -->
+        <div class="viz-control-group">
+            <label class="viz-label">Agent 2 (Rot):</label>
+            <select id="agent2Select" class="viz-select">
+                <option value="minimaxCautious">Minimax (Vorsichtig)</option>
+                <option value="minimaxBalanced">Minimax (Ausgewogen)</option>
+                <option value="minimaxAggressive" selected>Minimax (Aggressiv)</option>
+                <option value="minimaxHeuristicCentered">Minimax (Zentral)</option>
+                <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
+                <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
+                <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
+                <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
+                <option value="random">Zufalls-KI</option>
+            </select>
+        </div>
+
+        <!-- Anzahl Spiele -->
+        <div class="viz-control-group">
+            <label class="viz-label">Spiele:</label>
+            <input type="number" id="numGames" min="1" max="10000" value="100" class="viz-input-number">
+        </div>
+
+        <!-- Checkboxes -->
+        <div class="viz-checkboxes">
+            <label class="viz-checkbox-label">
+                <input type="checkbox" id="showFirstGame" checked>
+                Visualisieren
+            </label>
+            <label class="viz-checkbox-label">
+                <input type="checkbox" id="showAdvancedStats">
+                Advanced
+            </label>
+        </div>
+
+        <!-- Start Button -->
+        <button id="startButton" class="viz-btn viz-btn-action">🚀 Start</button>
+        <button id="stopButton" class="viz-btn viz-btn-restart" disabled style="display: none;">⏹ Stop</button>
     </div>
 
     <div class="arena-container">
@@ -113,16 +177,18 @@
             <p class="progress-text" id="progressText">0 / 100 Spiele</p>
         </section>
 
-        <!-- SPIEL-VISUALISIERUNG (Optional) -->
-        <section class="arena-section game-section" id="gameSection" style="display: none;">
-            <h2>📋 Erstes Spiel (Visualisierung)</h2>
-            <div id="gameBoard" class="game-board"></div>
-            <p id="gameStatus" class="game-status">Spiel lädt...</p>
-        </section>
+        <!-- FORTSCHRITTS-ANZEIGE -->
+        <div class="progress-section" id="progressSection" style="display: none;">
+            <h3>⏳ Simulation läuft...</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text" id="progressText">0 / 100 Spiele</p>
+        </div>
 
         <!-- STATISTIK-ERGEBNISSE -->
-        <section class="arena-section results-section" id="resultsSection" style="display: none;">
-            <h2>📊 Ergebnisse</h2>
+        <div class="results-section" id="resultsSection" style="display: none;">
+            <h3>📊 Ergebnisse</h3>
             
             <!-- Übersicht -->
             <div class="stats-overview">
@@ -148,22 +214,22 @@
             <!-- Details -->
             <div class="stats-details">
                 <div class="detail-item">
-                    <span class="detail-label">Durchschnittliche Züge pro Spiel:</span>
+                    <span class="detail-label">Ø Züge pro Spiel:</span>
                     <span id="statAvgMoves" class="detail-value">0</span>
                 </div>
                 <div class="detail-item">
-                    <span class="detail-label">Durchschnittliche Spieldauer:</span>
+                    <span class="detail-label">Ø Spieldauer:</span>
                     <span id="statAvgTime" class="detail-value">0 ms</span>
                 </div>
                 <div class="detail-item">
-                    <span class="detail-label">Gesamtdauer Simulation:</span>
+                    <span class="detail-label">Gesamt-Zeit:</span>
                     <span id="statTotalTime" class="detail-value">0 s</span>
                 </div>
             </div>
 
             <!-- Advanced Stats (Toggle) -->
             <details class="stats-advanced" id="advancedStatsPanel" style="display: none;">
-                <summary>Advanced Statistiken</summary>
+                <summary>⚙️ Advanced Statistiken</summary>
                 <div class="advanced-content">
                     <div class="detail-item">
                         <span class="detail-label">Ø Zugzeit (Blau):</span>
@@ -190,15 +256,14 @@
                 <p><strong>Agent 2 (Rot):</strong> <span id="agentRedName">-</span></p>
             </div>
 
-            <!-- Neuer Vergleich -->
-            <button id="resetButton" class="btn btn-primary">🔄 Neuer Vergleich</button>
-        </section>
+            <button id="resetButton" class="viz-btn viz-btn-action">🔄 Neuer Vergleich</button>
+        </div>
 
         <!-- FEHLER-ANZEIGE -->
-        <section class="arena-section error-section" id="errorSection" style="display: none;">
-            <h2>⚠️ Fehler</h2>
+        <div class="error-section" id="errorSection" style="display: none;">
+            <h3>⚠️ Fehler</h3>
             <p id="errorMessage" class="error-message"></p>
-        </section>
+        </div>
     </div>
 
     <!-- Scripts -->

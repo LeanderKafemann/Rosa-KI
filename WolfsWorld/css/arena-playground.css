@@ -2,164 +2,85 @@
  * CSS für die KI Arena Playground
  */
 
-.arena-container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 40px 20px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-}
-
-.arena-container h1 {
-    text-align: center;
-    margin-bottom: 10px;
-    color: #2c3e50;
-    font-size: 2.5em;
-}
-
-.arena-container .subtitle {
-    text-align: center;
-    color: #7f8c8d;
-    margin-bottom: 40px;
-    font-size: 1.1em;
-}
-
-/* ===== SEKTION STYLING ===== */
-
-.arena-section {
-    background: white;
-    border-radius: 12px;
-    padding: 30px;
-    margin-bottom: 30px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    border: 1px solid #ecf0f1;
-}
-
-.arena-section h2 {
-    margin-top: 0;
-    margin-bottom: 25px;
-    color: #2c3e50;
-    font-size: 1.5em;
-    border-bottom: 2px solid #3498db;
-    padding-bottom: 12px;
-}
-
-/* ===== KONFIGURATION ===== */
-
-.config-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-bottom: 25px;
-}
-
-.config-block {
+/* Body Layout */
+body {
+    margin: 0;
+    padding: 0;
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    height: 100vh;
+    overflow: hidden;
 }
 
-.config-block label {
-    font-weight: 600;
-    color: #2c3e50;
-    font-size: 0.95em;
-}
-
-.config-block select,
-.config-block input[type="number"] {
-    padding: 10px 12px;
-    border: 1px solid #bdc3c7;
-    border-radius: 6px;
-    font-size: 1em;
-    transition: border-color 0.2s;
-    font-family: inherit;
-}
-
-.config-block select:focus,
-.config-block input[type="number"]:focus {
-    outline: none;
-    border-color: #3498db;
-    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
-}
-
-.config-block.checkbox {
-    flex-direction: row;
-    align-items: center;
-}
-
-.config-block.checkbox label {
-    margin: 0;
+/* Toolbar passend zum Design der anderen Playgrounds */
+.viz-toolbar {
+    background: #2c3e50;
+    padding: 12px 20px;
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-weight: normal;
+    gap: 15px;
+    flex-wrap: wrap;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
 }
 
-.config-block input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    cursor: pointer;
+.viz-input-number {
+    width: 80px;
+    padding: 6px 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 0.9em;
 }
 
-/* ===== BUTTONS ===== */
-
-.btn {
-    padding: 12px 24px;
-    border: none;
-    border-radius: 6px;
-    font-size: 1em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-    text-align: center;
-    display: inline-block;
+.viz-input-number:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
 }
 
-.btn-primary {
-    background: linear-gradient(135deg, #3498db, #2980b9);
-    color: white;
+/* Container für scrollable Inhalt */
+.arena-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    background: #f5f7fa;
 }
 
-.btn-primary:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 16px rgba(52, 152, 219, 0.4);
+/* Sections */
+.progress-section,
+.results-section,
+.error-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #3498db;
 }
 
-.btn-primary:active:not(:disabled) {
-    transform: translateY(0);
+.error-section {
+    border-left-color: #e74c3c;
 }
 
-.btn-secondary {
-    background: #95a5a6;
-    color: white;
+.progress-section h3,
+.results-section h3,
+.error-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    font-size: 1.2em;
 }
 
-.btn-secondary:hover:not(:disabled) {
-    background: #7f8c8d;
-}
-
-.btn-large {
-    padding: 16px 40px;
-    font-size: 1.1em;
-    width: 100%;
-    max-width: 400px;
-    display: block;
-    margin: 20px auto 0;
-}
-
-.btn:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-}
-
-/* ===== PROGRESS ===== */
+/* ===== PROGRESS BAR ===== */
 
 .progress-bar {
     width: 100%;
-    height: 30px;
+    height: 25px;
     background: #ecf0f1;
-    border-radius: 6px;
+    border-radius: 4px;
     overflow: hidden;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .progress-fill {
@@ -170,52 +91,32 @@
     align-items: center;
     justify-content: center;
     color: white;
+    font-size: 0.8em;
     font-weight: 600;
-    font-size: 0.9em;
 }
 
 .progress-text {
     text-align: center;
     color: #7f8c8d;
-    font-size: 1em;
+    font-size: 0.9em;
+    margin: 0;
 }
 
-/* ===== SPIEL-SECTION ===== */
-
-.game-board {
-    background: #f8f9fa;
-    border: 2px solid #bdc3c7;
-    border-radius: 8px;
-    padding: 20px;
-    margin: 20px 0;
-    min-height: 300px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #7f8c8d;
-}
-
-.game-status {
-    text-align: center;
-    color: #2c3e50;
-    font-size: 1.1em;
-}
-
-/* ===== STATISTIK ERGEBNISSE ===== */
+/* ===== STATISTIK CARDS ===== */
 
 .stats-overview {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
 }
 
 .stat-card {
-    padding: 25px;
-    border-radius: 10px;
+    padding: 20px;
+    border-radius: 8px;
     text-align: center;
     color: white;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .stat-card.blue {
@@ -231,37 +132,38 @@
 }
 
 .stat-value {
-    font-size: 3em;
+    font-size: 2.5em;
     font-weight: bold;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .stat-label {
-    font-size: 1em;
+    font-size: 0.95em;
     opacity: 0.9;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .stat-percentage {
-    font-size: 1.5em;
-    opacity: 0.8;
+    font-size: 1.3em;
+    opacity: 0.85;
 }
 
-/* ===== DETAIL-STATISTIKEN ===== */
+/* ===== DETAILS ===== */
 
 .stats-details {
     background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
 }
 
 .detail-item {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 12px 0;
+    padding: 10px 0;
     border-bottom: 1px solid #ecf0f1;
+    font-size: 0.95em;
 }
 
 .detail-item:last-child {
@@ -283,17 +185,18 @@
 
 .stats-advanced {
     background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    cursor: pointer;
-    user-select: none;
-    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 15px;
 }
 
 .stats-advanced summary {
+    cursor: pointer;
     font-weight: 600;
     color: #2c3e50;
-    padding: 10px;
+    padding: 5px;
+    user-select: none;
 }
 
 .stats-advanced summary:hover {
@@ -303,63 +206,56 @@
 .advanced-content {
     padding: 15px 10px;
     background: white;
-    border-radius: 6px;
-    margin-top: 15px;
+    border-radius: 4px;
+    margin-top: 10px;
 }
 
 .advanced-content .detail-item {
     border-bottom: 1px solid #ecf0f1;
 }
 
-/* ===== AGENT-NAMEN ===== */
+/* ===== AGENT NAMES ===== */
 
 .agent-names {
     background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border-left: 3px solid #3498db;
 }
 
 .agent-names p {
-    margin: 10px 0;
+    margin: 5px 0;
     color: #2c3e50;
+    font-size: 0.95em;
 }
 
 .agent-names strong {
     color: #2980b9;
 }
 
-/* ===== ERROR SECTION ===== */
-
-.error-section {
-    background: #fadbd8;
-    border: 2px solid #e74c3c;
-    border-radius: 8px;
-}
-
-.error-section h2 {
-    color: #c0392b;
-    border-bottom-color: #e74c3c;
-}
+/* ===== ERROR ===== */
 
 .error-message {
     color: #922b21;
     font-weight: 500;
+    margin: 0;
+    padding: 10px;
+    background: #fadbd8;
+    border-radius: 4px;
 }
 
 /* ===== RESPONSIVE ===== */
 
-@media (max-width: 768px) {
-    .arena-container {
-        padding: 20px 15px;
+@media (max-width: 1024px) {
+    .viz-toolbar {
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    .arena-container h1 {
-        font-size: 1.8em;
-    }
-
-    .config-grid {
-        grid-template-columns: 1fr;
+    .viz-control-group,
+    .viz-checkboxes {
+        width: 100%;
     }
 
     .stats-overview {
@@ -369,15 +265,29 @@
     .stat-value {
         font-size: 2em;
     }
+}
 
-    .btn-large {
-        font-size: 1em;
-        padding: 12px 20px;
+@media (max-width: 768px) {
+    .arena-container {
+        padding: 15px;
+    }
+
+    .viz-toolbar {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-value {
+        font-size: 1.8em;
     }
 
     .detail-item {
         flex-direction: column;
         align-items: flex-start;
-        gap: 8px;
+        gap: 5px;
     }
 }
