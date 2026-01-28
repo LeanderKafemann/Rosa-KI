@@ -119,7 +119,20 @@ body.lab-page {
 .viz-btn:hover { filter: brightness(90%); }
 .viz-btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); }
 
-.btn-back { background: transparent; border: 1px solid rgba(255,255,255,0.3); color: #fff; padding: 5px 10px; font-size: 0.8rem; }
+.btn-back { 
+    background: transparent; 
+    border: 1px solid rgba(255,255,255,0.5); 
+    color: #fff; 
+    padding: 8px 14px; 
+    font-size: 0.85rem;
+    border-radius: 4px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+.btn-back:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: rgba(255,255,255,0.8);
+}
 .btn-action { background: var(--accent-blue); color: white; width: 100%; }
 .btn-restart { background: var(--accent-yellow); color: #333; width: 100%; }
 .btn-danger { background: var(--accent-red); color: white; width: 100%; }
