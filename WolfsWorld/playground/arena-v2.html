@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>KI Arena Playground</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        body {
+            display: flex;
+            gap: 0;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        
+        .arena-container {
+            display: flex;
+            width: 100%;
+            height: 100vh;
+        }
+        
+        .arena-sidebar {
+            width: 350px;
+            background: #f5f5f5;
+            padding: 20px;
+            overflow-y: auto;
+            border-right: 1px solid #ddd;
+        }
+        
+        .arena-main {
+            flex: 1;
+            display: flex;
+            gap: 20px;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .arena-board-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        .arena-stats-section {
+            width: 280px;
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            height: fit-content;
+        }
+        
+        .control-section {
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .control-section h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .viz-label {
+            display: block;
+            margin-top: 10px;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .viz-select, .viz-input {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+        
+        .viz-btn {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            background: #007acc;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        .viz-btn:hover {
+            background: #005a9e;
+        }
+        
+        .viz-btn.btn-stop {
+            background: #d32f2f;
+        }
+        
+        .viz-btn.btn-stop:hover {
+            background: #b71c1c;
+        }
+        
+        #gameCanvas {
+            max-width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .stats-display {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 13px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .stat-label {
+            font-weight: 500;
+            color: #666;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #333;
+        }
+        
+        .stat-value.blue {
+            color: #2196F3;
+        }
+        
+        .stat-value.red {
+            color: #f44336;
+        }
+        
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 10px;
+        }
+        
+        .checkbox-group input[type="checkbox"] {
+            cursor: pointer;
+        }
+        
+        .advanced-stats {
+            display: none;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+        }
+        
+        .advanced-stats.show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="arena-container">
+        <!-- SIDEBAR -->
+        <aside class="arena-sidebar">
+            <div style="margin-bottom: 20px;">
+                <a href="../index.html" class="viz-btn btn-back" style="display: block; text-align: center;">⬅ Zurück</a>
+            </div>
+
+            <h2 style="margin-top: 0;">KI Arena</h2>
+
+            <!-- Spielauswahl -->
+            <div class="control-section">
+                <label class="viz-label">Spiel:</label>
+                <select id="gameSelect" class="viz-select">
+                    <option value="TTT Regular" selected>Tic-Tac-Toe (3×3)</option>
+                    <option value="TTT 3D">Tic-Tac-Toe 3D</option>
+                    <option value="TTT Ultimate">Tic-Tac-Toe Ultimate</option>
+                </select>
+            </div>
+
+            <!-- Spiele-Anzahl -->
+            <div class="control-section">
+                <label class="viz-label">Anzahl Spiele:</label>
+                <input type="number" id="gameCount" class="viz-input" value="10" min="1" max="1000">
+            </div>
+
+            <!-- Agent 1 -->
+            <div class="control-section">
+                <h3>Agent 1 (Blau)</h3>
+                <label class="viz-label">Typ:</label>
+                <select id="agent1Type" class="viz-select">
+                    <option value="random">KI: Zufall</option>
+                    <option value="rulebased">KI: Regeln</option>
+                    <option value="minimax" selected>KI: Minimax</option>
+                </select>
+                <div id="agent1Config"></div>
+            </div>
+
+            <!-- Agent 2 -->
+            <div class="control-section">
+                <h3>Agent 2 (Rot)</h3>
+                <label class="viz-label">Typ:</label>
+                <select id="agent2Type" class="viz-select">
+                    <option value="random">KI: Zufall</option>
+                    <option value="rulebased">KI: Regeln</option>
+                    <option value="minimax">KI: Minimax</option>
+                </select>
+                <div id="agent2Config"></div>
+            </div>
+
+            <!-- Buttons -->
+            <button id="startBtn" class="viz-btn" onclick="ArenaV2.start()">▶ Starten</button>
+            <button id="stopBtn" class="viz-btn btn-stop" onclick="ArenaV2.stop()" style="display: none;">⏹ Stoppen</button>
+
+            <!-- Status -->
+            <div id="statusText" class="stats-display" style="margin-top: 15px;">Bereit</div>
+        </aside>
+
+        <!-- MAIN AREA -->
+        <main class="arena-main">
+            <div class="arena-board-section">
+                <h3 style="margin: 0 0 10px 0;">Spielverlauf</h3>
+                <canvas id="gameCanvas" width="500" height="500"></canvas>
+            </div>
+
+            <!-- STATS -->
+            <div class="arena-stats-section">
+                <h3 style="margin-top: 0;">Statistik</h3>
+                
+                <div class="stat-row">
+                    <span class="stat-label">Spiele:</span>
+                    <span class="stat-value" id="totalGames">0</span>
+                </div>
+                
+                <div class="stat-row">
+                    <span class="stat-label">Zeit:</span>
+                    <span class="stat-value" id="totalTime">0ms</span>
+                </div>
+
+                <div style="margin: 10px 0; padding: 10px 0; border-top: 1px solid #ddd;">
+                    <div class="stat-row">
+                        <span class="stat-label">Blau Siege:</span>
+                        <span class="stat-value blue" id="blueWins">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Rot Siege:</span>
+                        <span class="stat-value red" id="redWins">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Remis:</span>
+                        <span class="stat-value" id="draws">0</span>
+                    </div>
+                </div>
+
+                <div class="stat-row" style="padding: 10px 0 0 0; border-top: 1px solid #ddd; margin-top: 10px;">
+                    <span class="stat-label">Blau %:</span>
+                    <span class="stat-value blue" id="bluePercent">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Rot %:</span>
+                    <span class="stat-value red" id="redPercent">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Remis %:</span>
+                    <span class="stat-value" id="drawPercent">0%</span>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="advancedStatsCheck">
+                    <label for="advancedStatsCheck" style="cursor: pointer; margin: 0;">Advanced Stats</label>
+                </div>
+
+                <div class="advanced-stats" id="advancedStats">
+                    <div class="stat-row">
+                        <span class="stat-label">Ø Züge:</span>
+                        <span class="stat-value" id="avgMoves">0</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Ø Zeit/Spiel:</span>
+                        <span class="stat-value" id="avgTime">0ms</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Blau Ø Zeit:</span>
+                        <span class="stat-value blue" id="blueAvgTime">0ms</span>
+                    </div>
+                    <div class="stat-row">
+                        <span class="stat-label">Rot Ø Zeit:</span>
+                        <span class="stat-value red" id="redAvgTime">0ms</span>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- SCRIPTS -->
+    <script src="../js/core/game-state.js"></script>
+    <script src="../js/core/agent.js"></script>
+    <script src="../js/ai/agents/random-agent.js"></script>
+    <script src="../js/ai/agents/rule-based-agent.js"></script>
+    <script src="../js/ai/minimax.js"></script>
+    <script src="../js/ai/agents/minimax-agent.js"></script>
+    <script src="../js/ai/heuristics.js"></script>
+    <script src="../js/ai/rules/rule-structure.js"></script>
+    <script src="../js/ai/rules/ttt-rules.js"></script>
+    
+    <script src="../js/games/tictactoe/logic.js"></script>
+    <script src="../js/games/tictactoe/renderer.js"></script>
+    <script src="../js/ai/arena-v2-controller.js"></script>
+</body>
+</html>

@@ -173,40 +173,70 @@ class ArenaController {
      * Zeigt die Ergebnisse an
      */
     displayResults(stats, blueName, redName) {
-        // Statistische Werte
-        document.getElementById('statBlueWins').textContent = stats.blueWins;
-        document.getElementById('statRedWins').textContent = stats.redWins;
-        document.getElementById('statDraws').textContent = stats.draws;
+        try {
+            console.log("displayResults called with:", { stats, blueName, redName });
+            
+            // Statistische Werte
+            const setElementText = (id, text) => {
+                const el = document.getElementById(id);
+                if (!el) {
+                    console.warn(`Element nicht gefunden: ${id}`);
+                    return;
+                }
+                el.textContent = text;
+            };
 
-        document.getElementById('statBluePercent').textContent = stats.winRateBlue;
-        document.getElementById('statRedPercent').textContent = stats.winRateRed;
-        document.getElementById('statDrawPercent').textContent = stats.drawRate;
+            setElementText('statBlueWins', stats.blueWins);
+            setElementText('statRedWins', stats.redWins);
+            setElementText('statDraws', stats.draws);
 
-        document.getElementById('statAvgMoves').textContent = stats.averageMoves;
-        document.getElementById('statAvgTime').textContent = stats.averageGameTimeMs + ' ms';
-        document.getElementById('statTotalTime').textContent = (parseInt(stats.totalTimeMs) / 1000).toFixed(1) + ' s';
+            setElementText('statBluePercent', stats.winRateBlue);
+            setElementText('statRedPercent', stats.winRateRed);
+            setElementText('statDrawPercent', stats.drawRate);
 
-        // Agent-Namen
-        document.getElementById('agentBlueName').textContent = blueName;
-        document.getElementById('agentRedName').textContent = redName;
+            setElementText('statAvgMoves', stats.averageMoves);
+            setElementText('statAvgTime', stats.averageGameTimeMs + ' ms');
+            setElementText('statTotalTime', (parseInt(stats.totalTimeMs) / 1000).toFixed(1) + ' s');
 
-        // Spielfeld Visualisierung (wenn Replay vorhanden)
-        if (this.arena.firstGameReplay && this.arena.firstGameReplay.replay) {
-            this.showGameboardVisualization(this.arena.firstGameReplay);
+            // Agent-Namen
+            setElementText('agentBlueName', blueName);
+            setElementText('agentRedName', redName);
+
+            // Spielfeld Visualisierung (wenn Replay vorhanden)
+            if (this.arena.firstGameReplay && this.arena.firstGameReplay.replay) {
+                console.log("Zeige Spielfeld-Visualisierung...");
+                this.showGameboardVisualization(this.arena.firstGameReplay);
+            } else {
+                console.log("Kein Replay verfügbar für Visualisierung");
+            }
+
+            // Advanced Stats wenn aktiviert
+            const advStatsCheckbox = document.getElementById('showAdvancedStats');
+            if (advStatsCheckbox && advStatsCheckbox.checked && this.arena.advancedStats) {
+                const advanced = this.arena.advancedStats;
+                setElementText('statBlueAvgTime', advanced.blueAvgTime);
+                setElementText('statBlueMaxTime', advanced.blueMaxTime);
+                setElementText('statRedAvgTime', advanced.redAvgTime);
+                setElementText('statRedMaxTime', advanced.redMaxTime);
+                
+                const advPanel = document.getElementById('advancedStatsPanel');
+                if (advPanel) {
+                    advPanel.style.display = 'block';
+                }
+            }
+
+            // Ergebnis-Sektion anzeigen
+            const resultsSection = document.getElementById('resultsSection');
+            if (resultsSection) {
+                resultsSection.style.display = 'block';
+                console.log("✓ Results section displayed");
+            } else {
+                console.error("Results section element not found!");
+            }
+        } catch (error) {
+            console.error("Error in displayResults:", error.message);
+            console.error("Stack:", error.stack);
         }
-
-        // Advanced Stats wenn aktiviert
-        if (document.getElementById('showAdvancedStats').checked && this.arena.advancedStats) {
-            const advanced = this.arena.advancedStats;
-            document.getElementById('statBlueAvgTime').textContent = advanced.blueAvgTime;
-            document.getElementById('statBlueMaxTime').textContent = advanced.blueMaxTime;
-            document.getElementById('statRedAvgTime').textContent = advanced.redAvgTime;
-            document.getElementById('statRedMaxTime').textContent = advanced.redMaxTime;
-            document.getElementById('advancedStatsPanel').style.display = 'block';
-        }
-
-        // Ergebnis-Sektion anzeigen
-        document.getElementById('resultsSection').style.display = 'block';
     }
 
     /**
