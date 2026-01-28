@@ -48,17 +48,16 @@ const ArenaV2 = {
                 this.currentGame = new TTTRegularBoard();
                 break;
             case 'TTT 3D':
-                // TODO: Implementieren
-                this.currentGame = new TTTRegularBoard(); // Fallback
+                this.currentGame = new TTT3DBoard();
                 break;
             case 'TTT Ultimate':
-                // TODO: Implementieren
-                this.currentGame = new TTTRegularBoard(); // Fallback
+                this.currentGame = new UltimateBoard();
                 break;
             default:
                 this.currentGame = new TTTRegularBoard();
         }
         
+        console.log("Game reset to:", gameType, this.currentGame);
         this.draw();
         this.updateStatus("Bereit");
     },
@@ -225,10 +224,13 @@ const ArenaV2 = {
         if (this.currentGame.winner) {
             if (this.currentGame.winner === 1) {
                 this.stats.blueWins++;
-            } else {
+            } else if (this.currentGame.winner === 2) {
                 this.stats.redWins++;
+            } else {
+                this.stats.draws++;
             }
         } else {
+            // No winner and no valid moves = draw
             this.stats.draws++;
         }
 
@@ -241,7 +243,7 @@ const ArenaV2 = {
         const stats = this.stats;
 
         document.getElementById('totalGames').textContent = stats.totalGames;
-        document.getElementById('totalTime').textContent = Math.round(stats.totalTime) + 'ms';
+        document.getElementById('totalTime').textContent = (stats.totalTime / 1000).toFixed(2) + 's';
         
         document.getElementById('blueWins').textContent = stats.blueWins;
         document.getElementById('redWins').textContent = stats.redWins;
@@ -259,18 +261,18 @@ const ArenaV2 = {
         // Advanced Stats
         if (stats.totalGames > 0) {
             const avgMoves = (stats.totalMoves / stats.totalGames).toFixed(1);
-            const avgTime = (stats.totalTime / stats.totalGames).toFixed(0);
+            const avgTime = (stats.totalTime / stats.totalGames / 1000).toFixed(3);
             const blueAvgTime = stats.blueMoveTimes.length > 0 
-                ? (stats.blueTotalTime / stats.blueMoveTimes.length).toFixed(1)
+                ? (stats.blueTotalTime / stats.blueMoveTimes.length / 1000).toFixed(3)
                 : 0;
             const redAvgTime = stats.redMoveTimes.length > 0 
-                ? (stats.redTotalTime / stats.redMoveTimes.length).toFixed(1)
+                ? (stats.redTotalTime / stats.redMoveTimes.length / 1000).toFixed(3)
                 : 0;
 
             document.getElementById('avgMoves').textContent = avgMoves;
-            document.getElementById('avgTime').textContent = avgTime + 'ms';
-            document.getElementById('blueAvgTime').textContent = blueAvgTime + 'ms';
-            document.getElementById('redAvgTime').textContent = redAvgTime + 'ms';
+            document.getElementById('avgTime').textContent = avgTime + 's';
+            document.getElementById('blueAvgTime').textContent = blueAvgTime + 's';
+            document.getElementById('redAvgTime').textContent = redAvgTime + 's';
         }
     },
 
