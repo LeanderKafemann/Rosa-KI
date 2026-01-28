@@ -29,20 +29,72 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
         
-        /* 3D Container Anpassung */
-        .iso-container {
-            margin-top: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 5px;
-            background: #fafafa;
+        /* Tree Container Styles */
+        .tree-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 4px;
+        }
+        
+        /* Flowchart Styles */
+        .fc-node {
+            margin-bottom: 12px;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .fc-node:hover {
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateY(-2px);
+        }
+        
+        .fc-node.checking {
+            background: #fffacd;
+            border-left-color: #f39c12;
+        }
+        
+        .fc-node.success {
+            background: #d4edda;
+            border-left-color: #28a745;
+        }
+        
+        .fc-node.fc-type-group {
+            border-left-color: #9b59b6;
+        }
+        
+        .fc-node.fc-type-cond {
+            border-left-color: #e74c3c;
+        }
+        
+        .fc-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        
+        .fc-children {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+        
+        .fc-node.inactive {
+            opacity: 0.6;
+            filter: grayscale(50%);
         }
     </style>
 </head>
 <body class="lab-page">
 
     <div class="lab-toolbar">
-        <a href="../index.html" class="viz-btn viz-btn-action">🌳 Entscheidungsbaum</a>
+        <a href="../index.html" class="viz-btn viz-btn-action">⬅ Menü</a>
         
         <div class="viz-control-group" style="margin-left: 20px;">
             <label class="viz-label">Szenario:</label>
@@ -118,7 +170,7 @@
 
     <script>
         const Lab = {
-            game: null, canvas: null, isoCanvas: null,
+            game: null, canvas: null,
             vizP1: null, vizP2: null, trees: { 1: null, 2: null },
             gameType: 'regular', axis3D: 'z', isAuto: false,
             
