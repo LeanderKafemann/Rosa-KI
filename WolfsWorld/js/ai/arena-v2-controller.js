@@ -36,6 +36,9 @@ const ArenaV2 = {
         document.getElementById('gameSelect').onchange = () => this.resetGame();
         document.getElementById('advancedStatsCheck').onchange = () => this.toggleAdvancedStats();
 
+        // Initial config display
+        this.updateAgent1Config();
+        this.updateAgent2Config();
         this.resetGame();
     },
 
@@ -113,21 +116,34 @@ const ArenaV2 = {
     },
 
     createAgent(config, isBlue) {
-        console.log(`Creating agent (${isBlue ? 'Blue' : 'Red'}):`, config);
+        console.log(`🤖 Creating agent (${isBlue ? 'Blue' : 'Red'}):`, config);
         
-        if (config.type === 'random') {
-            return new RandomAgent();
-        } else if (config.type === 'rulebased') {
-            return new RuleBasedAgent(createStrategyTree('regular'));
-        } else if (config.type === 'minimax') {
-            return new MinimaxAgent({
-                name: isBlue ? "Agent Blau" : "Agent Rot",
-                maxDepth: config.depth || 9,
-                useAlphaBeta: true,
-                heuristicFn: HeuristicsLibrary.regularTTT
-            });
+        let agent;
+        try {
+            if (config.type === 'random') {
+                agent = new RandomAgent();
+                console.log(`  ✓ RandomAgent created`);
+            } else if (config.type === 'rulebased') {
+                agent = new RuleBasedAgent(createStrategyTree('regular'));
+                console.log(`  ✓ RuleBasedAgent created`);
+            } else if (config.type === 'minimax') {
+                agent = new MinimaxAgent({
+                    name: isBlue ? "Agent Blau" : "Agent Rot",
+                    maxDepth: config.depth || 9,
+                    useAlphaBeta: true,
+                    heuristicFn: HeuristicsLibrary.regularTTT
+                });
+                console.log(`  ✓ MinimaxAgent created with depth ${config.depth || 9}`);
+            } else {
+                agent = new RandomAgent();
+                console.warn(`  ! Unknown type, using Random fallback`);
+            }
+        } catch (err) {
+            console.error(`  ✗ ERROR creating agent:`, err);
+            agent = new RandomAgent();
         }
-        return new RandomAgent(); // Fallback
+        
+        return agent;
     },
 
     async start() {
@@ -191,8 +207,16 @@ const ArenaV2 = {
         const agent1 = this.createAgent(this.agent1Config, true);
         const agent2 = this.createAgent(this.agent2Config, false);
         
+        console.log("📊 Game Start:", {
+            agent1: agent1.constructor.name,
+            agent2: agent2.constructor.name,
+            board: this.currentGame.constructor.name,
+            validMoves: this.currentGame.getAllValidMoves().length
+        });
+        
         const gameStartTime = performance.now();
         let moveCount = 0;
+        let moves = [];
 
         while (!this.currentGame.winner && this.currentGame.getAllValidMoves().length > 0) {
             const isPlayer1 = this.currentGame.currentPlayer === 1;
@@ -203,6 +227,7 @@ const ArenaV2 = {
             if (action) {
                 this.currentGame.makeMove(action.move);
                 moveCount++;
+                moves.push({ player: isPlayer1 ? 'P1' : 'P2', move: action.move });
 
                 const moveTime = performance.now() - moveStartTime;
                 if (isPlayer1) {
@@ -212,25 +237,25 @@ const ArenaV2 = {
                     this.stats.redTotalTime += moveTime;
                     this.stats.redMoveTimes.push(moveTime);
                 }
+            } else {
+                console.warn("⚠️ Agent returned null action!", { isPlayer1, agent: agent.constructor.name });
+                break;
             }
 
             this.draw();
         }
 
+        console.log("📊 Game End:", { winner: this.currentGame.winner, moves, moveCount });
+
         // Record result
         this.stats.totalGames++;
         this.stats.totalMoves += moveCount;
         
-        if (this.currentGame.winner) {
-            if (this.currentGame.winner === 1) {
-                this.stats.blueWins++;
-            } else if (this.currentGame.winner === 2) {
-                this.stats.redWins++;
-            } else {
-                this.stats.draws++;
-            }
-        } else {
-            // No winner and no valid moves = draw
+        if (this.currentGame.winner === 1) {
+            this.stats.blueWins++;
+        } else if (this.currentGame.winner === 2) {
+            this.stats.redWins++;
+        } else if (this.currentGame.winner === 3 || this.currentGame.getAllValidMoves().length === 0) {
             this.stats.draws++;
         }
 
