@@ -47,6 +47,83 @@ body {
     background: #f5f7fa;
 }
 
+/* Modal Dialog */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.modal-close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: #000;
+}
+
+/* Config Item */
+.config-item {
+    margin-bottom: 15px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.config-item label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-size: 0.9em;
+}
+
+.config-item input[type="range"],
+.config-item select {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.config-item input[type="range"] {
+    padding: 4px;
+}
+
+.range-value {
+    text-align: right;
+    color: #3498db;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
 /* Sections */
 .progress-section,
 .results-section,
@@ -289,5 +366,9 @@ body {
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
+    }
+
+    .modal-content {
+        width: 95%;
     }
 }

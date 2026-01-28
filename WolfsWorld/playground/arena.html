@@ -25,7 +25,7 @@
         <!-- Agent 1 -->
         <div class="viz-control-group">
             <label class="viz-label">Agent 1 (Blau):</label>
-            <select id="agent1Select" class="viz-select">
+            <select id="agent1Select" class="viz-select" onchange="updateAgent1Params()">
                 <option value="minimaxCautious">Minimax (Vorsichtig)</option>
                 <option value="minimaxBalanced" selected>Minimax (Ausgewogen)</option>
                 <option value="minimaxAggressive">Minimax (Aggressiv)</option>
@@ -38,10 +38,15 @@
             </select>
         </div>
 
+        <!-- Agent 1 Parameter -->
+        <div class="viz-control-group" id="agent1ParamGroup" style="display: none;">
+            <!-- Wird dynamisch gefüllt -->
+        </div>
+
         <!-- Agent 2 -->
         <div class="viz-control-group">
             <label class="viz-label">Agent 2 (Rot):</label>
-            <select id="agent2Select" class="viz-select">
+            <select id="agent2Select" class="viz-select" onchange="updateAgent2Params()">
                 <option value="minimaxCautious">Minimax (Vorsichtig)</option>
                 <option value="minimaxBalanced">Minimax (Ausgewogen)</option>
                 <option value="minimaxAggressive" selected>Minimax (Aggressiv)</option>
@@ -54,6 +59,11 @@
             </select>
         </div>
 
+        <!-- Agent 2 Parameter -->
+        <div class="viz-control-group" id="agent2ParamGroup" style="display: none;">
+            <!-- Wird dynamisch gefüllt -->
+        </div>
+
         <!-- Anzahl Spiele -->
         <div class="viz-control-group">
             <label class="viz-label">Spiele:</label>
@@ -63,13 +73,15 @@
         <!-- Checkboxes -->
         <div class="viz-checkboxes">
             <label class="viz-checkbox-label">
-                <input type="checkbox" id="showFirstGame" checked>
-                Visualisieren
-            </label>
-            <label class="viz-checkbox-label">
                 <input type="checkbox" id="showAdvancedStats">
-                Advanced
+                ⚙️ Advanced Stats
             </label>
+        </div>
+
+        <!-- Agent Config Buttons -->
+        <div class="viz-control-group">
+            <button id="configAgent1Btn" class="viz-btn" style="background: #3498db; color: white; padding: 6px 10px;">⚙️ Agent 1</button>
+            <button id="configAgent2Btn" class="viz-btn" style="background: #e74c3c; color: white; padding: 6px 10px;">⚙️ Agent 2</button>
         </div>
 
         <!-- Start Button -->
@@ -78,104 +90,24 @@
     </div>
 
     <div class="arena-container">
-        <h1>🤖 KI Arena Playground</h1>
-        <p class="subtitle">Zwei KI-Agenten treten gegeneinander an</p>
-
-        <!-- KONFIGURATION -->
-        <section class="arena-section config-section">
-            <h2>⚙️ Konfiguration</h2>
-            
-            <div class="config-grid">
-                <!-- Spiel-Auswahl -->
-                <div class="config-block">
-                    <label for="gameSelect">Spiel:</label>
-                    <select id="gameSelect">
-                        <option value="TTT Regular">Tic-Tac-Toe (3×3)</option>
-                        <option value="TTT 3D">Tic-Tac-Toe 3D</option>
-                        <option value="TTT Ultimate">Tic-Tac-Toe Ultimate</option>
-                    </select>
+        <!-- Agent Parameter Modal -->
+        <div id="agentConfigModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeAgentConfig()">&times;</span>
+                <h3 id="agentConfigTitle">Agent Konfiguration</h3>
+                
+                <div id="agentConfigContent">
+                    <!-- Wird dynamisch gefüllt -->
                 </div>
-
-                <!-- Agent 1 (Blau) Auswahl -->
-                <div class="config-block">
-                    <label for="agent1Select">Agent 1 (Blau):</label>
-                    <select id="agent1Select">
-                        <optgroup label="Minimax">
-                            <option value="minimaxCautious">Minimax (Vorsichtig)</option>
-                            <option value="minimaxBalanced" selected>Minimax (Ausgewogen)</option>
-                            <option value="minimaxAggressive">Minimax (Aggressiv)</option>
-                            <option value="minimaxHeuristicCentered">Minimax (Zentraler Fokus)</option>
-                            <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
-                        </optgroup>
-                        <optgroup label="Regel-KI">
-                            <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
-                            <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
-                            <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
-                        </optgroup>
-                        <optgroup label="Andere">
-                            <option value="random">Zufalls-KI</option>
-                        </optgroup>
-                    </select>
-                </div>
-
-                <!-- Agent 2 (Rot) Auswahl -->
-                <div class="config-block">
-                    <label for="agent2Select">Agent 2 (Rot):</label>
-                    <select id="agent2Select">
-                        <optgroup label="Minimax">
-                            <option value="minimaxCautious">Minimax (Vorsichtig)</option>
-                            <option value="minimaxBalanced">Minimax (Ausgewogen)</option>
-                            <option value="minimaxAggressive" selected>Minimax (Aggressiv)</option>
-                            <option value="minimaxHeuristicCentered">Minimax (Zentraler Fokus)</option>
-                            <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
-                        </optgroup>
-                        <optgroup label="Regel-KI">
-                            <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
-                            <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
-                            <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
-                        </optgroup>
-                        <optgroup label="Andere">
-                            <option value="random">Zufalls-KI</option>
-                        </optgroup>
-                    </select>
-                </div>
-
-                <!-- Anzahl Spiele -->
-                <div class="config-block">
-                    <label for="numGames">Anzahl Spiele:</label>
-                    <input type="number" id="numGames" min="1" max="10000" value="100">
-                </div>
-
-                <!-- Erstes Spiel anzeigen -->
-                <div class="config-block checkbox">
-                    <label>
-                        <input type="checkbox" id="showFirstGame" checked>
-                        Erstes Spiel visualisieren
-                    </label>
-                </div>
-
-                <!-- Advanced Stats -->
-                <div class="config-block checkbox">
-                    <label>
-                        <input type="checkbox" id="showAdvancedStats">
-                        Advanced Stats anzeigen
-                    </label>
-                </div>
+                
+                <button onclick="saveAgentConfig()" class="viz-btn viz-btn-action" style="margin-top: 15px;">✓ Speichern</button>
             </div>
+        </div>
 
-            <!-- Start Button -->
-            <button id="startButton" class="btn btn-primary btn-large">🚀 Arena starten</button>
-            <button id="stopButton" class="btn btn-secondary btn-large" disabled style="display: none;">⏹️ Stoppen</button>
-        </section>
-
-        <!-- FORTSCHRITTS-ANZEIGE -->
-        <section class="arena-section progress-section" id="progressSection" style="display: none;">
-            <h2>⏳ Simulation läuft...</h2>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <p class="progress-text" id="progressText">0 / 100 Spiele</p>
-        </section>
+        <!-- Quick Info -->
+        <div style="background: white; padding: 15px; margin-bottom: 15px; border-radius: 6px; border-left: 3px solid #3498db;">
+            <p style="margin: 0; color: #2c3e50;"><strong>💡 Tipp:</strong> Klick auf einen Agent um Parameter anzupassen (Suchtiefe, Heuristik, Regeln)</p>
+        </div>
 
         <!-- FORTSCHRITTS-ANZEIGE -->
         <div class="progress-section" id="progressSection" style="display: none;">
@@ -189,6 +121,12 @@
         <!-- STATISTIK-ERGEBNISSE -->
         <div class="results-section" id="resultsSection" style="display: none;">
             <h3>📊 Ergebnisse</h3>
+
+            <!-- Spielfeld Visualisierung (wenn Replay vorhanden) -->
+            <div id="gameboardVisualization" style="display: none; margin-bottom: 20px;">
+                <h4>Erstes Spiel - Spielverlauf</h4>
+                <div id="gameboard" style="background: white; padding: 15px; border-radius: 6px; border: 1px solid #ddd; margin: 10px 0;"></div>
+            </div>
             
             <!-- Übersicht -->
             <div class="stats-overview">
