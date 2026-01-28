@@ -9,84 +9,88 @@
 </head>
 <body>
     <div class="viz-toolbar">
-        <a href="../index.html" class="viz-btn btn-back">⬅ Menü</a>
-        <span style="margin-left:10px; font-weight:bold; color:white;">🤖 KI Arena Playground</span>
-
-        <!-- Spiel-Auswahl -->
-        <div class="viz-control-group">
-            <label class="viz-label">Spiel:</label>
-            <select id="gameSelect" class="viz-select">
-                <option value="TTT Regular">Tic-Tac-Toe (3×3)</option>
-                <option value="TTT 3D">Tic-Tac-Toe 3D</option>
-                <option value="TTT Ultimate">Tic-Tac-Toe Ultimate</option>
-            </select>
+        <!-- Zeile 1: Menü + Titel + Spiel-Auswahl -->
+        <div style="width: 100%; display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+            <a href="../index.html" class="viz-btn btn-back">⬅ Menü</a>
+            <span style="font-weight:bold; color:white; flex: 1;">🤖 KI Arena Playground</span>
+            
+            <!-- Spiel-Auswahl -->
+            <div class="viz-control-group" style="margin: 0;">
+                <label class="viz-label">Spiel:</label>
+                <select id="gameSelect" class="viz-select">
+                    <option value="TTT Regular">Tic-Tac-Toe (3×3)</option>
+                    <option value="TTT 3D">Tic-Tac-Toe 3D</option>
+                    <option value="TTT Ultimate">Tic-Tac-Toe Ultimate</option>
+                </select>
+            </div>
         </div>
 
-        <!-- Agent 1 -->
-        <div class="viz-control-group">
-            <label class="viz-label">Agent 1 (Blau):</label>
-            <select id="agent1Select" class="viz-select" onchange="updateAgent1Params()">
-                <option value="minimaxCautious">Minimax (Vorsichtig)</option>
-                <option value="minimaxBalanced" selected>Minimax (Ausgewogen)</option>
-                <option value="minimaxAggressive">Minimax (Aggressiv)</option>
-                <option value="minimaxHeuristicCentered">Minimax (Zentral)</option>
-                <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
-                <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
-                <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
-                <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
-                <option value="random">Zufalls-KI</option>
-            </select>
+        <!-- Zeile 2: Agent 1 Auswahl + Parameter -->
+        <div style="width: 100%; display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+            <div class="viz-control-group" style="margin: 0; flex: 1;">
+                <label class="viz-label">Agent 1 (Blau):</label>
+                <select id="agent1Select" class="viz-select" onchange="updateAgent1Params()">
+                    <option value="minimaxCautious">Minimax (Vorsichtig)</option>
+                    <option value="minimaxBalanced" selected>Minimax (Ausgewogen)</option>
+                    <option value="minimaxAggressive">Minimax (Aggressiv)</option>
+                    <option value="minimaxHeuristicCentered">Minimax (Zentral)</option>
+                    <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
+                    <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
+                    <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
+                    <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
+                    <option value="random">Zufalls-KI</option>
+                </select>
+            </div>
+            
+            <!-- Agent 1 Parameter -->
+            <div class="viz-control-group" id="agent1ParamGroup" style="display: none; margin: 0;">
+                <!-- Wird dynamisch gefüllt -->
+            </div>
         </div>
 
-        <!-- Agent 1 Parameter -->
-        <div class="viz-control-group" id="agent1ParamGroup" style="display: none;">
-            <!-- Wird dynamisch gefüllt -->
+        <!-- Zeile 3: Agent 2 Auswahl + Parameter -->
+        <div style="width: 100%; display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+            <div class="viz-control-group" style="margin: 0; flex: 1;">
+                <label class="viz-label">Agent 2 (Rot):</label>
+                <select id="agent2Select" class="viz-select" onchange="updateAgent2Params()">
+                    <option value="minimaxCautious">Minimax (Vorsichtig)</option>
+                    <option value="minimaxBalanced">Minimax (Ausgewogen)</option>
+                    <option value="minimaxAggressive" selected>Minimax (Aggressiv)</option>
+                    <option value="minimaxHeuristicCentered">Minimax (Zentral)</option>
+                    <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
+                    <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
+                    <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
+                    <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
+                    <option value="random">Zufalls-KI</option>
+                </select>
+            </div>
+            
+            <!-- Agent 2 Parameter -->
+            <div class="viz-control-group" id="agent2ParamGroup" style="display: none; margin: 0;">
+                <!-- Wird dynamisch gefüllt -->
+            </div>
         </div>
 
-        <!-- Agent 2 -->
-        <div class="viz-control-group">
-            <label class="viz-label">Agent 2 (Rot):</label>
-            <select id="agent2Select" class="viz-select" onchange="updateAgent2Params()">
-                <option value="minimaxCautious">Minimax (Vorsichtig)</option>
-                <option value="minimaxBalanced">Minimax (Ausgewogen)</option>
-                <option value="minimaxAggressive" selected>Minimax (Aggressiv)</option>
-                <option value="minimaxHeuristicCentered">Minimax (Zentral)</option>
-                <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
-                <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
-                <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
-                <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
-                <option value="random">Zufalls-KI</option>
-            </select>
-        </div>
+        <!-- Zeile 4: Steuerung -->
+        <div style="width: 100%; display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
+            <!-- Anzahl Spiele -->
+            <div class="viz-control-group" style="margin: 0;">
+                <label class="viz-label">Spiele:</label>
+                <input type="number" id="numGames" min="1" max="10000" value="100" class="viz-input-number">
+            </div>
 
-        <!-- Agent 2 Parameter -->
-        <div class="viz-control-group" id="agent2ParamGroup" style="display: none;">
-            <!-- Wird dynamisch gefüllt -->
-        </div>
+            <!-- Advanced Stats Checkbox -->
+            <div class="viz-checkboxes" style="margin: 0;">
+                <label class="viz-checkbox-label">
+                    <input type="checkbox" id="showAdvancedStats">
+                    ⚙️ Advanced Stats
+                </label>
+            </div>
 
-        <!-- Anzahl Spiele -->
-        <div class="viz-control-group">
-            <label class="viz-label">Spiele:</label>
-            <input type="number" id="numGames" min="1" max="10000" value="100" class="viz-input-number">
+            <!-- Start/Stop Buttons -->
+            <button id="startButton" class="viz-btn viz-btn-action">🚀 Start</button>
+            <button id="stopButton" class="viz-btn viz-btn-restart" disabled style="display: none;">⏹ Stop</button>
         </div>
-
-        <!-- Checkboxes -->
-        <div class="viz-checkboxes">
-            <label class="viz-checkbox-label">
-                <input type="checkbox" id="showAdvancedStats">
-                ⚙️ Advanced Stats
-            </label>
-        </div>
-
-        <!-- Agent Config Buttons -->
-        <div class="viz-control-group">
-            <button id="configAgent1Btn" class="viz-btn" style="background: #3498db; color: white; padding: 6px 10px;">⚙️ Agent 1</button>
-            <button id="configAgent2Btn" class="viz-btn" style="background: #e74c3c; color: white; padding: 6px 10px;">⚙️ Agent 2</button>
-        </div>
-
-        <!-- Start Button -->
-        <button id="startButton" class="viz-btn viz-btn-action">🚀 Start</button>
-        <button id="stopButton" class="viz-btn viz-btn-restart" disabled style="display: none;">⏹ Stop</button>
     </div>
 
     <div class="arena-container">

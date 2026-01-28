@@ -23,17 +23,6 @@ class ArenaController {
             resetBtn.addEventListener('click', () => this.resetUI());
         }
         
-        // Agent Config Buttons
-        const configAgent1Btn = document.getElementById('configAgent1Btn');
-        const configAgent2Btn = document.getElementById('configAgent2Btn');
-        
-        if (configAgent1Btn) {
-            configAgent1Btn.addEventListener('click', () => openAgentConfig(1));
-        }
-        if (configAgent2Btn) {
-            configAgent2Btn.addEventListener('click', () => openAgentConfig(2));
-        }
-        
         // Initiale UI aktualisieren
         this.updateGameFactory();
         document.getElementById('gameSelect').addEventListener('change', () => this.updateGameFactory());

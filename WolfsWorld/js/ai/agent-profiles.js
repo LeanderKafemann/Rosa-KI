@@ -121,28 +121,49 @@ const AgentProfiles = {
  * @returns {Agent|null} Der erstellte Agent oder null
  */
 function createAgentFromProfile(profileKey, customConfig = null) {
+    if (!profileKey) {
+        console.error("createAgentFromProfile: profileKey ist undefined/null");
+        return null;
+    }
+
     const profile = AgentProfiles[profileKey];
     if (!profile) {
-        console.error(`Profile nicht gefunden: ${profileKey}`);
+        console.error(`createAgentFromProfile: Profile nicht gefunden: ${profileKey}`);
+        console.error("Verfügbare Profile:", Object.keys(AgentProfiles));
         return null;
     }
 
     const config = customConfig ? { ...profile.config, ...customConfig } : profile.config;
 
+    console.log(`[createAgentFromProfile] Erstelle Agent vom Typ: ${profile.type}, Config:`, config);
+
+    let agent = null;
+
     switch (profile.type) {
         case "minimax":
-            return createMinimaxAgent(profile.name, config);
+            agent = createMinimaxAgent(profile.name, config);
+            break;
 
         case "ruleBased":
-            return createRuleBasedAgent(profile.name, config);
+            agent = createRuleBasedAgent(profile.name, config);
+            break;
 
         case "random":
-            return new RandomAgent(profile.name);
+            agent = new RandomAgent(profile.name);
+            break;
 
         default:
-            console.error(`Unbekannter Agent-Typ: ${profile.type}`);
+            console.error(`createAgentFromProfile: Unbekannter Agent-Typ: ${profile.type}`);
             return null;
     }
+
+    if (!agent) {
+        console.error(`createAgentFromProfile: Agent-Erstellung fehlgeschlagen für ${profileKey}`);
+        return null;
+    }
+
+    console.log(`✓ Agent erstellt: ${agent.name} (Typ: ${agent.constructor.name})`);
+    return agent;
 }
 
 /**
@@ -150,20 +171,34 @@ function createAgentFromProfile(profileKey, customConfig = null) {
  * @private
  */
 function createMinimaxAgent(name, config) {
-    let heuristicFn = HeuristicsLibrary.winLoss; // Default
+    try {
+        let heuristicFn = HeuristicsLibrary.winLoss; // Default
 
-    // Heuristik-Funktion auswählen
-    if (config.heuristic && HeuristicsLibrary[config.heuristic]) {
-        heuristicFn = HeuristicsLibrary[config.heuristic];
+        // Heuristik-Funktion auswählen
+        if (config.heuristic && HeuristicsLibrary[config.heuristic]) {
+            heuristicFn = HeuristicsLibrary[config.heuristic];
+        }
+
+        const agent = new MinimaxAgent({
+            name: name,
+            maxDepth: config.maxDepth || 3,
+            useAlphaBeta: config.useAlphaBeta !== false,
+            heuristicFn: heuristicFn,
+            captureTrace: config.captureTrace || false
+        });
+
+        if (!agent) {
+            console.error("createMinimaxAgent: MinimaxAgent-Konstruktor returned null");
+            return null;
+        }
+
+        console.log(`  ✓ MinimaxAgent erstellt: ${agent.name}, Depth=${config.maxDepth}, Heuristic=${config.heuristic}`);
+        return agent;
+    } catch (error) {
+        console.error("createMinimaxAgent: Fehler:", error.message);
+        console.error("Stack:", error.stack);
+        return null;
     }
-
-    return new MinimaxAgent({
-        name: name,
-        maxDepth: config.maxDepth || 3,
-        useAlphaBeta: config.useAlphaBeta !== false,
-        heuristicFn: heuristicFn,
-        captureTrace: config.captureTrace || false
-    });
 }
 
 /**
@@ -171,52 +206,65 @@ function createMinimaxAgent(name, config) {
  * @private
  */
 function createRuleBasedAgent(name, config) {
-    // Verschiedene Regelstrukturen bauen - basierend auf existierender TTTRulesLibrary
-    let tree;
+    try {
+        // Verschiedene Regelstrukturen bauen - basierend auf existierender TTTRulesLibrary
+        let tree;
 
-    switch (config.strategy) {
-        case "offensive":
-            // Offensive: Priorität auf Gewinnen
-            tree = new RuleGroup(name || "Regel-KI (Offensiv)");
-            tree.add(TTTRulesLibrary.basics.win);
-            if (TTTRulesLibrary.regular) {
-                tree.add(TTTRulesLibrary.regular.fork);
-                tree.add(TTTRulesLibrary.regular.blockFork);
-                tree.add(TTTRulesLibrary.regular.center);
-            }
-            tree.add(TTTRulesLibrary.basics.block);
-            tree.add(TTTRulesLibrary.basics.random);
-            break;
+        switch (config.strategy) {
+            case "offensive":
+                // Offensive: Priorität auf Gewinnen
+                tree = new RuleGroup(name || "Regel-KI (Offensiv)");
+                tree.add(TTTRulesLibrary.basics.win);
+                if (TTTRulesLibrary.regular) {
+                    tree.add(TTTRulesLibrary.regular.fork);
+                    tree.add(TTTRulesLibrary.regular.blockFork);
+                    tree.add(TTTRulesLibrary.regular.center);
+                }
+                tree.add(TTTRulesLibrary.basics.block);
+                tree.add(TTTRulesLibrary.basics.random);
+                break;
 
-        case "defensive":
-            // Defensive: Priorität auf Blocken
-            tree = new RuleGroup(name || "Regel-KI (Konservativ)");
-            tree.add(TTTRulesLibrary.basics.block);
-            tree.add(TTTRulesLibrary.basics.win);
-            if (TTTRulesLibrary.regular) {
-                tree.add(TTTRulesLibrary.regular.blockFork);
-                tree.add(TTTRulesLibrary.regular.corner);
-            }
-            tree.add(TTTRulesLibrary.basics.random);
-            break;
+            case "defensive":
+                // Defensive: Priorität auf Blocken
+                tree = new RuleGroup(name || "Regel-KI (Konservativ)");
+                tree.add(TTTRulesLibrary.basics.block);
+                tree.add(TTTRulesLibrary.basics.win);
+                if (TTTRulesLibrary.regular) {
+                    tree.add(TTTRulesLibrary.regular.blockFork);
+                    tree.add(TTTRulesLibrary.regular.corner);
+                }
+                tree.add(TTTRulesLibrary.basics.random);
+                break;
 
-        case "balanced":
-        default:
-            // Balanced: Gemischte Strategien
-            tree = new RuleGroup(name || "Regel-KI (Ausgewogen)");
-            tree.add(TTTRulesLibrary.basics.win);
-            tree.add(TTTRulesLibrary.basics.block);
-            if (TTTRulesLibrary.regular) {
-                tree.add(TTTRulesLibrary.regular.fork);
-                tree.add(TTTRulesLibrary.regular.blockFork);
-                tree.add(TTTRulesLibrary.regular.center);
-                tree.add(TTTRulesLibrary.regular.corner);
-            }
-            tree.add(TTTRulesLibrary.basics.random);
-            break;
+            case "balanced":
+            default:
+                // Balanced: Gemischte Strategien
+                tree = new RuleGroup(name || "Regel-KI (Ausgewogen)");
+                tree.add(TTTRulesLibrary.basics.win);
+                tree.add(TTTRulesLibrary.basics.block);
+                if (TTTRulesLibrary.regular) {
+                    tree.add(TTTRulesLibrary.regular.fork);
+                    tree.add(TTTRulesLibrary.regular.blockFork);
+                    tree.add(TTTRulesLibrary.regular.center);
+                    tree.add(TTTRulesLibrary.regular.corner);
+                }
+                tree.add(TTTRulesLibrary.basics.random);
+                break;
+        }
+
+        const agent = new RuleBasedAgent(tree);
+        if (!agent) {
+            console.error("createRuleBasedAgent: RuleBasedAgent-Konstruktor returned null");
+            return null;
+        }
+
+        console.log(`  ✓ RuleBasedAgent erstellt: ${agent.name}, Strategy=${config.strategy}`);
+        return agent;
+    } catch (error) {
+        console.error("createRuleBasedAgent: Fehler:", error.message);
+        console.error("Stack:", error.stack);
+        return null;
     }
-
-    return new RuleBasedAgent(tree);
 }
 
 /**
