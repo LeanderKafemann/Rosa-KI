@@ -5,37 +5,69 @@
     <title>KI Arena</title>
     <link rel="stylesheet" href="../css/style.css">
     <style>
-        /* Spezifische Overrides für das Lab Layout */
+        /* Spielfeld deutlich verkleinert - nur Deko */
         .col-game {
-            /* Fixe Breite etwas verkleinert, damit Platz für Regeln bleibt */
-            flex: 0 0 420px; 
-            min-width: 420px;
-            width: 420px; /* Explizit setzen */
+            flex: 0 0 280px; 
+            min-width: 280px;
+            width: 280px;
         }
         
-        /* Damit Canvas nicht ausbricht */
         .canvas-container {
             width: 100%;
             display: flex;
             justify-content: center;
             align-items: center;
             overflow: hidden;
-            padding: 10px 0;
+            padding: 5px 0;
         }
         
         canvas {
             max-width: 100%;
-            height: auto; /* Aspect Ratio erhalten */
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            height: auto;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
         
-        /* 3D Container Anpassung */
-        .iso-container {
-            margin-top: 15px;
-            border: 1px solid #eee;
-            border-radius: 8px;
-            padding: 5px;
-            background: #fafafa;
+        /* Stats Bereich */
+        .stats-box {
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 12px;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .stat-value.blue {
+            color: #3498db;
+        }
+        
+        .stat-value.red {
+            color: #e74c3c;
+        }
+        
+        .stat-value.draw {
+            color: #95a5a6;
         }
     </style>
 </head>
@@ -53,19 +85,39 @@
             </select>
         </div>
 
+        <div class="viz-control-group" style="margin-left: 10px;">
+            <label class="viz-label">Blau:</label>
+            <select id="aiTypeBlue" class="viz-select" onchange="Arena.updateKIConfig(1)">
+                <option value="ruledbased">Regelbaum</option>
+                <option value="random">Zufälligkeit</option>
+                <option value="minimax">Minimax</option>
+            </select>
+        </div>
+
+        <div class="viz-control-group" style="margin-left: 10px;" id="paramBlueContainer"></div>
+
+        <div class="viz-control-group" style="margin-left: 10px;">
+            <label class="viz-label">Rot:</label>
+            <select id="aiTypeRed" class="viz-select" onchange="Arena.updateKIConfig(2)">
+                <option value="ruledbased">Regelbaum</option>
+                <option value="random">Zufälligkeit</option>
+                <option value="minimax">Minimax</option>
+            </select>
+        </div>
+
+        <div class="viz-control-group" style="margin-left: 10px;" id="paramRedContainer"></div>
+
+        <div class="viz-control-group" style="margin-left: 10px;">
+            <label class="viz-label">Spiele:</label>
+            <input type="number" id="numGames" class="viz-select" value="10" min="1" max="1000" style="width: 80px;">
+        </div>
+
         <div style="flex-grow: 1;"></div> 
 
         <div class="viz-control-group">
-            <button class="viz-btn viz-btn-action" onclick="Arena.stepAI()">▶ Schritt</button>
-            <button class="viz-btn viz-btn-action" id="btnAuto" onclick="Arena.toggleAutoMatch()">⏩ Auto</button>
+            <button class="viz-btn viz-btn-action" onclick="Arena.stepSingleGame()">▶ Einzelspiel</button>
+            <button class="viz-btn viz-btn-action" id="btnBattle" onclick="Arena.startBattle()">⚔️ Battle</button>
             <button class="viz-btn viz-btn-restart" onclick="Arena.reset()">↺ Reset</button>
-        </div>
-
-        <div class="viz-control-group" style="margin-left: 20px;">
-            <label class="viz-label">⏱ KI Tempo:</label>
-            <input type="range" id="speedSlider" min="50" max="1500" value="600" 
-                   style="width:150px; cursor:pointer;" onchange="Arena.setDelay(this.value)">
-            <span id="speedLabel" style="min-width: 45px;">600ms</span>
         </div>
     </div>
 
@@ -87,14 +139,49 @@
                 </div>
 
                 <div class="canvas-container">
-                    <canvas id="gameCanvas" width="400" height="400"></canvas>
+                    <canvas id="gameCanvas" width="250" height="250"></canvas>
                 </div>
                 
-                <div id="statusText" class="stats-display" style="margin-top:10px;">Bereit</div>
+                <div id="statusText" class="stats-display" style="margin-top:5px; font-size: 0.85em;">Bereit</div>
             </div>
 
-            <div class="log-box" id="log">
-                <div class="log-line">System bereit.</div>
+            <div class="stats-box" id="statsPanel" style="display:none; margin-top: 10px;">
+                <div class="stat-row">
+                    <span class="stat-label">Spiele:</span>
+                    <span class="stat-value" id="statGames">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Blau Siege:</span>
+                    <span class="stat-value blue" id="statBlueWins">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Rot Siege:</span>
+                    <span class="stat-value red" id="statRedWins">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Remis:</span>
+                    <span class="stat-value draw" id="statDraws">0</span>
+                </div>
+                <div class="stat-row" style="border-top: 1px solid #bbb; margin-top: 6px; padding-top: 6px;">
+                    <span class="stat-label">Blau %:</span>
+                    <span class="stat-value blue" id="statBluePercent">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Rot %:</span>
+                    <span class="stat-value red" id="statRedPercent">0%</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Remis %:</span>
+                    <span class="stat-value draw" id="statDrawPercent">0%</span>
+                </div>
+                <div class="stat-row" style="border-top: 1px solid #bbb; margin-top: 6px; padding-top: 6px;">
+                    <span class="stat-label">Ø Züge:</span>
+                    <span class="stat-value" id="statAvgMoves">0</span>
+                </div>
+                <div class="stat-row">
+                    <span class="stat-label">Zeit total:</span>
+                    <span class="stat-value" id="statTotalTime">0s</span>
+                </div>
             </div>
         </div>
 
@@ -107,27 +194,30 @@
     </div>
 
     <script src="../js/core/game-state.js"></script>
-    
     <script src="../js/games/tictactoe/logic.js"></script>
     <script src="../js/games/tictactoe/renderer.js"></script>
-    
     <script src="../js/ai/rules/rule-structure.js"></script>
     <script src="../js/ai/rules/ttt-rules.js"></script>
-    
     <script src="../js/viz/flowchart-visualizer.js"></script>
 
     <script>
         const Arena = {
-            game: null, canvas: null, isoCanvas: null,
+            game: null, canvas: null,
             vizP1: null, vizP2: null, trees: { 1: null, 2: null },
-            gameType: 'regular', axis3D: 'z', isAuto: false,
+            gameType: 'regular', axis3D: 'z', isBattle: false,
             
-            // Verzögerung für Auto-Mode (in ms)
-            delay: 600, 
+            stats: { blueWins: 0, redWins: 0, draws: 0, totalMoves: 0, totalTime: 0 },
+            
+            kiConfig: {
+                1: { type: 'ruledbased', depth: 5 },
+                2: { type: 'ruledbased', depth: 5 }
+            },
 
             init() {
                 this.canvas = document.getElementById('gameCanvas');
                 this.canvas.addEventListener('mousedown', (e) => this.handleClick(e));
+                this.updateKIConfig(1);
+                this.updateKIConfig(2);
                 this.changeGameType();
             },
 
@@ -135,22 +225,20 @@
                 this.gameType = document.getElementById('gameTypeSelector').value;
                 const controls = document.getElementById('controls3D');
                 
-                // Canvas Größen Reset
-                this.canvas.width = 400; 
-                this.canvas.height = 400;
+                this.canvas.width = 250; 
+                this.canvas.height = 250;
 
                 if (this.gameType === '3d') {
                     controls.classList.remove('hidden');
-                    this.canvas.height = 250; 
+                    this.canvas.height = 150; 
                 } else if (this.gameType === 'ultimate') {
                     controls.classList.add('hidden');
-                    this.canvas.width = 600; 
-                    this.canvas.height = 600;
+                    this.canvas.width = 300; 
+                    this.canvas.height = 300;
                 } else {
                     controls.classList.add('hidden');
                 }
 
-                // Bäume neu laden
                 this.trees[1] = createStrategyTree(this.gameType);
                 this.trees[2] = createStrategyTree(this.gameType);
                 
@@ -168,15 +256,14 @@
                 else if(this.gameType === '3d') this.game = new TTT3DBoard(3);
                 else this.game = new UltimateBoard();
                 
-                this.isAuto = false;
-                document.getElementById('btnAuto').innerText = "⏩ Auto";
-                document.getElementById('log').innerHTML = '';
-                this.log("--- NEUES SPIEL ---");
+                this.isBattle = false;
+                document.getElementById('btnBattle').innerText = "⚔️ Battle";
+                document.getElementById('statsPanel').style.display = 'none';
                 
                 this.vizP1.clearHighlights();
                 this.vizP2.clearHighlights();
                 this.draw();
-                this.updateStatus();
+                this.updateStatus("Bereit");
             },
 
             toggleRule(player, name) {
@@ -199,7 +286,7 @@
             },
 
             handleClick(e) {
-                if (this.game.winner !== 0 || this.isAuto) return;
+                if (this.game.winner !== 0 || this.isBattle) return;
 
                 const rect = this.canvas.getBoundingClientRect();
                 const scaleX = this.canvas.width / rect.width;
@@ -212,13 +299,13 @@
                 if (this.gameType === '3d') {
                     const s = 3; 
                     const w = this.canvas.width, h = this.canvas.height;
-                    const pad = 20;
+                    const pad = 10;
                     const availW = w - (pad*2), availH = h - (pad*2);
                     const boxSize = Math.min(availW/s, availH);
                     const gap = boxSize * 0.1;
                     const boardS = boxSize - gap;
                     const startX = (w - s*boxSize)/2 + gap/2;
-                    const startY = (h - boardS)/2 + 10;
+                    const startY = (h - boardS)/2 + 5;
 
                     for(let k=0; k<s; k++) {
                         const ox = startX + k*boxSize;
@@ -261,28 +348,182 @@
                 else TTTRenderer.draw3DSlices(c, this.game, this.axis3D);
             },
 
-            setDelay(value) {
-                this.delay = parseInt(value);
-                document.getElementById('speedLabel').innerText = value + 'ms';
+            updateKIConfig(player) {
+                const typeSelector = document.getElementById(player === 1 ? 'aiTypeBlue' : 'aiTypeRed');
+                const paramContainer = document.getElementById(player === 1 ? 'paramBlueContainer' : 'paramRedContainer');
+                
+                this.kiConfig[player].type = typeSelector.value;
+                paramContainer.innerHTML = '';
+                
+                if (this.kiConfig[player].type === 'minimax') {
+                    paramContainer.innerHTML = `
+                        <label class="viz-label">Tiefe:</label>
+                        <input type="range" id="depthSlider${player}" class="viz-select" min="1" max="9" value="${this.kiConfig[player].depth}" 
+                               style="width: 60px;" onchange="Arena.updateDepth(${player}, this.value)">
+                        <span id="depthValue${player}" style="font-size: 0.85em; margin-left: 5px;">${this.kiConfig[player].depth}</span>
+                    `;
+                }
             },
 
-            async stepAI(fast = false) {
+            updateDepth(player, depth) {
+                this.kiConfig[player].depth = parseInt(depth);
+                document.getElementById(`depthValue${player}`).textContent = depth;
+            },
+
+            getValidMoves() {
+                const moves = [];
+                if (this.gameType === 'regular') {
+                    for (let i = 0; i < 9; i++) {
+                        if (this.game.board[i] === 0) moves.push(i);
+                    }
+                } else if (this.gameType === '3d') {
+                    for (let i = 0; i < 27; i++) {
+                        if (this.game.board[i] === 0) moves.push(i);
+                    }
+                } else {
+                    for (let big = 0; big < 9; big++) {
+                        if (this.game.mainBoard[big] !== 0) continue;
+                        for (let small = 0; small < 9; small++) {
+                            if (this.game.subBoards[big].board[small] === 0) {
+                                moves.push({ big, small });
+                            }
+                        }
+                    }
+                }
+                return moves;
+            },
+
+            randomMove() {
+                const moves = this.getValidMoves();
+                return moves.length > 0 ? moves[Math.floor(Math.random() * moves.length)] : null;
+            },
+
+            evaluateMinimax(gameState, depth, isMaximizing, alpha, beta) {
+                const winner = gameState.winner;
+                if (winner === 1) return { score: 10 - depth, move: null };
+                if (winner === 2) return { score: depth - 10, move: null };
+                if (winner === 3) return { score: 0, move: null };
+                if (depth === 0) return { score: 0, move: null };
+
+                const moves = this.getValidMovesFrom(gameState);
+                if (moves.length === 0) return { score: 0, move: null };
+
+                let bestValue = isMaximizing ? -Infinity : Infinity;
+                let bestMove = moves[0];
+
+                for (const move of moves) {
+                    const cloned = this.cloneGame(gameState);
+                    if (this.gameType === 'ultimate' && typeof move === 'object') {
+                        cloned.makeMove(move.big, move.small);
+                    } else {
+                        cloned.makeMove(move);
+                    }
+
+                    const { score } = this.evaluateMinimax(cloned, depth - 1, !isMaximizing, alpha, beta);
+
+                    if (isMaximizing) {
+                        if (score > bestValue) {
+                            bestValue = score;
+                            bestMove = move;
+                        }
+                        alpha = Math.max(alpha, score);
+                    } else {
+                        if (score < bestValue) {
+                            bestValue = score;
+                            bestMove = move;
+                        }
+                        beta = Math.min(beta, score);
+                    }
+
+                    if (beta <= alpha) break;
+                }
+
+                return { score: bestValue, move: bestMove };
+            },
+
+            getValidMovesFrom(gameState) {
+                const moves = [];
+                if (this.gameType === 'regular') {
+                    for (let i = 0; i < 9; i++) {
+                        if (gameState.board[i] === 0) moves.push(i);
+                    }
+                } else if (this.gameType === '3d') {
+                    for (let i = 0; i < 27; i++) {
+                        if (gameState.board[i] === 0) moves.push(i);
+                    }
+                } else {
+                    for (let big = 0; big < 9; big++) {
+                        if (gameState.mainBoard[big] !== 0) continue;
+                        for (let small = 0; small < 9; small++) {
+                            if (gameState.subBoards[big].board[small] === 0) {
+                                moves.push({ big, small });
+                            }
+                        }
+                    }
+                }
+                return moves;
+            },
+
+            cloneGame(gameState) {
+                if (this.gameType === 'regular') {
+                    const clone = new TTTRegularBoard();
+                    clone.board = [...gameState.board];
+                    clone.currentPlayer = gameState.currentPlayer;
+                    clone.winner = gameState.winner;
+                    return clone;
+                } else if (this.gameType === '3d') {
+                    const clone = new TTT3DBoard(3);
+                    clone.board = [...gameState.board];
+                    clone.currentPlayer = gameState.currentPlayer;
+                    clone.winner = gameState.winner;
+                    return clone;
+                } else {
+                    const clone = new UltimateBoard();
+                    clone.mainBoard = [...gameState.mainBoard];
+                    clone.subBoards = gameState.subBoards.map(b => {
+                        const sb = new TTTRegularBoard();
+                        sb.board = [...b.board];
+                        sb.currentPlayer = b.currentPlayer;
+                        sb.winner = b.winner;
+                        return sb;
+                    });
+                    clone.currentPlayer = gameState.currentPlayer;
+                    clone.winner = gameState.winner;
+                    return clone;
+                }
+            },
+
+            async getKIMove(gameState, player, viz) {
+                const type = this.kiConfig[player].type;
+                
+                if (type === 'random') {
+                    return this.randomMove();
+                } else if (type === 'minimax') {
+                    const depth = this.kiConfig[player].depth;
+                    const isMax = player === 1;
+                    const { move } = this.evaluateMinimax(gameState, depth, isMax, -Infinity, Infinity);
+                    return move;
+                } else {
+                    const tree = this.trees[player];
+                    return await this.evaluateVisual(tree.root, gameState, viz, 300);
+                }
+            },
+
+            async stepSingleGame() {
                 if(this.game.winner !== 0) return;
                 
-                const stepBtn = document.querySelector('[onclick="Arena.stepAI()"]');
-                stepBtn.disabled = true;
-                stepBtn.style.opacity = '0.5';
-                stepBtn.style.cursor = 'not-allowed';
+                const btn = document.querySelector('[onclick="Arena.stepSingleGame()"]');
+                btn.disabled = true;
+                btn.style.opacity = '0.5';
                 
                 try {
                     const p = this.game.currentPlayer;
-                    const viz = (p===1) ? this.vizP1 : this.vizP2;
-                    const tree = this.trees[p];
-
-                    viz.clearHighlights();
+                    const viz = (this.kiConfig[p].type === 'ruledbased') ? (p===1 ? this.vizP1 : this.vizP2) : null;
+                    
+                    if (viz) viz.clearHighlights();
                     this.updateStatus(`KI ${p===1?'Blau':'Rot'} rechnet...`);
 
-                    const move = await this.evaluateVisual(tree.root, this.game, viz, fast ? 0 : this.delay);
+                    const move = await this.getKIMove(this.game, p, viz);
 
                     if (move) {
                         if (this.gameType === 'ultimate' && typeof move === 'object') 
@@ -292,20 +533,78 @@
                         
                         this.draw();
                         this.checkWin();
-                    } else {
-                        this.log(`KI ${p} findet keinen Zug!`);
                     }
                 } finally {
-                    stepBtn.disabled = false;
-                    stepBtn.style.opacity = '1';
-                    stepBtn.style.cursor = 'pointer';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
                 }
+            },
+
+            async startBattle() {
+                if(this.isBattle) return;
+                
+                this.isBattle = true;
+                const btn = document.getElementById('btnBattle');
+                btn.innerText = "⏹ Stopp";
+                btn.style.background = "#c0392b";
+                
+                const numGames = parseInt(document.getElementById('numGames').value) || 10;
+                
+                this.stats = { blueWins: 0, redWins: 0, draws: 0, totalMoves: 0, totalTime: 0 };
+                const startTime = performance.now();
+
+                for(let i = 0; i < numGames && this.isBattle; i++) {
+                    await this.playBattleGame();
+                    this.updateStats();
+                    this.updateStatus(`Battle: Spiel ${i+1}/${numGames}`);
+                    await new Promise(r => setTimeout(r, 50));
+                }
+
+                this.stats.totalTime = performance.now() - startTime;
+                this.updateStats();
+                this.updateStatus("Battle fertig!");
+                
+                this.isBattle = false;
+                btn.innerText = "⚔️ Battle";
+                btn.style.background = "#8e44ad";
+            },
+
+            async playBattleGame() {
+                if(this.gameType === 'regular') this.game = new TTTRegularBoard();
+                else if(this.gameType === '3d') this.game = new TTT3DBoard(3);
+                else this.game = new UltimateBoard();
+                
+                let moveCount = 0;
+                const maxMoves = 100;
+                
+                while(!this.game.winner && moveCount < maxMoves) {
+                    const p = this.game.currentPlayer;
+                    
+                    const move = await this.getKIMove(this.game, p, null);
+                    
+                    if(move) {
+                        if(this.gameType === 'ultimate' && typeof move === 'object')
+                            this.game.makeMove(move.big, move.small);
+                        else
+                            this.game.makeMove(move);
+                        moveCount++;
+                    } else {
+                        break;
+                    }
+                }
+                
+                if(this.game.winner === 1) this.stats.blueWins++;
+                else if(this.game.winner === 2) this.stats.redWins++;
+                else this.stats.draws++;
+                
+                this.stats.totalMoves += moveCount;
+                this.draw();
             },
 
             async evaluateVisual(node, gameState, viz, ms) {
                 if (!node || !node.active) return null;
                 
-                if (ms > 0) {
+                if (ms > 0 && viz) {
                     viz.highlightCheck(node.name);
                     await new Promise(r => setTimeout(r, ms));
                 }
@@ -315,7 +614,7 @@
                     const targetNode = res ? node.thenNode : node.elseNode;
                     const result = await this.evaluateVisual(targetNode, gameState, viz, ms);
                     
-                    if (!result && ms > 0) {
+                    if (!result && ms > 0 && viz) {
                         viz._removeClass(node.name, 'checking');
                     }
                     return result;
@@ -327,47 +626,22 @@
                         if (result) {
                             return result;
                         }
-                        if (ms > 0) {
+                        if (ms > 0 && viz) {
                             viz._removeClass(child.name, 'checking');
                         }
                     }
-                    if (ms > 0) viz._removeClass(node.name, 'checking');
+                    if (ms > 0 && viz) viz._removeClass(node.name, 'checking');
                     return null;
                 }
 
                 const result = node.evaluate(gameState);
                 if (result) {
-                    if (ms > 0) viz.highlightSuccess(node.name);
+                    if (ms > 0 && viz) viz.highlightSuccess(node.name);
                     return result.move;
                 } else {
-                    if (ms > 0) viz._removeClass(node.name, 'checking');
+                    if (ms > 0 && viz) viz._removeClass(node.name, 'checking');
                     return null;
                 }
-            },
-
-            toggleAutoMatch() {
-                this.isAuto = !this.isAuto;
-                const btn = document.getElementById('btnAuto');
-                if (this.isAuto) {
-                    btn.innerHTML = "⏹ Stopp";
-                    btn.style.background = "#c0392b";
-                    this.loop();
-                } else {
-                    btn.innerHTML = "⏩ Auto";
-                    btn.style.background = "#8e44ad";
-                }
-            },
-
-            loop() {
-                if(!this.isAuto || this.game.winner !== 0) {
-                    this.isAuto = false;
-                    document.getElementById('btnAuto').innerText = "⏩ Auto";
-                    document.getElementById('btnAuto').style.background = "#8e44ad";
-                    return;
-                }
-                this.stepAI(false).then(() => {
-                    if(this.isAuto) setTimeout(() => this.loop(), 200);
-                });
             },
 
             checkWin() {
@@ -375,17 +649,39 @@
                     const w = this.game.winner;
                     const msg = w===3 ? "Remis" : `Sieg ${w===1?'Blau':'Rot'}`;
                     this.updateStatus(msg);
-                    this.log(msg);
                 } else {
                     const p = this.game.currentPlayer;
                     this.updateStatus(`${p===1?'Blau':'Rot'} ist dran`);
                 }
             },
-            updateStatus(msg) { document.getElementById('statusText').innerText = msg || "Bereit"; },
-            log(msg) { 
-                const l = document.getElementById('log'); 
-                l.innerHTML += `<div class="log-entry">${msg}</div>`; 
-                l.scrollTop = l.scrollHeight;
+
+            updateStats() {
+                const total = this.stats.blueWins + this.stats.redWins + this.stats.draws;
+                if(total === 0) return;
+                
+                document.getElementById('statsPanel').style.display = 'block';
+                document.getElementById('statGames').textContent = total;
+                document.getElementById('statBlueWins').textContent = this.stats.blueWins;
+                document.getElementById('statRedWins').textContent = this.stats.redWins;
+                document.getElementById('statDraws').textContent = this.stats.draws;
+                
+                const bluePercent = Math.round((this.stats.blueWins / total) * 100);
+                const redPercent = Math.round((this.stats.redWins / total) * 100);
+                const drawPercent = Math.round((this.stats.draws / total) * 100);
+                
+                document.getElementById('statBluePercent').textContent = bluePercent + '%';
+                document.getElementById('statRedPercent').textContent = redPercent + '%';
+                document.getElementById('statDrawPercent').textContent = drawPercent + '%';
+                
+                const avgMoves = (this.stats.totalMoves / total).toFixed(1);
+                document.getElementById('statAvgMoves').textContent = avgMoves;
+                
+                const totalSecs = (this.stats.totalTime / 1000).toFixed(2);
+                document.getElementById('statTotalTime').textContent = totalSecs + 's';
+            },
+
+            updateStatus(msg) { 
+                document.getElementById('statusText').innerText = msg || "Bereit"; 
             }
         };
         window.onload = () => Arena.init();
