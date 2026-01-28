@@ -2,130 +2,219 @@
 <html lang="de">
 <head>
     <meta charset="UTF-8">
-    <title>KI Arena</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI Arena Playground</title>
     <link rel="stylesheet" href="../css/style.css">
-    <style>
-        .arena-card { background: white; padding: 20px; border-radius: 8px; width: 280px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; flex-direction: column; gap: 10px; }
-        .vs-badge { font-size: 2rem; font-weight: bold; color: #bdc3c7; margin: 0 20px; }
-        .result-box { display: flex; justify-content: space-between; padding: 10px; background: #f8f9fa; border-radius: 4px; font-size: 1.1rem; }
-    </style>
+    <link rel="stylesheet" href="../css/arena-playground.css">
 </head>
 <body>
     <div class="viz-toolbar">
         <a href="../index.html" class="viz-btn btn-back">⬅ Menü</a>
-        <span style="margin-left:10px; font-weight:bold; color:white;">KI Arena Simulator</span>
+        <span style="margin-left:10px; font-weight:bold; color:white;">🤖 KI Arena Playground</span>
     </div>
 
-    <div class="main-area" style="flex-direction: row; align-items: flex-start; gap: 30px; padding-top: 40px; flex-wrap: wrap; justify-content: center;">
-        
-        <div class="arena-card">
-            <h3 style="color:#3498db; margin:0; border-bottom:2px solid #3498db; padding-bottom:5px;">Spieler 1 (Blau)</h3>
-            <div class="viz-control-group">
-                <label class="viz-label">Agent Typ</label>
-                <select id="p1Select" class="viz-select">
-                    <option value="random">Random Agent</option>
-                    <option value="rulebased">Rule Based Agent</option>
-                </select>
-            </div>
-            <div class="result-box">
-                <span>Siege:</span>
-                <strong id="resP1" style="color:#3498db">0</strong>
-            </div>
-        </div>
+    <div class="arena-container">
+        <h1>🤖 KI Arena Playground</h1>
+        <p class="subtitle">Zwei KI-Agenten treten gegeneinander an</p>
 
-        <div style="display:flex; flex-direction:column; align-items:center; gap:15px; background:white; padding:20px; border-radius:8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <div class="vs-badge">VS</div>
-            <div class="viz-control-group" style="width: 100%;">
-                <label class="viz-label">Spielart</label>
-                <select id="gameTypeSelect" class="viz-select">
-                    <option value="regular">TTT Klassik</option>
-                    <option value="ultimate">Ultimate TTT</option>
-                    <option value="3d">3D TTT</option>
-                </select>
-            </div>
-            <div class="viz-control-group" style="width: 100%;">
-                <label class="viz-label">Runden Anzahl</label>
-                <input type="number" id="roundsInput" value="100" class="viz-input">
-            </div>
-            <button class="viz-btn btn-action" style="width:100%" onclick="runArena()">Simulation Starten</button>
+        <!-- KONFIGURATION -->
+        <section class="arena-section config-section">
+            <h2>⚙️ Konfiguration</h2>
             
-            <div id="status" style="margin-top:10px; color:#7f8c8d; font-size:0.9rem;">Bereit</div>
+            <div class="config-grid">
+                <!-- Spiel-Auswahl -->
+                <div class="config-block">
+                    <label for="gameSelect">Spiel:</label>
+                    <select id="gameSelect">
+                        <option value="TTT Regular">Tic-Tac-Toe (3×3)</option>
+                        <option value="TTT 3D">Tic-Tac-Toe 3D</option>
+                        <option value="TTT Ultimate">Tic-Tac-Toe Ultimate</option>
+                    </select>
+                </div>
+
+                <!-- Agent 1 (Blau) Auswahl -->
+                <div class="config-block">
+                    <label for="agent1Select">Agent 1 (Blau):</label>
+                    <select id="agent1Select">
+                        <optgroup label="Minimax">
+                            <option value="minimaxCautious">Minimax (Vorsichtig)</option>
+                            <option value="minimaxBalanced" selected>Minimax (Ausgewogen)</option>
+                            <option value="minimaxAggressive">Minimax (Aggressiv)</option>
+                            <option value="minimaxHeuristicCentered">Minimax (Zentraler Fokus)</option>
+                            <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
+                        </optgroup>
+                        <optgroup label="Regel-KI">
+                            <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
+                            <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
+                            <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
+                        </optgroup>
+                        <optgroup label="Andere">
+                            <option value="random">Zufalls-KI</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Agent 2 (Rot) Auswahl -->
+                <div class="config-block">
+                    <label for="agent2Select">Agent 2 (Rot):</label>
+                    <select id="agent2Select">
+                        <optgroup label="Minimax">
+                            <option value="minimaxCautious">Minimax (Vorsichtig)</option>
+                            <option value="minimaxBalanced">Minimax (Ausgewogen)</option>
+                            <option value="minimaxAggressive" selected>Minimax (Aggressiv)</option>
+                            <option value="minimaxHeuristicCentered">Minimax (Zentraler Fokus)</option>
+                            <option value="minimaxHeuristicMobility">Minimax (Mobilität)</option>
+                        </optgroup>
+                        <optgroup label="Regel-KI">
+                            <option value="ruleBasedConservative">Regel-KI (Konservativ)</option>
+                            <option value="ruleBasedBalanced">Regel-KI (Ausgewogen)</option>
+                            <option value="ruleBasedAggressive">Regel-KI (Offensiv)</option>
+                        </optgroup>
+                        <optgroup label="Andere">
+                            <option value="random">Zufalls-KI</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <!-- Anzahl Spiele -->
+                <div class="config-block">
+                    <label for="numGames">Anzahl Spiele:</label>
+                    <input type="number" id="numGames" min="1" max="10000" value="100">
+                </div>
+
+                <!-- Erstes Spiel anzeigen -->
+                <div class="config-block checkbox">
+                    <label>
+                        <input type="checkbox" id="showFirstGame" checked>
+                        Erstes Spiel visualisieren
+                    </label>
+                </div>
+
+                <!-- Advanced Stats -->
+                <div class="config-block checkbox">
+                    <label>
+                        <input type="checkbox" id="showAdvancedStats">
+                        Advanced Stats anzeigen
+                    </label>
+                </div>
+            </div>
+
+            <!-- Start Button -->
+            <button id="startButton" class="btn btn-primary btn-large">🚀 Arena starten</button>
+            <button id="stopButton" class="btn btn-secondary btn-large" disabled style="display: none;">⏹️ Stoppen</button>
+        </section>
+
+        <!-- FORTSCHRITTS-ANZEIGE -->
+        <section class="arena-section progress-section" id="progressSection" style="display: none;">
+            <h2>⏳ Simulation läuft...</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <p class="progress-text" id="progressText">0 / 100 Spiele</p>
+        </section>
+
+        <!-- SPIEL-VISUALISIERUNG (Optional) -->
+        <section class="arena-section game-section" id="gameSection" style="display: none;">
+            <h2>📋 Erstes Spiel (Visualisierung)</h2>
+            <div id="gameBoard" class="game-board"></div>
+            <p id="gameStatus" class="game-status">Spiel lädt...</p>
+        </section>
+
+        <!-- STATISTIK-ERGEBNISSE -->
+        <section class="arena-section results-section" id="resultsSection" style="display: none;">
+            <h2>📊 Ergebnisse</h2>
             
-            <div class="result-box" style="width: 100%; box-sizing: border-box;">
-                <span>Remis:</span>
-                <strong id="resDraw">0</strong>
-            </div>
-             <div class="result-box" style="width: 100%; box-sizing: border-box;">
-                <span>Zeit:</span>
-                <strong id="resTime">-</strong>
-            </div>
-        </div>
+            <!-- Übersicht -->
+            <div class="stats-overview">
+                <div class="stat-card blue">
+                    <div class="stat-value" id="statBlueWins">0</div>
+                    <div class="stat-label">Siege (Blau)</div>
+                    <div class="stat-percentage" id="statBluePercent">0%</div>
+                </div>
 
-        <div class="arena-card">
-            <h3 style="color:#e74c3c; margin:0; border-bottom:2px solid #e74c3c; padding-bottom:5px;">Spieler 2 (Rot)</h3>
-            <div class="viz-control-group">
-                <label class="viz-label">Agent Typ</label>
-                <select id="p2Select" class="viz-select">
-                    <option value="random" selected>Random Agent</option>
-                    <option value="rulebased">Rule Based Agent</option>
-                </select>
-            </div>
-            <div class="result-box">
-                <span>Siege:</span>
-                <strong id="resP2" style="color:#e74c3c">0</strong>
-            </div>
-        </div>
+                <div class="stat-card draw">
+                    <div class="stat-value" id="statDraws">0</div>
+                    <div class="stat-label">Unentschieden</div>
+                    <div class="stat-percentage" id="statDrawPercent">0%</div>
+                </div>
 
+                <div class="stat-card red">
+                    <div class="stat-value" id="statRedWins">0</div>
+                    <div class="stat-label">Siege (Rot)</div>
+                    <div class="stat-percentage" id="statRedPercent">0%</div>
+                </div>
+            </div>
+
+            <!-- Details -->
+            <div class="stats-details">
+                <div class="detail-item">
+                    <span class="detail-label">Durchschnittliche Züge pro Spiel:</span>
+                    <span id="statAvgMoves" class="detail-value">0</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Durchschnittliche Spieldauer:</span>
+                    <span id="statAvgTime" class="detail-value">0 ms</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Gesamtdauer Simulation:</span>
+                    <span id="statTotalTime" class="detail-value">0 s</span>
+                </div>
+            </div>
+
+            <!-- Advanced Stats (Toggle) -->
+            <details class="stats-advanced" id="advancedStatsPanel" style="display: none;">
+                <summary>Advanced Statistiken</summary>
+                <div class="advanced-content">
+                    <div class="detail-item">
+                        <span class="detail-label">Ø Zugzeit (Blau):</span>
+                        <span id="statBlueAvgTime" class="detail-value">0 ms</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Max Zugzeit (Blau):</span>
+                        <span id="statBlueMaxTime" class="detail-value">0 ms</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Ø Zugzeit (Rot):</span>
+                        <span id="statRedAvgTime" class="detail-value">0 ms</span>
+                    </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Max Zugzeit (Rot):</span>
+                        <span id="statRedMaxTime" class="detail-value">0 ms</span>
+                    </div>
+                </div>
+            </details>
+
+            <!-- Agent-Namen anzeigen -->
+            <div class="agent-names">
+                <p><strong>Agent 1 (Blau):</strong> <span id="agentBlueName">-</span></p>
+                <p><strong>Agent 2 (Rot):</strong> <span id="agentRedName">-</span></p>
+            </div>
+
+            <!-- Neuer Vergleich -->
+            <button id="resetButton" class="btn btn-primary">🔄 Neuer Vergleich</button>
+        </section>
+
+        <!-- FEHLER-ANZEIGE -->
+        <section class="arena-section error-section" id="errorSection" style="display: none;">
+            <h2>⚠️ Fehler</h2>
+            <p id="errorMessage" class="error-message"></p>
+        </section>
     </div>
 
-    <script src="../js/core/game-state.js"></script>
+    <!-- Scripts -->
     <script src="../js/core/agent.js"></script>
-    <script src="../js/ai/agents/random-agent.js"></script>
+    <script src="../js/core/game-state.js"></script>
+    <script src="../js/games/tictactoe/logic.js"></script>
+    <script src="../js/ai/heuristics.js"></script>
+    <script src="../js/ai/minimax.js"></script>
+    <script src="../js/ai/agents/minimax-agent.js"></script>
     <script src="../js/ai/agents/rule-based-agent.js"></script>
+    <script src="../js/ai/agents/random-agent.js"></script>
     <script src="../js/ai/rules/rule-structure.js"></script>
     <script src="../js/ai/rules/ttt-rules.js"></script>
-    <script src="../js/games/tictactoe/logic.js"></script>
-    <script src="../js/ai/arena.js"></script>
-
-    <script>
-        async function runArena() {
-            const rounds = parseInt(document.getElementById('roundsInput').value);
-            const gameType = document.getElementById('gameTypeSelect').value;
-            const status = document.getElementById('status');
-            
-            // Factory Pattern für die Spiele
-            const factory = {
-                create: () => {
-                    if (gameType === 'regular') return new TTTRegularBoard();
-                    if (gameType === 'ultimate') return new UltimateBoard();
-                    if (gameType === '3d') return new TTT3DBoard();
-                }
-            };
-
-            // Agent Factory
-            const createAgent = (type) => {
-                if (type === 'random') return new RandomAgent();
-                if (type === 'rulebased') return new RuleBasedAgent(createStrategyTree(gameType));
-            };
-
-            const p1 = createAgent(document.getElementById('p1Select').value);
-            const p2 = createAgent(document.getElementById('p2Select').value);
-
-            status.innerText = "Simuliere " + rounds + " Spiele...";
-            
-            const arena = new Arena(factory, p1, p2);
-            
-            // Start
-            const res = await arena.runSeries(rounds);
-            
-            // Ergebnisse
-            document.getElementById('resP1').innerText = res.stats[1];
-            document.getElementById('resP2').innerText = res.stats[2];
-            document.getElementById('resDraw').innerText = res.stats[0];
-            document.getElementById('resTime').innerText = res.duration.toFixed(0) + "ms";
-            
-            status.innerText = "Simulation beendet.";
-        }
-    </script>
+    <script src="../js/ai/game-adapter.js"></script>
+    <script src="../js/ai/agent-profiles.js"></script>
+    <script src="../js/ai/arena-controller.js"></script>
 </body>
 </html>
+
