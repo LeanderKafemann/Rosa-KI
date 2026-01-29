@@ -67,18 +67,10 @@ class Arena {
 
             if (action && action.move !== undefined) {
                 // Zug ausführen
-                // Manche Spiele nutzen Index (number), Ultimate nutzt Object
-                const moveData = action.move;
-                let success = false;
-                
-                if (typeof moveData === 'object' && moveData.big !== undefined) {
-                    success = game.makeMove(moveData.big, moveData.small);
-                } else {
-                    success = game.makeMove(moveData);
-                }
+                const success = game.makeMove(action.move);
 
                 if (!success) {
-                    console.error(`Arena: Ungültiger Zug von Agent ${player}`, moveData);
+                    console.error(`Arena: Ungültiger Zug von Agent ${player}`, action.move);
                     break; 
                 }
             } else {

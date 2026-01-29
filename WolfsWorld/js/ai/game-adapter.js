@@ -69,14 +69,8 @@ class TTTGameAdapter {
      * @returns {boolean}
      */
     makeMove(move) {
-        // Delegate zur Board-Logik
-        if (typeof move === 'object' && move.big !== undefined) {
-            // Ultimate Format
-            return this.board.makeMove(move.big, move.small);
-        } else {
-            // Regular/3D Format
-            return this.board.makeMove(move);
-        }
+        // Delegate zur Board-Logik (Format wird dort zu Bedarf behandelt)
+        return this.board.makeMove(move);
     }
 
     /**

@@ -10,8 +10,7 @@ const TTTRulesLibrary = {
         canWin: (game, move, player) => {
             const sim = game.clone();
             sim.currentPlayer = player;
-            if (typeof move === 'object') sim.makeMove(move.big, move.small);
-            else sim.makeMove(move);
+            sim.makeMove(move);
             return sim.winner === player;
         },
         

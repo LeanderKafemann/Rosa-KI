@@ -122,12 +122,7 @@ class MinimaxEngine {
             
             for (const move of validMoves) {
                 const childState = state.clone();
-                // Unterstütze beide Move-Formate: {big, small} und einfache Zahlen
-                if (typeof move === 'object' && move.big !== undefined && move.small !== undefined) {
-                    childState.makeMove(move.big, move.small);
-                } else {
-                    childState.makeMove(move);
-                }
+                childState.makeMove(move);
 
                 const evalResult = this._minimax(childState, depth - 1, alpha, beta, false, rootPlayer);
                 
@@ -161,12 +156,7 @@ class MinimaxEngine {
             
             for (const move of validMoves) {
                 const childState = state.clone();
-                // Unterstütze beide Move-Formate: {big, small} und einfache Zahlen
-                if (typeof move === 'object' && move.big !== undefined && move.small !== undefined) {
-                    childState.makeMove(move.big, move.small);
-                } else {
-                    childState.makeMove(move);
-                }
+                childState.makeMove(move);
 
                 const evalResult = this._minimax(childState, depth - 1, alpha, beta, true, rootPlayer);
                 

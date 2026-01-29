@@ -2,7 +2,19 @@
  * Interface für einen Spielzustand.
  * Jedes Spiel (TicTacToe, RotateBox, KnightsTour) muss dieses Interface implementieren,
  * damit die KI-Agenten und Suchalgorithmen damit arbeiten können.
- * * @interface GameState
+ *
+ * Mindest-Interface (für Agenten/Arena/Minimax):
+ * - getAllValidMoves()
+ * - makeMove(move)
+ * - clone()
+ * - getStateKey()
+ * - currentPlayer, winner, isGameOver
+ *
+ * Optionales Such-Interface (für SearchEngine & Lernpfade):
+ * - isGoal()
+ * - getNextStates()
+ *
+ * @interface GameState
  */
 class GameState {
     constructor() {
@@ -14,7 +26,9 @@ class GameState {
 
         /**
          * Der Gewinner des Spiels.
-         * 0 = Läuft noch / Remis (je nach Kontext), 1 = Spieler 1, 2 = Spieler 2.
+         * Empfohlenes Schema:
+         * 0 = Läuft noch, 1 = Spieler 1, 2 = Spieler 2, 3 = Remis.
+         * (Bestehende Spiele dürfen 3=Remis nutzen; 0 sollte nicht Remis bedeuten.)
          * @type {number}
          */
         this.winner = 0;
@@ -37,6 +51,7 @@ class GameState {
     /**
      * Führt einen Zug aus und aktualisiert den internen Zustand.
      * @param {number|Object} move - Der Zug, der ausgeführt werden soll.
+     *  Empfehlung: komplexe Züge als Objekt (z.B. {big, small} oder {x, y}).
      * @returns {boolean} True, wenn der Zug gültig war und ausgeführt wurde.
      */
     makeMove(move) {
@@ -59,5 +74,21 @@ class GameState {
      */
     getStateKey() {
         throw new Error("Method 'getStateKey()' must be implemented.");
+    }
+
+    /**
+     * OPTIONAL (für SearchEngine): Prüft, ob ein Zielzustand erreicht ist.
+     * @returns {boolean}
+     */
+    isGoal() {
+        throw new Error("Optional method 'isGoal()' not implemented.");
+    }
+
+    /**
+     * OPTIONAL (für SearchEngine): Liefert Nachfolgezustände.
+     * @returns {Array<{move: (number|Object|string), state: GameState}>}
+     */
+    getNextStates() {
+        throw new Error("Optional method 'getNextStates()' not implemented.");
     }
 }

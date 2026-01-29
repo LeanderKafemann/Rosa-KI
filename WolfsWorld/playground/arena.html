@@ -216,9 +216,9 @@
             init() {
                 this.canvas = document.getElementById('gameCanvas');
                 this.canvas.addEventListener('mousedown', (e) => this.handleClick(e));
+                this.changeGameType();
                 this.updateKIConfig(1);
                 this.updateKIConfig(2);
-                this.changeGameType();
             },
 
             changeGameType() {
@@ -363,6 +363,8 @@
                         <span id="depthValue${player}" style="font-size: 0.85em; margin-left: 5px;">${this.kiConfig[player].depth}</span>
                     `;
                 }
+                
+                this.reset();
             },
 
             updateDepth(player, depth) {
@@ -393,17 +395,19 @@
                 return moves;
             },
 
-            randomMove() {
-                const moves = this.getValidMoves();
+            randomMove(gameState) {
+                const moves = this.getValidMovesFrom(gameState);
+                console.log('Random moves available:', moves.length, moves);
                 return moves.length > 0 ? moves[Math.floor(Math.random() * moves.length)] : null;
             },
 
             evaluateMinimax(gameState, depth, isMaximizing, alpha, beta) {
                 const winner = gameState.winner;
-                if (winner === 1) return { score: 10 - depth, move: null };
-                if (winner === 2) return { score: depth - 10, move: null };
-                if (winner === 3) return { score: 0, move: null };
-                if (depth === 0) return { score: 0, move: null };
+                
+                // Terminal states
+                if (winner === 1) return { score: 100 - depth, move: null };
+                if (winner === 2) return { score: -100 + depth, move: null };
+                if (winner === 3 || depth === 0) return { score: 0, move: null };
 
                 const moves = this.getValidMovesFrom(gameState);
                 if (moves.length === 0) return { score: 0, move: null };
@@ -413,10 +417,14 @@
 
                 for (const move of moves) {
                     const cloned = this.cloneGame(gameState);
-                    if (this.gameType === 'ultimate' && typeof move === 'object') {
-                        cloned.makeMove(move.big, move.small);
-                    } else {
-                        cloned.makeMove(move);
+                    try {
+                        if (this.gameType === 'ultimate' && typeof move === 'object') {
+                            cloned.makeMove(move.big, move.small);
+                        } else {
+                            cloned.makeMove(move);
+                        }
+                    } catch (e) {
+                        continue;
                     }
 
                     const { score } = this.evaluateMinimax(cloned, depth - 1, !isMaximizing, alpha, beta);
@@ -443,24 +451,34 @@
 
             getValidMovesFrom(gameState) {
                 const moves = [];
-                if (this.gameType === 'regular') {
-                    for (let i = 0; i < 9; i++) {
-                        if (gameState.board[i] === 0) moves.push(i);
-                    }
-                } else if (this.gameType === '3d') {
-                    for (let i = 0; i < 27; i++) {
-                        if (gameState.board[i] === 0) moves.push(i);
-                    }
-                } else {
+                
+                // Bestimme Spieltyp vom gameState
+                const hasMainBoard = gameState.mainBoard !== undefined;
+                const hasBoard = gameState.board !== undefined;
+                const is3D = hasBoard && gameState.board.length === 27;
+                
+                if (hasMainBoard) {
+                    // Ultimate
                     for (let big = 0; big < 9; big++) {
                         if (gameState.mainBoard[big] !== 0) continue;
                         for (let small = 0; small < 9; small++) {
-                            if (gameState.subBoards[big].board[small] === 0) {
+                            if (gameState.subBoards && gameState.subBoards[big] && gameState.subBoards[big].board[small] === 0) {
                                 moves.push({ big, small });
                             }
                         }
                     }
+                } else if (is3D) {
+                    // 3D
+                    for (let i = 0; i < 27; i++) {
+                        if (gameState.board[i] === 0) moves.push(i);
+                    }
+                } else if (hasBoard) {
+                    // Regular
+                    for (let i = 0; i < 9; i++) {
+                        if (gameState.board[i] === 0) moves.push(i);
+                    }
                 }
+                
                 return moves;
             },
 
@@ -483,12 +501,12 @@
                     clone.subBoards = gameState.subBoards.map(b => {
                         const sb = new TTTRegularBoard();
                         sb.board = [...b.board];
-                        sb.currentPlayer = b.currentPlayer;
                         sb.winner = b.winner;
                         return sb;
                     });
                     clone.currentPlayer = gameState.currentPlayer;
                     clone.winner = gameState.winner;
+                    clone.lastMove = gameState.lastMove;
                     return clone;
                 }
             },
@@ -497,9 +515,9 @@
                 const type = this.kiConfig[player].type;
                 
                 if (type === 'random') {
-                    return this.randomMove();
+                    return this.randomMove(gameState);
                 } else if (type === 'minimax') {
-                    const depth = this.kiConfig[player].depth;
+                    const depth = Math.min(this.kiConfig[player].depth, 4);
                     const isMax = player === 1;
                     const { move } = this.evaluateMinimax(gameState, depth, isMax, -Infinity, Infinity);
                     return move;
@@ -517,23 +535,40 @@
                 btn.style.opacity = '0.5';
                 
                 try {
-                    const p = this.game.currentPlayer;
-                    const viz = (this.kiConfig[p].type === 'ruledbased') ? (p===1 ? this.vizP1 : this.vizP2) : null;
+                    let moveCount = 0;
+                    const maxMoves = 100;
                     
-                    if (viz) viz.clearHighlights();
-                    this.updateStatus(`KI ${p===1?'Blau':'Rot'} rechnet...`);
-
-                    const move = await this.getKIMove(this.game, p, viz);
-
-                    if (move) {
-                        if (this.gameType === 'ultimate' && typeof move === 'object') 
-                            this.game.makeMove(move.big, move.small);
-                        else 
-                            this.game.makeMove(move);
+                    while(!this.game.winner && moveCount < maxMoves) {
+                        const p = this.game.currentPlayer;
+                        const viz = (this.kiConfig[p].type === 'ruledbased') ? (p===1 ? this.vizP1 : this.vizP2) : null;
                         
-                        this.draw();
-                        this.checkWin();
+                        if (viz) viz.clearHighlights();
+                        this.updateStatus(`Spiel läuft... Zug ${moveCount + 1}`);
+
+                        const move = await this.getKIMove(this.game, p, viz);
+                        console.log('Move received:', move, 'Player:', p);
+
+                        if (move !== null && move !== undefined) {
+                            try {
+                                if (this.gameType === 'ultimate' && typeof move === 'object') 
+                                    this.game.makeMove(move.big, move.small);
+                                else 
+                                    this.game.makeMove(move);
+                                
+                                this.draw();
+                                moveCount++;
+                                await new Promise(r => setTimeout(r, 100));
+                            } catch (e) {
+                                console.error('Error making move:', e, move);
+                                break;
+                            }
+                        } else {
+                            console.log('No valid move found');
+                            break;
+                        }
                     }
+                    
+                    this.checkWin();
                 } finally {
                     btn.disabled = false;
                     btn.style.opacity = '1';

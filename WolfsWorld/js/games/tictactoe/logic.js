@@ -329,14 +329,21 @@ class UltimateBoard extends TTTBase {
 
     /**
      * Führt einen Zug aus.
-     * - Index des großen Boards (0-8).
-     * @param {number} big 
-     * - Index des kleinen Feldes (0-8).
-     * @param {number} small
-     * True bei Erfolg. 
-     * @returns {boolean} 
+     * Akzeptiert flexibel:
+     * - makeMove({big: 0, small: 4}) - Objekt-Format
+     * - makeMove(0, 4) - zwei Parameter
+     * 
+     * @param {number|object} big - Index des großen Boards (0-8) oder Move-Objekt
+     * @param {number} [small] - Index des kleinen Feldes (0-8), optional wenn big ein Objekt ist
+     * @returns {boolean} True bei Erfolg
      */
     makeMove(big, small) {
+        // Flexibles Format: akzeptiere {big, small} Objekt oder zwei Parameter
+        if (typeof big === 'object' && big !== null) {
+            small = big.small;
+            big = big.big;
+        }
+        
         // 1. Basis-Checks
         if (this.winner !== 0) return false;
         

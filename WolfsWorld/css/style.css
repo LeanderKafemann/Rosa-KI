@@ -190,6 +190,7 @@ canvas {
     flex-direction: column;
     overflow: hidden;
     border: 1px solid #dfe6e9;
+    min-height: 500px;
 }
 
 .col-game {
@@ -209,13 +210,6 @@ canvas {
     display: flex;
     align-items: center;
     gap: 10px;
-}
-
-.tree-container {
-    flex: 1;
-    overflow-y: auto;
-    padding: 15px;
-    background: #fcfcfc;
 }
 
 /* Flowchart Node Styling */

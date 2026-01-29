@@ -94,7 +94,7 @@
 <body class="lab-page">
 
     <div class="lab-toolbar">
-        <a href="../index.html" class="viz-btn viz-btn-action">⬅ Menü</a>
+        <a href="../index.html" class="viz-btn btn-back">⬅ Menü</a>
         
         <div class="viz-control-group" style="margin-left: 20px;">
             <label class="viz-label">Szenario:</label>
@@ -115,9 +115,8 @@
 
         <div class="viz-control-group" style="margin-left: 20px;">
             <label class="viz-label">⏱ KI Tempo:</label>
-            <input type="range" id="speedSlider" min="50" max="1500" value="600" 
+            <input type="range" id="speedSlider" min="50" max="1500" value="900" 
                    style="width:150px; cursor:pointer;" onchange="Lab.setDelay(this.value)">
-            <span id="speedLabel" style="min-width: 45px;">600ms</span>
         </div>
     </div>
 
@@ -323,8 +322,7 @@
 
             // --- KI ---
             setDelay(value) {
-                this.delay = parseInt(value);
-                document.getElementById('speedLabel').innerText = value + 'ms';
+                this.delay = 1550 - parseInt(value);
             },
 
             async stepAI(fast = false) {
@@ -368,44 +366,60 @@
             async evaluateVisual(node, gameState, viz, ms) {
                 if (!node || !node.active) return null;
                 
-                // Punkt j) FIX: Nur kritische Knoten hinweisen, kein aggressives Cleanup
-                // Nur AtomicRules und finale Gewinner werden visuell hervorgehoben
-                
-                // Condition (If-Then-Else)
-                if (node.conditionFn) {
-                    const res = node.conditionFn(gameState);
-                    const targetNode = res ? node.thenNode : node.elseNode;
-                    return await this.evaluateVisual(targetNode, gameState, viz, ms);
-                }
-                
-                // Group (iterate children)
-                if (node.children && node.children.length > 0) {
-                    for (const child of node.children) {
-                        const result = await this.evaluateVisual(child, gameState, viz, ms);
-                        if (result) {
-                            return result;  // Nur Gewinner wird zurückgegeben
-                        }
+                // Punkt j) FIX: Tracking für korrekte Cleanup
+                const traverse = async (n) => {
+                    if (!n || !n.active) return null;
+                    
+                    // Highlighting
+                    if (ms > 0) {
+                        viz.highlightCheck(n.name);
+                        await new Promise(r => setTimeout(r, ms));
                     }
-                    return null;
-                }
 
-                // Rule (atomic) - nur diese werden gehighlighted
-                if (ms > 0) {
-                    viz.highlightCheck(node.name);
-                    await new Promise(r => setTimeout(r, ms));
-                }
+                    // Condition (If-Then-Else)
+                    if (n.conditionFn) {
+                        const res = n.conditionFn(gameState);
+                        const targetNode = res ? n.thenNode : n.elseNode;
+                        const result = await traverse(targetNode);
+                        
+                        // Wenn nicht erfolgreich, cleanup
+                        if (!result && ms > 0) {
+                            viz._removeClass(n.name, 'checking');
+                        }
+                        return result;
+                    }
+                    
+                    // Group (iterate children with cleanup)
+                    if (n.children && n.children.length > 0) {
+                        for (const child of n.children) {
+                            const result = await traverse(child);
+                            if (result) {
+                                return result;  // Nur Gewinner-Pfad
+                            }
+                            // Child nicht erfolgreich → cleanup
+                            if (ms > 0) {
+                                viz._removeClass(child.name, 'checking');
+                            }
+                        }
+                        // Keine Kinder erfolgreich
+                        if (ms > 0) viz._removeClass(n.name, 'checking');
+                        return null;
+                    }
+
+                    // Rule (atomic)
+                    const result = n.evaluate(gameState);
+                    if (result) {
+                        // SUCCESS!
+                        if (ms > 0) viz.highlightSuccess(n.name);
+                        return result.move;
+                    } else {
+                        // Rule nicht erfolgreich
+                        if (ms > 0) viz._removeClass(n.name, 'checking');
+                        return null;
+                    }
+                };
                 
-                const result = node.evaluate(gameState);
-                if (result) {
-                    // SUCCESS! Nur dieser Knoten wird grün
-                    if (ms > 0) viz.highlightSuccess(node.name);
-                    return result.move;
-                } else {
-                    // Nicht erfolgreich - kurz aufräumen
-                    if (ms > 0) viz._removeClass(node.name, 'checking');
-                    return null;
-                }
-            },
+                return await traverse(node);
             },
 
             toggleAutoMatch() {
