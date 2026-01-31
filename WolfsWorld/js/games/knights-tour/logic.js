@@ -12,12 +12,21 @@ class KnightBoard {
      */
     constructor(size) {
         this.size = parseInt(size);
-        /** @type {number[][]} Das Gitter: 0=leer, N=Zugnummer */
+        /**
+         * Das Gitter: 0=leer, N=Zugnummer
+         * @type {number[][]}
+         */
         this.grid = [];
-        /** @type {Array<{r:number, c:number}>} Historie der Züge */
+        /**
+         * Historie der Züge
+         * @type {Array<{r:number, c:number}>}
+         */
         this.history = [];
         this.moveCount = 0;
-        /** @type {{r:number, c:number}|null} Aktuelle Position */
+        /**
+         * Aktuelle Position
+         * @type {{r:number, c:number}|null}
+         */
         this.currentPos = null;
         this.won = false;
 

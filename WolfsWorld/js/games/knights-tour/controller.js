@@ -4,14 +4,26 @@
  */
 
 const Game = {
-    /** @type {KnightBoard|null} */
+    /**
+     * Das aktuelle Spielbrett.
+     * @type {KnightBoard|null}
+     */
     board: null,
-    /** @type {HTMLCanvasElement|null} */
+    /**
+     * Canvas-Element für Rendering.
+     * @type {HTMLCanvasElement|null}
+     */
     canvas: null,
     
-    /** @type {boolean} Läuft der Solver gerade? */
+    /**
+     * Läuft der Solver gerade?
+     * @type {boolean}
+     */
     isSolving: false,
-    /** @type {boolean} Wurde Stopp angefordert? */
+    /**
+     * Wurde Stopp angefordert?
+     * @type {boolean}
+     */
     stopRequested: false,
     
     init() {

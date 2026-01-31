@@ -15,22 +15,34 @@ class RotateBoard {
      * @param {string|null} idOrData - Die Level-ID ('0'-'3') oder null (für leeres Board/Klonen).
      */
     constructor(idOrData) {
-        /** @type {number} Anzahl der getätigten Züge. */
+        /**
+         * Anzahl der getätigten Züge.
+         * @type {number}
+         */
         this.moves = 0;
-        /** @type {boolean} Gibt an, ob das Ziel erreicht wurde. */
+        /**
+         * Gibt an, ob das Ziel erreicht wurde.
+         * @type {boolean}
+         */
         this.won = false;
-        /** @type {boolean} Flag für laufende Fall-Animationen. */
+        /**
+         * Flag für laufende Fall-Animationen.
+         * @type {boolean}
+         */
         this.isFalling = false;
-        /** @type {Object.<number, number>} Speichert visuelle Offsets für fallende Boxen. */
+        /**
+         * Speichert visuelle Offsets für fallende Boxen.
+         * @type {Object.<number, number>}
+         */
         this.fallOffsets = {};
         
         // Grid Dimensionen
         this.rows = 0;
         this.cols = 0;
-        /** 
+        /**
          * Das Spielfeld als 2D-Array (-2=Wand, -1=Leer, -3=Ziel, >=0 BoxID).
-         * @type {number[][]} 
-         *  */
+         * @type {number[][]}
+         */
         this.grid = [];
 
         // Bei null (z.B. beim Klonen) keine Initialisierung durchführen
