@@ -49,11 +49,11 @@ class TTTRegularBoard extends TTTBase {
     /**
      * Liefert alle Indizes von leeren Feldern.
      * Liste der möglichen Züge.
+     * ✅ WICHTIG: Prüft NICHT auf winner, weil Simulationen kaputte Klone haben können!
      * @returns {number[]} 
      */
     getAllValidMoves() {
-        if (this.winner !== 0) return [];
-        // Map erzeugt Array gleicher Länge, filter entfernt die -1er
+        // ✅ Gib alle leeren Felder zurück, unabhängig vom winner Status
         return this.grid.map((val, idx) => val === 0 ? idx : -1).filter(idx => idx !== -1);
     }
 
@@ -154,10 +154,10 @@ class TTT3DBoard extends TTTBase {
 
     /**
      * Liefert alle leeren Felder im Würfel.
+     * ✅ WICHTIG: Prüft NICHT auf winner!
      * @returns {number[]}
      */
     getAllValidMoves() {
-        if (this.winner !== 0) return [];
         const moves = [];
         for (let i = 0; i < this.totalCells; i++) {
             if (this.grid[i] === 0) moves.push(i);
@@ -298,21 +298,24 @@ class UltimateBoard extends TTTBase {
 
     /**
      * Liefert alle gültigen Züge als Objekte {big, small}.
+     * ✅ WICHTIG: Prüft NICHT auf winner!
      * @returns {Array<{big:number, small:number}>}
      */
     getAllValidMoves() {
-        if (this.winner !== 0) return [];
         const moves = [];
         
         let targetBoards = [];
         
-        // Regel: Wenn man in ein Board geschickt wird, das nicht voll/gewonnen ist, MUSS man dort spielen.
-        if (this.nextBoardIdx !== -1 && !this._isBoardFullOrWon(this.nextBoardIdx)) {
+        // Regel: Wenn man in ein Board geschickt wird und es noch nicht VOLL ist, MUSS man dort spielen.
+        // Ein gewonnenes Board mit freien Feldern ist weiterhin spielbar!
+        if (this.nextBoardIdx !== -1 && !this._isBoardFull(this.nextBoardIdx)) {
             targetBoards = [this.nextBoardIdx];
         } else {
-            // Sonst: Freie Wahl auf allen nicht vollen/gewonnenen Boards
+            // Sonst: Freie Wahl auf allen nicht vollen Boards
             for (let i = 0; i < 9; i++) {
-                if (!this._isBoardFullOrWon(i)) targetBoards.push(i);
+                if (!this._isBoardFull(i)) {
+                    targetBoards.push(i);
+                }
             }
         }
 
@@ -348,15 +351,17 @@ class UltimateBoard extends TTTBase {
         if (this.winner !== 0) return false;
         
         // 2. Regel-Check: Darf ich in dieses 'big' Board setzen?
-        // Wenn nextBoardIdx aktiv (-1) ist und das Zielboard noch offen ist,
+        // Wenn nextBoardIdx aktiv (nicht -1) ist und das Zielboard noch nicht VOLL ist,
         // muss 'big' gleich 'nextBoardIdx' sein.
-        if (this.nextBoardIdx !== -1 && !this._isBoardFullOrWon(this.nextBoardIdx)) {
+        // (Ein gewonnenes Board mit freien Feldern ist noch spielbar!)
+        if (this.nextBoardIdx !== -1 && !this._isBoardFull(this.nextBoardIdx)) {
             if (big !== this.nextBoardIdx) return false; // Ungültiges Board gewählt!
         }
-        // Zusatz: Auch bei freier Wahl darf man nicht in ein volles Board setzen
-        if (this._isBoardFullOrWon(big)) return false;
+        
+        // 3. Board darf nicht voll sein
+        if (this._isBoardFull(big)) return false;
 
-        // 3. Feld belegt?
+        // 4. Feld belegt?
         if (this.boards[big][small] !== 0) return false;
 
         // --- ZUG AUSFÜHREN ---
@@ -390,18 +395,19 @@ class UltimateBoard extends TTTBase {
         // Der Spieler wird in das Board geschickt, das dem 'small' Index entspricht.
         this.nextBoardIdx = small;
         
-        // Wenn das Zielboard aber schon voll/gewonnen ist, hat der nächste Spieler freie Wahl.
-        if (this._isBoardFullOrWon(this.nextBoardIdx)) {
+        // Wenn das Zielboard aber schon VOLL ist, hat der nächste Spieler freie Wahl.
+        // Ein gewonnenes Board mit freien Feldern ist weiterhin spielbar!
+        if (this._isBoardFull(this.nextBoardIdx)) {
             this.nextBoardIdx = -1;
         }
 
         return true;
     }
 
-    /** Prüft, ob ein kleines Board nicht mehr bespielbar ist. */
-    _isBoardFullOrWon(idx) {
-        // Makroboard nicht 0 (=Sieg/Remis) ODER keine Nullen im Grid (=Voll)
-        return this.macroBoard[idx] !== 0 || !this.boards[idx].includes(0);
+    /** Prüft, ob ein kleines Board keine freien Felder mehr hat. */
+    _isBoardFull(idx) {
+        // Keine Nullen im Grid = Voll
+        return !this.boards[idx].includes(0);
     }
 
     /** Hilfsfunktion: 3-in-einer-Reihe auf einem 9er Array. */

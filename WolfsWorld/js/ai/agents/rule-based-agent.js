@@ -5,7 +5,8 @@
  */
 class RuleBasedAgent extends Agent {
     /**
-     * @param {DecisionTree} tree - Der Regelbaum (siehe rule-structure.js).
+     * Der Regelbaum (siehe rule-structure.js).
+     * @param {DecisionTree} tree 
      */
     constructor(tree) {
         super(tree.name || "Regel-KI");

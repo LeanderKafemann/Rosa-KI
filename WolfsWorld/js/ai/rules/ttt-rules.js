@@ -8,9 +8,15 @@ const TTTRulesLibrary = {
     utils: {
         /** Simuliert einen Zug und prüft auf Sieg */
         canWin: (game, move, player) => {
+            // Simuliere den Zug für den aktuellen Spieler im sim-Board
             const sim = game.clone();
-            sim.currentPlayer = player;
+            // Setze nur, wenn der Spieler auch dran ist, sonst überspringe
+            if (sim.currentPlayer !== player) {
+                // Wir müssen den Spieler auf den gewünschten setzen
+                sim.currentPlayer = player;
+            }
             sim.makeMove(move);
+            // ACHTUNG: Nach makeMove ist currentPlayer gewechselt, winner ist aber korrekt
             return sim.winner === player;
         },
         
@@ -106,10 +112,19 @@ const TTTRulesLibrary = {
             return null; // (Placeholder, da Implementierung lang wird)
         }),
 
-        center: new AtomicRule("Zentrum", "Mitte", g => g.grid[4]===0?4:null),
+        center: new AtomicRule("Zentrum", "Mitte", g => {
+            // ✅ Prüfe ob Zentrum frei UND in validMoves ist!
+            if (g.grid[4] === 0) {
+                const validMoves = g.getAllValidMoves();
+                return validMoves.includes(4) ? 4 : null;
+            }
+            return null;
+        }),
         corner: new AtomicRule("Ecke", "Ecke", g => {
-            const c = [0,2,6,8].filter(x => g.grid[x]===0);
-            return c.length ? c[Math.floor(Math.random()*c.length)] : null;
+            // ✅ WICHTIG: Nur aus gültigen Zügen wählen!
+            const corners = [0,2,6,8];
+            const validCorners = corners.filter(x => g.grid[x]===0 && g.getAllValidMoves().includes(x));
+            return validCorners.length > 0 ? validCorners[Math.floor(Math.random()*validCorners.length)] : null;
         })
     },
 
@@ -119,11 +134,13 @@ const TTTRulesLibrary = {
         centerCore: new AtomicRule("Zentrum", "Besetze den Kern", (game) => {
             const size = game.size;
             const total = size * size * size;
+            const validMoves = game.getAllValidMoves();
             
             // Generische Mitte-Berechnung
             if (size % 2 !== 0) { // Ungerade (3, 5...) -> 1 Mitte
                 const center = Math.floor(total / 2);
-                return game.grid[center] === 0 ? center : null;
+                // ✅ Prüfe ob Zentrum frei UND in validMoves!
+                return (game.grid[center] === 0 && validMoves.includes(center)) ? center : null;
             } 
             else { // Gerade (4) -> 8 Mitten (Würfel im Würfel)
                 // Einfache Heuristik: Suche freien Platz im inneren Kern
@@ -132,7 +149,8 @@ const TTTRulesLibrary = {
                     for(let y=1; y<size-1; y++) {
                         for(let x=1; x<size-1; x++) {
                             const idx = z*size*size + y*size + x;
-                            if (game.grid[idx] === 0) return idx;
+                            // ✅ Prüfe BEIDE Bedingungen!
+                            if (game.grid[idx] === 0 && validMoves.includes(idx)) return idx;
                         }
                     }
                 }
@@ -152,8 +170,8 @@ const TTTRulesLibrary = {
             const validMoves = game.getAllValidMoves();
             // Suche Move, der Nachbar eines eigenen Steins ist
             // (Nachbar: Index-Differenz ist 1, size, size*size etc...)
-            // Sehr vereinfacht:
-            return validMoves[0]; // Platzhalter für echte Linien-Logik
+            // ✅ Zufällig aus gültigen Zügen wählen!
+            return validMoves.length > 0 ? validMoves[Math.floor(Math.random()*validMoves.length)] : null;
         }),
 
         // NEU: Punkt n) - Bedingte 3D-Strategien
@@ -162,6 +180,8 @@ const TTTRulesLibrary = {
             "Gegner hat 2 in 3D-Diagonal",
             (game) => {
                 const opp = game.currentPlayer === 1 ? 2 : 1;
+                const validMoves = game.getAllValidMoves();
+                
                 // 3D Raumdiagonalen (durch Kern = Index 13)
                 const diagonals = [
                     [0, 13, 26],   // Ecke zu Ecke
@@ -180,7 +200,10 @@ const TTTRulesLibrary = {
                         if (game.grid[idx] === opp) oppCount++;
                         if (game.grid[idx] === 0) emptyIdx = idx;
                     }
-                    if (oppCount === 2 && emptyIdx >= 0) return emptyIdx;
+                    // ✅ Prüfe AUCH ob der Zug gültig ist!
+                    if (oppCount === 2 && emptyIdx >= 0 && validMoves.includes(emptyIdx)) {
+                        return emptyIdx;
+                    }
                 }
                 return null;
             }
@@ -207,7 +230,8 @@ const TTTRulesLibrary = {
                     }
                     const validMoves = game.getAllValidMoves();
                     const expansion = neighbors.filter(n => validMoves.includes(n));
-                    return expansion.length > 0 ? expansion[0] : null;
+                    // ✅ Zufällig aus allen gültigen Expansionen wählen!
+                    return expansion.length > 0 ? expansion[Math.floor(Math.random()*expansion.length)] : null;
                 }
                 return null;
             }
@@ -242,7 +266,8 @@ const TTTRulesLibrary = {
             // Das gibt dem Gegner zwar freie Wahl, aber er kann auf DIESEM Board nicht mehr punkten.
             // Bessere Strategie wäre: Schicke ihn in ein Board, das ICH schon habe.
             const candidates = moves.filter(m => game.macroBoard[m.small] !== 0);
-            return candidates.length > 0 ? candidates[0] : null;
+            // ✅ Zufällig aus allen Kandidaten wählen!
+            return candidates.length > 0 ? candidates[Math.floor(Math.random()*candidates.length)] : null;
         }),
 
         // Punkt o) NEU - Ultimate Strategiephase Bedingungen
@@ -306,23 +331,23 @@ function createStrategyTree(type = 'regular') {
 
     // 1. EXISTENZ: Immer zuerst prüfen
     const survival = new RuleGroup("Existenz", "Gewinnen oder Blocken");
-    survival.add(TTTRulesLibrary.basics.win);
-    survival.add(TTTRulesLibrary.basics.block);
+    survival.add(TTTRulesLibrary.basics.win.clone());
+    survival.add(TTTRulesLibrary.basics.block.clone());
     root.add(survival);
 
     // 2. TAKTIK (Abhängig vom Spiel)
     if (type === 'regular') {
         const tactic = new RuleGroup("Taktik");
-        tactic.add(TTTRulesLibrary.regular.fork);      // NEU
-        tactic.add(TTTRulesLibrary.regular.blockFork); // NEU
-        tactic.add(TTTRulesLibrary.regular.center);
-        tactic.add(TTTRulesLibrary.regular.corner);
+        tactic.add(TTTRulesLibrary.regular.fork.clone());      // NEU
+        tactic.add(TTTRulesLibrary.regular.blockFork.clone()); // NEU
+        tactic.add(TTTRulesLibrary.regular.center.clone());
+        tactic.add(TTTRulesLibrary.regular.corner.clone());
         root.add(tactic);
     }else if (type === 'ultimate') {
         // Punkt o) NEU - Ultimate mit echten Bedingungen
         const localTactics = new RuleGroup("Lokale Taktik");
-        localTactics.add(TTTRulesLibrary.ultimate.winLocal);
-        localTactics.add(TTTRulesLibrary.ultimate.blockLocal);
+        localTactics.add(TTTRulesLibrary.ultimate.winLocal.clone());
+        localTactics.add(TTTRulesLibrary.ultimate.blockLocal.clone());
         
         // Bedingung: Hat der Gegner Chance auf Sieg?
         const strategyPhase = new ConditionNode(
@@ -338,15 +363,15 @@ function createStrategyTree(type = 'regular') {
             },
             // THEN: Gegner nah am Sieg → DEFENSIVE
             new RuleGroup("🛡️ Defensive Strategie", "", [
-                TTTRulesLibrary.ultimate.blockGlobal,
-                TTTRulesLibrary.ultimate.sendToTrash,
-                TTTRulesLibrary.basics.random
+                TTTRulesLibrary.ultimate.blockGlobal.clone(),
+                TTTRulesLibrary.ultimate.sendToTrash.clone(),
+                TTTRulesLibrary.basics.random.clone()
             ]),
             // ELSE: Wir im Vorteil oder gleich → OFFENSIVE
             new RuleGroup("⚔️ Offensive Strategie", "", [
-                TTTRulesLibrary.ultimate.winGlobal,
-                TTTRulesLibrary.ultimate.sendToTrash,
-                TTTRulesLibrary.basics.random
+                TTTRulesLibrary.ultimate.winGlobal.clone(),
+                TTTRulesLibrary.ultimate.sendToTrash.clone(),
+                TTTRulesLibrary.basics.random.clone()
             ])
         );
         
@@ -360,12 +385,12 @@ function createStrategyTree(type = 'regular') {
             "Ist die Raummitte noch nicht besetzt?",
             (game) => game.grid[Math.floor(game.size * game.size * game.size / 2)] === 0,
             // THEN: Kern frei → nimm ihn
-            TTTRulesLibrary.dimension3.centerCore,
+            TTTRulesLibrary.dimension3.centerCore.clone(),
             // ELSE: Kern besetzt → baue Linie aus
             new RuleGroup("Nach-Kern Strategie", "", [
-                TTTRulesLibrary.dimension3.coreExpand,
-                TTTRulesLibrary.dimension3.blockDiagonal,
-                TTTRulesLibrary.dimension3.createSetup
+                TTTRulesLibrary.dimension3.coreExpand.clone(),
+                TTTRulesLibrary.dimension3.blockDiagonal.clone(),
+                TTTRulesLibrary.dimension3.createSetup.clone()
             ])
         );
 
@@ -378,7 +403,7 @@ function createStrategyTree(type = 'regular') {
     }
 
     // 3. Fallback
-    root.add(TTTRulesLibrary.basics.random);
+    root.add(TTTRulesLibrary.basics.random.clone());
 
     return new DecisionTree("KI " + type, root);
 }

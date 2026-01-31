@@ -1,89 +1,62 @@
 /* --- FILE: js/games/tictactoe/ultimate-controller.js --- */
-/** * @fileoverview Controller für Ultimate Tic-Tac-Toe.
+/**
+ * @fileoverview Controller für Ultimate Tic-Tac-Toe.
+ * Nutzt die BaseGameController für standardisierte Logik.
  */
-const UltimateController = {
-    game: null, canvas: null, isProcessing: false,
+class UltimateGameController extends BaseGameController {
+    constructor() {
+        super('ultimate', 'gameCanvas');
+    }
 
-    init() {
-        this.canvas = document.getElementById('gameCanvas');
-        this.canvas.addEventListener('mousedown', (e) => this.click(e));
-        document.getElementById('p1Type').onchange = () => this.checkTurn();
-        document.getElementById('p2Type').onchange = () => this.checkTurn();
-        this.reset();
-    },
+    createGame() {
+        return new UltimateBoard();
+    }
 
     reset() {
-        this.game = new UltimateBoard();
-        this.isProcessing = false;
-        this.updateUI(); this.draw(); this.checkTurn();
-    },
+        // ✅ Canvas-Größe für Ultimate anpassen (größer für Details)
+        this.canvas.width = 600;
+        this.canvas.height = 600;
+        super.reset();
+    }
 
-    checkTurn() {
-        if(this.game.winner || this.game.getAllValidMoves().length===0) return this.updateUI();
-        const p1 = document.getElementById('p1Type').value;
-        const p2 = document.getElementById('p2Type').value;
-        const current = (this.game.currentPlayer === 1) ? p1 : p2;
-        this.updateUI();
-        if (current !== 'human') {
-            this.isProcessing = true;
-            const sliderValue = parseInt(document.getElementById('aiSpeed').value);
-            // Invertierte Logik: 0 = schnell, 2000 = langsam
-            const speed = 2000 - sliderValue;
-            setTimeout(() => {
-                let agent;
-                if (current === 'random') {
-                    agent = new RandomAgent();
-                } else if (current === 'rulebased') {
-                    agent = new RuleBasedAgent(createStrategyTree('ultimate'));
-                } else if (current === 'minimax') {
-                    // Ultimate: Nutze erweiterte Heuristik mit Makro- und Mikro-Board Bewertung
-                    // Tiefe 4-5 ist ein guter Kompromiss aus Performance und Spielstärke
-                    agent = new MinimaxAgent({
-                        name: "Smart Minimax",
-                        maxDepth: 4,
-                        useAlphaBeta: true,
-                        heuristicFn: HeuristicsLibrary.ultimateTTT
-                    });
-                }
+    drawGame() {
+        TTTRenderer.drawUltimate(this.canvas, this.game);
+    }
 
-                const action = agent ? agent.getAction(this.game) : null;
-                // Ultimate Move: {big, small}
-                if(action) this.game.makeMove(action.move.big, action.move.small);
-                
-                this.isProcessing = false;
-                this.draw(); this.checkTurn();
-            }, speed);
+    coordsToMove(mx, my) {
+        const bigS = this.canvas.width / 3;
+        const smallS = bigS / 3;
+
+        const bX = Math.floor(mx / bigS);
+        const bY = Math.floor(my / bigS);
+        const sX = Math.floor((mx % bigS) / smallS);
+        const sY = Math.floor((my % bigS) / smallS);
+
+        if (bX >= 0 && bX < 3 && bY >= 0 && bY < 3) {
+            return { big: bY * 3 + bX, small: sY * 3 + sX };
         }
-    },
+        return null;
+    }
 
-    click(e) {
-        if(this.isProcessing || this.game.winner) return;
-        const rect = this.canvas.getBoundingClientRect();
-        
-        // Scaling
-        const scale = this.canvas.width / rect.width;
-        const x = (e.clientX - rect.left) * scale;
-        const y = (e.clientY - rect.top) * scale;
-        const bigS = this.canvas.width/3, smallS = bigS/3;
-        
-        const bX = Math.floor(x/bigS), bY = Math.floor(y/bigS);
-        const sX = Math.floor((x%bigS)/smallS), sY = Math.floor((y%bigS)/smallS);
-        
-        if(bX>=0 && bX<3 && bY>=0 && bY<3) {
-            // makeMove validiert, ob der Zug im erlaubten Board ist
-            if(this.game.makeMove(bY*3+bX, sY*3+sX)) { 
-                this.draw();
-                this.checkTurn(); 
-            }
+    createAIAgent(type) {
+        if (type === 'random') {
+            return new RandomAgent();
+        } else if (type === 'rulebased') {
+            return new RuleBasedAgent(createStrategyTree('ultimate'));
+        } else if (type === 'minimax') {
+            return new MinimaxAgent({
+                name: "Smart Minimax",
+                maxDepth: 4,
+                useAlphaBeta: true,
+                heuristicFn: HeuristicsLibrary.ultimateTTT
+            });
         }
-    },
+        return null;
+    }
+}
 
-    updateUI() {
-        const stats = document.getElementById('statusText');
-        if(this.game.winner) stats.innerText = "SIEG: " + (this.game.winner===1?"BLAU":"ROT");
-        else stats.innerText = (this.game.currentPlayer===1?"BLAU":"ROT") + " ist dran";
-    },
-    
-    draw() { TTTRenderer.drawUltimate(this.canvas, this.game); }
-};
-window.onload = () => UltimateController.init();
+// ===== WICHTIG: Die alte draw() Methode wurde entfernt =====
+// Sie wird jetzt über drawGame() aufgerufen, die in der Basisklasse definiert ist.
+
+// Fallback für HTML-inline onclick="..."
+const draw = () => UltimateController?.drawGame?.();

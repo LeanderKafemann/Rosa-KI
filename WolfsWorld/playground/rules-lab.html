@@ -158,6 +158,16 @@
     </div>
 
     <script src="../js/core/game-state.js"></script>
+    <script src="../js/core/agent.js"></script>
+    <script src="../js/core/game-adapter.js"></script>
+    <script src="../js/core/base-game-controller.js"></script>
+    
+    <script src="../js/ai/agents/random-agent.js"></script>
+    <script src="../js/ai/agents/rule-based-agent.js"></script>
+    <script src="../js/ai/minimax.js"></script>
+    <script src="../js/ai/agents/minimax-agent.js"></script>
+    <script src="../js/ai/heuristics/base.js"></script>
+    <script src="../js/ai/heuristics/ttt.js"></script>
     
     <script src="../js/games/tictactoe/logic.js"></script>
     <script src="../js/games/tictactoe/renderer.js"></script>
@@ -168,65 +178,73 @@
     <script src="../js/viz/flowchart-visualizer.js"></script>
 
     <script>
+        /**
+         * @fileoverview Rules-Lab - Visualisiert die Regel-Evaluierung.
+         * 
+         * Nutzt GameAdapter für einheitliche Spiellogik.
+         * Fokussiert nur auf Visualisierung des Entscheidungsbaums.
+         */
         const Lab = {
-            game: null, canvas: null,
-            vizP1: null, vizP2: null, trees: { 1: null, 2: null },
-            gameType: 'regular', axis3D: 'z', isAuto: false,
-            
-            // Verzögerung für Auto-Mode (in ms)
-            // Länger, damit man das Highlighting sieht
-            delay: 600, 
+            adapter: null,  // GameAdapter - die einheitliche Schnittstelle
+            canvas: null,
+            vizP1: null, vizP2: null,
+            trees: { 1: null, 2: null },
+            gameType: 'regular',
+            axis3D: 'z',
+            isAuto: false,
+            delay: 600,
 
             init() {
                 this.canvas = document.getElementById('gameCanvas');
-                this.canvas.addEventListener('mousedown', (e) => this.handleClick(e));
                 this.changeGameType();
             },
 
             changeGameType() {
                 this.gameType = document.getElementById('gameTypeSelector').value;
                 const controls = document.getElementById('controls3D');
-                
-                // Canvas Größen Reset
-                this.canvas.width = 400; 
+
+                // Canvas-Größe anpassen
+                this.canvas.width = 400;
                 this.canvas.height = 400;
 
                 if (this.gameType === '3d') {
                     controls.classList.remove('hidden');
-                    // Slices brauchen weniger Höhe (rechteckig)
-                    this.canvas.height = 250; 
+                    this.canvas.height = 250;
                 } else if (this.gameType === 'ultimate') {
                     controls.classList.add('hidden');
-                    // Ultimate braucht mehr Details -> Größeres internes Canvas (wird per CSS runterskaliert)
-                    this.canvas.width = 600; 
+                    this.canvas.width = 600;
                     this.canvas.height = 600;
                 } else {
                     controls.classList.add('hidden');
                 }
 
-                // Bäume neu laden
+                // Bäume laden
                 this.trees[1] = createStrategyTree(this.gameType);
                 this.trees[2] = createStrategyTree(this.gameType);
-                
+
                 this.vizP1 = new FlowchartVisualizer('treeDisplayP1', this.trees[1], (n) => this.toggleRule(1, n));
                 this.vizP2 = new FlowchartVisualizer('treeDisplayP2', this.trees[2], (n) => this.toggleRule(2, n));
-                
+
                 this.vizP1.render();
                 this.vizP2.render();
-                
+
                 this.reset();
             },
 
             reset() {
-                if(this.gameType === 'regular') this.game = new TTTRegularBoard();
-                else if(this.gameType === '3d') this.game = new TTT3DBoard(3);
-                else this.game = new UltimateBoard();
-                
+                // ✅ Nutze GameAdapter statt direkt neue Boards zu erstellen
+                let gameBoard;
+                if (this.gameType === 'regular') gameBoard = new TTTRegularBoard();
+                else if (this.gameType === '3d') gameBoard = new TTT3DBoard(3);
+                else gameBoard = new UltimateBoard();
+
+                this.adapter = new GameAdapter(gameBoard, this.gameType);
+
                 this.isAuto = false;
                 document.getElementById('btnAuto').innerText = "⏩ Auto";
-                document.getElementById('log').innerHTML = ''; // Log leeren
+                document.getElementById('log').innerHTML = '';
                 this.log("--- NEUES SPIEL ---");
-                
+
                 this.vizP1.clearHighlights();
                 this.vizP2.clearHighlights();
                 this.draw();
@@ -235,190 +253,246 @@
 
             toggleRule(player, name) {
                 const toggle = (n) => {
-                    if (n.name === name) n.active = !n.active;
+                    if (n.name === name) {
+                        n.active = !n.active;
+                        console.log(`✅ Toggled rule "${name}" to ${n.active}`);
+                    }
                     if (n.children) n.children.forEach(toggle);
                     if (n.thenNode) toggle(n.thenNode);
                     if (n.elseNode) toggle(n.elseNode);
                 };
                 toggle(this.trees[player].root);
-                if(player===1) this.vizP1.render(); else this.vizP2.render();
+                if (player === 1) {
+                    this.vizP1.render();
+                } else {
+                    this.vizP2.render();
+                }
             },
 
             setAxis(axis) {
                 this.axis3D = axis;
                 document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
-                // Button Index Hack (z=0, y=1, x=2)
-                const idx = axis==='z'?0 : axis==='y'?1 : 2;
+                const idx = axis === 'z' ? 0 : axis === 'y' ? 1 : 2;
                 document.querySelectorAll('.view-btn')[idx].classList.add('active');
                 this.draw();
             },
 
-            /** Input Handler mit korrekter 3D-Berechnung */
-            handleClick(e) {
-                if (this.game.winner !== 0 || this.isAuto) return;
-
-                const rect = this.canvas.getBoundingClientRect();
-                const scaleX = this.canvas.width / rect.width;
-                const scaleY = this.canvas.height / rect.height;
-                const mx = (e.clientX - rect.left) * scaleX;
-                const my = (e.clientY - rect.top) * scaleY;
-
-                let success = false;
-
-                if (this.gameType === '3d') {
-                    // 3D Layout Berechnung (Analog Renderer)
-                    const s = 3; 
-                    const w = this.canvas.width, h = this.canvas.height;
-                    const pad = 20;
-                    const availW = w - (pad*2), availH = h - (pad*2);
-                    const boxSize = Math.min(availW/s, availH); // Max Boxgröße
-                    const gap = boxSize * 0.1;
-                    const boardS = boxSize - gap;
-                    
-                    // Zentrierung
-                    const startX = (w - s*boxSize)/2 + gap/2;
-                    const startY = (h - boardS)/2 + 10;
-
-                    for(let k=0; k<s; k++) {
-                        const ox = startX + k*boxSize;
-                        if(mx >= ox && mx <= ox+boardS && my >= startY && my <= startY+boardS) {
-                            const c = Math.floor((mx-ox)/(boardS/s));
-                            const r = Math.floor((my-startY)/(boardS/s));
-                            let x,y,z;
-                            if(this.axis3D==='z') { z=k; y=r; x=c; }
-                            else if(this.axis3D==='y') { y=k; x=c; z=(s-1)-r; }
-                            else { x=k; y=c; z=(s-1)-r; }
-                            success = this.game.makeMove(z*9 + y*3 + x);
-                            break;
-                        }
-                    }
-                } 
-                else if (this.gameType === 'ultimate') {
-                    const bigS = this.canvas.width/3, smallS = bigS/3;
-                    const bx = Math.floor(mx/bigS), by = Math.floor(my/bigS);
-                    const sx = Math.floor((mx%bigS)/smallS), sy = Math.floor((my%bigS)/smallS);
-                    if(bx>=0 && bx<3 && by>=0 && by<3) {
-                        success = this.game.makeMove(by*3+bx, sy*3+sx);
-                    }
-                } 
-                else { // Regular
-                    const s = this.canvas.width/3;
-                    const c = Math.floor(mx/s), r = Math.floor(my/s);
-                    if(c>=0 && c<3 && r>=0 && r<3) success = this.game.makeMove(r*3+c);
-                }
-
-                if(success) {
-                    this.draw();
-                    this.checkWin();
-                }
-            },
-
-            draw() {
-                const c = this.canvas;
-                if(this.gameType === 'regular') TTTRenderer.drawRegular(c, this.game);
-                else if(this.gameType === 'ultimate') TTTRenderer.drawUltimate(c, this.game);
-                else TTTRenderer.draw3DSlices(c, this.game, this.axis3D);
-            },
-
-            // --- KI ---
             setDelay(value) {
                 this.delay = 1550 - parseInt(value);
             },
 
+            /**
+             * KI-Zug mit Visualisierung.
+             * ✅ WICHTIG: Nutzt den GLEICHEN Code-Pfad wie normale Spiele!
+             * Agent.getAction() macht die Entscheidung
+             * evaluateVisual() macht nur Visualisierung/Highlighting
+             */
             async stepAI(fast = false) {
-                if(this.game.winner !== 0) return;
-                
-                // Button-Blockierung während KI läuft (Punkt l)
+                // ✅ Prüfe winner ERST hier (nicht am Anfang der Funktion)
+                if (this.adapter.isGameOver()) return;
+
                 const stepBtn = document.querySelector('[onclick="Lab.stepAI()"]');
                 stepBtn.disabled = true;
                 stepBtn.style.opacity = '0.5';
                 stepBtn.style.cursor = 'not-allowed';
-                
+
                 try {
-                    const p = this.game.currentPlayer;
-                    const viz = (p===1) ? this.vizP1 : this.vizP2;
-                    const tree = this.trees[p];
+                    const player = this.adapter.getCurrentPlayer();
+                    const viz = player === 1 ? this.vizP1 : this.vizP2;
+                    const tree = this.trees[player];
+                    const gameBoard = this.adapter.getBoard();
+
+                    // 🔍 DEBUG: Zeige verfügbare Züge VOR Evaluation
+                    const validMovesBefore = this.adapter.getValidMoves();
+                    
+                    // ✅ Zähle freie Zellen - unterschiedlich je nach Spieltyp
+                    let freeCells = 0;
+                    if (this.gameType === 'ultimate') {
+                        // Ultimate: Zähle über alle 9 boards
+                        for (let b = 0; b < 9; b++) {
+                            freeCells += gameBoard.boards[b].filter(c => c === 0).length;
+                        }
+                    } else {
+                        // Regular/3D: Einfach grid zählen
+                        freeCells = gameBoard.grid.filter(c => c === 0).length;
+                    }
+                    
+                    const winnerBefore = this.adapter.getWinner();
+                    
+                    this.log(`🔍 DEBUG: Freie Felder=${freeCells}, ValidMoves=${validMovesBefore.length}, Winner=${winnerBefore}`);
+                    if (winnerBefore !== 0) {
+                        this.log(`⚠️ WARNUNG: Spiel ist schon vorbei! (Winner=${winnerBefore})`);
+                        return;
+                    }
 
                     viz.clearHighlights();
-                    this.updateStatus(`KI ${p===1?'Blau':'Rot'} rechnet...`);
+                    this.updateStatus(`KI ${player === 1 ? 'Blau' : 'Rot'} rechnet... (${freeCells} frei, ${validMovesBefore.length} valid)`);
 
-                    const move = await this.evaluateVisual(tree.root, this.game, viz, fast ? 0 : this.delay);
-
-                    if (move) {
-                        if (this.gameType === 'ultimate' && typeof move === 'object') 
-                            this.game.makeMove(move.big, move.small);
-                        else 
-                            this.game.makeMove(move);
-                        
-                        this.draw();
-                        this.checkWin();
-                    } else {
-                        this.log(`KI ${p} findet keinen Zug!`);
+                    // ✅ Verwende Agent.getAction() genau wie normale Spiele!
+                    let action = null;
+                    try {
+                        const agent = new RuleBasedAgent(tree);
+                        action = agent.getAction(gameBoard);
+                    } catch (e) {
+                        this.log(`❌ FEHLER in Agent.getAction(): ${e.message}`);
+                        console.error('Agent Error:', e);
+                        return;
                     }
+                    
+                    const move = action?.move;
+
+                    this.log(`🔍 Agent gibt: ${JSON.stringify(move)}`);
+
+                    // ✅ Visualisiere die Evaluation NACHDEM wir den Zug kennen
+                    if (fast === false && move !== undefined && move !== null) {
+                        // Nur wenn wir Zeit haben, zeige die Evaluation
+                        try {
+                            await this.visualizeEvaluationPath(tree.root, gameBoard, viz, move);
+                        } catch (e) {
+                            this.log(`⚠️ Visualisierung fehlgeschlagen: ${e.message}`);
+                        }
+                    }
+
+                    // ✅ Setze den Zug mit robuster Prüfung
+                    if (move !== undefined && move !== null) {
+                        this.log(`🤖 KI ${player} Zug: ${JSON.stringify(move)}`);
+                        const success = this.adapter.makeMove(move);  // ✅ GameAdapter API!
+                        if (success) {
+                            this.draw();
+                            this.checkWin();
+                        } else {
+                            this.log(`❌ Zug war ungültig: ${JSON.stringify(move)}`);
+                        }
+                    } else {
+                        this.log(`❌ KI ${player} findet keinen Zug!`);
+                        const validMovesAfter = this.adapter.getValidMoves();
+                        this.log(`Valid: ${JSON.stringify(validMovesAfter.slice(0, 10))}`);
+                    }
+                } catch (e) {
+                    this.log(`❌ KRITISCHER FEHLER in stepAI: ${e.message}`);
+                    console.error('stepAI Error:', e);
                 } finally {
-                    // Button wieder aktivieren
                     stepBtn.disabled = false;
                     stepBtn.style.opacity = '1';
                     stepBtn.style.cursor = 'pointer';
                 }
             },
 
+            /**
+             * Visualisiere welche Regeln gecheckt wurden bis zum gefundenen Zug.
+             * Das ist nur für Visualisierung, die echte Entscheidung ist schon gemacht!
+             */
+            async visualizeEvaluationPath(node, gameState, viz, targetMove) {
+                if (!node || !node.active) return;
+
+                const traverse = async (n) => {
+                    if (!n || !n.active) return false;
+
+                    // Highlight diese Regel beim Checking
+                    viz.highlightCheck(n.name);
+                    await new Promise(r => setTimeout(r, this.delay));
+
+                    // Condition
+                    if (n.conditionFn) {
+                        const res = n.conditionFn(gameState);
+                        const targetNode = res ? n.thenNode : n.elseNode;
+                        const found = await traverse(targetNode);
+                        if (!found) {
+                            viz._removeClass(n.name, 'checking');
+                        }
+                        return found;
+                    }
+
+                    // Group
+                    if (n.children && n.children.length > 0) {
+                        for (const child of n.children) {
+                            const found = await traverse(child);
+                            if (found) return true;
+                            viz._removeClass(child.name, 'checking');
+                        }
+                        viz._removeClass(n.name, 'checking');
+                        return false;
+                    }
+
+                    // Atomic Rule - prüfe ob DIESE Regel den Zug liefert
+                    const result = n.evaluate(gameState);
+                    
+                    // ✅ Vergleiche Züge korrekt (auch Objekte bei Ultimate!)
+                    let moveMatches = false;
+                    if (result && result.move !== undefined && result.move !== null) {
+                        if (typeof result.move === 'object' && typeof targetMove === 'object') {
+                            // Ultimate: Objekt-Vergleich
+                            moveMatches = result.move.big === targetMove.big && 
+                                         result.move.small === targetMove.small;
+                        } else {
+                            // Regular/3D: Primitive Vergleich
+                            moveMatches = result.move === targetMove;
+                        }
+                    }
+                    
+                    if (moveMatches) {
+                        // ✅ DAS ist die Regel die den Zug lieferte!
+                        viz.highlightSuccess(n.name);
+                        return true;
+                    } else {
+                        viz._removeClass(n.name, 'checking');
+                        return false;
+                    }
+                };
+
+                await traverse(node);
+            },
+
+            /**
+             * VERALTET: evaluateVisual wird nicht mehr verwendet.
+             * Behielt für Referenzen, falls nötig.
+             * 
+             * @deprecated Verwende stattdessen Agent.getAction() + visualizeEvaluationPath()
+             */
             async evaluateVisual(node, gameState, viz, ms) {
                 if (!node || !node.active) return null;
-                
-                // Punkt j) FIX: Tracking für korrekte Cleanup
+
                 const traverse = async (n) => {
                     if (!n || !n.active) return null;
-                    
-                    // Highlighting
+
                     if (ms > 0) {
                         viz.highlightCheck(n.name);
                         await new Promise(r => setTimeout(r, ms));
                     }
 
-                    // Condition (If-Then-Else)
+                    // Condition
                     if (n.conditionFn) {
                         const res = n.conditionFn(gameState);
                         const targetNode = res ? n.thenNode : n.elseNode;
                         const result = await traverse(targetNode);
-                        
-                        // Wenn nicht erfolgreich, cleanup
                         if (!result && ms > 0) {
                             viz._removeClass(n.name, 'checking');
                         }
                         return result;
                     }
-                    
-                    // Group (iterate children with cleanup)
+
+                    // Group
                     if (n.children && n.children.length > 0) {
                         for (const child of n.children) {
                             const result = await traverse(child);
-                            if (result) {
-                                return result;  // Nur Gewinner-Pfad
-                            }
-                            // Child nicht erfolgreich → cleanup
-                            if (ms > 0) {
-                                viz._removeClass(child.name, 'checking');
-                            }
+                            if (result) return result;
+                            if (ms > 0) viz._removeClass(child.name, 'checking');
                         }
-                        // Keine Kinder erfolgreich
                         if (ms > 0) viz._removeClass(n.name, 'checking');
                         return null;
                     }
 
-                    // Rule (atomic)
+                    // Atomic Rule
                     const result = n.evaluate(gameState);
                     if (result) {
-                        // SUCCESS!
                         if (ms > 0) viz.highlightSuccess(n.name);
                         return result.move;
                     } else {
-                        // Rule nicht erfolgreich
                         if (ms > 0) viz._removeClass(n.name, 'checking');
                         return null;
                     }
                 };
-                
+
                 return await traverse(node);
             },
 
@@ -435,38 +509,66 @@
                 }
             },
 
+            /**
+             * Auto-Loop für durchgehendes Spielen.
+             * ✅ Prüfe winner NACH jedem stepAI, nicht davor
+             */
             loop() {
-                if(!this.isAuto || this.game.winner !== 0) {
+                if (!this.isAuto) {
                     this.isAuto = false;
                     document.getElementById('btnAuto').innerText = "⏩ Auto";
                     document.getElementById('btnAuto').style.background = "#8e44ad";
                     return;
                 }
-                // Wir rufen stepAI mit fast=false auf, damit man das Highlighting sieht!
-                // Aber wir warten, bis der Step fertig ist (Async)
+
                 this.stepAI(false).then(() => {
-                    if(this.isAuto) setTimeout(() => this.loop(), 200);
+                    // ✅ NOW: Nach stepAI prüfen, ob Spiel vorbei ist
+                    if (this.adapter.isGameOver()) {
+                        this.isAuto = false;
+                        document.getElementById('btnAuto').innerText = "⏩ Auto";
+                        document.getElementById('btnAuto').style.background = "#8e44ad";
+                        return;
+                    }
+                    if (this.isAuto) setTimeout(() => this.loop(), 200);
                 });
             },
 
             checkWin() {
-                if(this.game.winner) {
-                    const w = this.game.winner;
-                    const msg = w===3 ? "Remis" : `Sieg ${w===1?'Blau':'Rot'}`;
+                if (this.adapter.isGameOver()) {
+                    const winner = this.adapter.getWinner();
+                    const msg = winner === 3 ? "Remis" : `Sieg ${winner === 1 ? 'Blau' : 'Rot'}`;
                     this.updateStatus(msg);
                     this.log(msg);
                 } else {
-                    const p = this.game.currentPlayer;
-                    this.updateStatus(`${p===1?'Blau':'Rot'} ist dran`);
+                    const player = this.adapter.getCurrentPlayer();
+                    this.updateStatus(`${player === 1 ? 'Blau' : 'Rot'} ist dran`);
                 }
             },
-            updateStatus(msg) { document.getElementById('statusText').innerText = msg || "Bereit"; },
-            log(msg) { 
-                const l = document.getElementById('log'); 
-                l.innerHTML += `<div class="log-entry">${msg}</div>`; 
+
+            updateStatus(msg) {
+                document.getElementById('statusText').innerText = msg || "Bereit";
+            },
+
+            log(msg) {
+                const l = document.getElementById('log');
+                l.innerHTML += `<div class="log-entry">${msg}</div>`;
                 l.scrollTop = l.scrollHeight;
+            },
+
+            draw() {
+                const gameBoard = this.adapter.getBoard();
+                const c = this.canvas;
+
+                if (this.gameType === 'regular') {
+                    TTTRenderer.drawRegular(c, gameBoard);
+                } else if (this.gameType === '3d') {
+                    TTTRenderer.draw3DSlices(c, gameBoard, this.axis3D);
+                } else if (this.gameType === 'ultimate') {
+                    TTTRenderer.drawUltimate(c, gameBoard);
+                }
             }
         };
+
         window.onload = () => Lab.init();
     </script>
 </body>

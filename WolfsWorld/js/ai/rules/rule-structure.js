@@ -44,6 +44,12 @@ class AtomicRule extends RuleNode {
         const move = this.logicFn(gameState);
         return (move !== null) ? { move, reason: this.name, node: this } : null;
     }
+
+    clone() {
+        const c = new AtomicRule(this.name, this.description, this.logicFn);
+        c.active = this.active;
+        return c;
+    }
 }
 
 /**
@@ -68,6 +74,12 @@ class RuleGroup extends RuleNode {
             if (result) return result;
         }
         return null;
+    }
+
+    clone() {
+        const c = new RuleGroup(this.name, this.description, this.children.map(child => child.clone()));
+        c.active = this.active;
+        return c;
     }
 }
 
@@ -101,6 +113,18 @@ class ConditionNode extends RuleNode {
             // NEIN-Zweig
             return this.elseNode ? this.elseNode.evaluate(gameState) : null;
         }
+    }
+
+    clone() {
+        const c = new ConditionNode(
+            this.name, 
+            this.description, 
+            this.conditionFn, 
+            this.thenNode ? this.thenNode.clone() : null, 
+            this.elseNode ? this.elseNode.clone() : null
+        );
+        c.active = this.active;
+        return c;
     }
 }
 
