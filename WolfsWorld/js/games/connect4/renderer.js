@@ -1,5 +1,6 @@
 /**
- * @fileoverview Renderer collection for Connect 4 variants.
+ * Renderer-Sammlung für Connect 4 Varianten.
+ * @fileoverview
  */
 
 const Connect4Renderer = {

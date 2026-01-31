@@ -1,6 +1,7 @@
 /**
- * @fileoverview Logic for Connect 4 and Connect 4 3D.
- * Implements the GameState interface concepts.
+ * Spiellogik für Connect 4 und Connect 4 3D.
+ * Implementiert die GameState-Interface-Konzepte.
+ * @fileoverview
  */
 
 class Connect4Base {

@@ -1,6 +1,7 @@
 /**
  * Wrapper um die SearchEngine, der "Schritt-für-Schritt" Ausführung
  * und manuelle Steuerung (Play/Pause/Step) ermöglicht.
+ * @fileoverview
  * @class AlgorithmRunner
  */
 class AlgorithmRunner {

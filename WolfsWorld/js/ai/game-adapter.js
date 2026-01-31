@@ -1,6 +1,7 @@
 /**
- * @fileoverview Adapter für verschiedene Spiele, damit sie mit der Arena kompatibel sind.
+ * Adapter für verschiedene Spiele, damit sie mit der Arena kompatibel sind.
  * Die Arena braucht ein einheitliches Interface für verschiedene Spiele.
+ * @fileoverview
  */
 
 /**

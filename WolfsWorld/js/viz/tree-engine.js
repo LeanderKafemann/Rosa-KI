@@ -1,6 +1,7 @@
 /**
- * @fileoverview Generische Engine zur Visualisierung von Suchbäumen auf einem Canvas.
+ * Generische Engine zur Visualisierung von Suchbäumen auf einem Canvas.
  * Unterstützt dynamische Skalierung, Drag-Scrolling und Custom-Renderer für Knoten.
+ * @fileoverview
  */
 
 const TREE_CONFIG = {

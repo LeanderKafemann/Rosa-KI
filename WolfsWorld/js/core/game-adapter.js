@@ -1,8 +1,9 @@
 /**
- * @fileoverview Einheitliche Schnittstelle für alle Tic-Tac-Toe Varianten.
+ * Einheitliche Schnittstelle für alle Tic-Tac-Toe Varianten.
  * 
  * Macht alle Spiele (Regular, 3D, Ultimate) über eine standardisierte API zugänglich.
  * Verhindert Code-Duplikation und sorgt für konsistentes Verhalten.
+ * @fileoverview
  */
 
 class GameAdapter {

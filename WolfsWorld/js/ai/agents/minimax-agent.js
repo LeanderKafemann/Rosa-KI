@@ -1,5 +1,11 @@
 /* --- FILE: js/ai/agents/minimax-agent.js --- */
 /**
+ * @fileoverview
+ * Agent für Minimax-Algorithmus mit Alpha-Beta Pruning.
+ * Berechnet optimale Züge durch baumartige Spielzustandssimulation.
+ */
+
+/**
  * Agent, der Minimax nutzt.
  * @class MinimaxAgent
  * @extends Agent

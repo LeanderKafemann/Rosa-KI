@@ -1,4 +1,8 @@
-// HINWEIS: Agent Interface ist bereits in js/core/agent.js definiert (Batch 1)
+/**
+ * @fileoverview
+ * Agent für zufällige Zugwahl (Random Agent).
+ * Wählt aus allen gültigen Zügen einen zufällig aus.
+ */
 
 /**
  * Ein Agent, der zufällige gültige Züge macht.

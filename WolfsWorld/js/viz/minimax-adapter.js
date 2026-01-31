@@ -2,6 +2,7 @@
 /**
  * Adapter, der Minimax-Abläufe für die Tree-Engine aufbereitet.
  * Erzeugt den initialen Baum und die Timeline der Ereignisse (Expansion, Bewertung).
+ * @fileoverview
  * @namespace
  */
 const MinimaxAdapter = {

@@ -2,6 +2,7 @@
  * Interface für einen Spielzustand.
  * Jedes Spiel (TicTacToe, RotateBox, KnightsTour) muss dieses Interface implementieren,
  * damit die KI-Agenten und Suchalgorithmen damit arbeiten können.
+ * @fileoverview
  *
  * Mindest-Interface (für Agenten/Arena/Minimax):
  * - getAllValidMoves()

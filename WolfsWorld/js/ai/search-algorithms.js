@@ -1,5 +1,6 @@
 /**
  * Konfiguration für die Suchmaschine.
+ * @fileoverview
  * @typedef {Object} SearchConfig
  * @property {('BFS'|'DFS')} [strategy='BFS'] - 'BFS' (Breitensuche) oder 'DFS' (Tiefensuche).
  * @property {number} [maxDepth=1000] - Abbruch bei dieser Tiefe.

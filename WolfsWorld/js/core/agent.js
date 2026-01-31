@@ -1,7 +1,8 @@
 /**
  * Abstrakte Basisklasse für alle KI-Agenten.
  * Ein Agent erhält einen Spielzustand und muss einen Zug zurückgeben.
- * * @abstract
+ * @fileoverview
+ * @abstract
  */
 class Agent {
     /**

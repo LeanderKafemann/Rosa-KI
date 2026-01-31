@@ -1,6 +1,7 @@
 /**
- * @fileoverview Visualisiert Regelbäume als interaktives Flowchart.
+ * Visualisiert Regelbäume als interaktives Flowchart.
  * Nutzt DOM-Elemente für Styling (Karten, Farbbalken).
+ * @fileoverview
  */
 
 class FlowchartVisualizer {

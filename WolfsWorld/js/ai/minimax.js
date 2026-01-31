@@ -2,6 +2,7 @@
 /**
  * Kern-Implementierung des Minimax Algorithmus mit Alpha-Beta Pruning.
  * Unabhängig vom Agenten, damit es auch für Visualisierungen genutzt werden kann.
+ * @fileoverview
  * @class
  */
 class MinimaxEngine {

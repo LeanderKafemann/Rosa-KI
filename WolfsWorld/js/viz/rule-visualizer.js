@@ -1,6 +1,7 @@
 /**
- * @fileoverview Visualisiert einen DecisionTree als interaktive HTML-Liste.
+ * Visualisiert einen DecisionTree als interaktive HTML-Liste.
  * Ermöglicht das An/Abschalten von Regeln per Checkbox.
+ * @fileoverview
  */
 
 class RuleVisualizer {

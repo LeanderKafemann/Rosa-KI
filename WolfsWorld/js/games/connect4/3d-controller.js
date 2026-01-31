@@ -1,5 +1,6 @@
 /**
- * @fileoverview Controller for Connect 4 3D.
+ * Controller für 3D Connect 4.
+ * @fileoverview
  */
 class Connect43DController extends BaseGameController {
     constructor() {

@@ -1,5 +1,6 @@
 /**
- * @fileoverview Controller for Connect 4 Regular.
+ * Controller für Standard Connect 4.
+ * @fileoverview
  */
 class Connect4RegularController extends BaseGameController {
     constructor() {

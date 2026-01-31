@@ -1,6 +1,7 @@
 /**
- * @fileoverview Connect 4 specific heuristics.
- * Extends HeuristicsLibrary.
+ * Connect-4-spezifische Heuristiken.
+ * Erweitert die HeuristicsLibrary.
+ * @fileoverview
  */
 
 HeuristicsLibrary.connect4 = {

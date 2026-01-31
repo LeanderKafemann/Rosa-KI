@@ -1,8 +1,9 @@
 /**
- * @fileoverview Basis-Controller für gitterbasierte Strategiespiele (TTT, Connect4, etc.).
+ * Basis-Controller für gitterbasierte Strategiespiele (TTT, Connect4, etc.).
  * 
  * Reduziert Code-Duplikation durch ein gemeinsames Template,
  * das von Regular TTT, 3D, Ultimate, Connect 4 und weiteren genutzt wird.
+ * @fileoverview
  */
 
 class BaseGameController {

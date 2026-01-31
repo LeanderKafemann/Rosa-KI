@@ -1,6 +1,7 @@
 /**
- * @fileoverview Tic-Tac-Toe specific heuristics (Regular, 3D, Ultimate, KnightsTour).
- * Extends HeuristicsLibrary.
+ * Tic-Tac-Toe-spezifische Heuristiken (Standard, 3D, Ultimate, KnightsTour).
+ * Erweitert die HeuristicsLibrary.
+ * @fileoverview
  */
 
 /**

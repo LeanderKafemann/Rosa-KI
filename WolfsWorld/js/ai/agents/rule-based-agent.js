@@ -1,4 +1,10 @@
 /**
+ * @fileoverview
+ * Agent für regelbasierte KI-Entscheidungen.
+ * Nutzt Entscheidungsbäume (Decision Trees) zur Auswahl von Zügen.
+ */
+
+/**
  * Ein Agent, der Entscheidungen basierend auf einem Entscheidungsbaum trifft.
  * @class RuleBasedAgent
  * @extends Agent

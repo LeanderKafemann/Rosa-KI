@@ -1,6 +1,7 @@
 /**
- * @fileoverview Rule definitions for Connect 4 (Regular and 3D).
- * Implements "Simple" and "Complex" strategies.
+ * Regel-Definitionen für Connect 4 (Standard und 3D).
+ * Implementiert "Simple" und "Complex" Strategien.
+ * @fileoverview
  */
 
 const Connect4RulesLibrary = {

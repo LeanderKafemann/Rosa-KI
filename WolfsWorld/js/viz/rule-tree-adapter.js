@@ -1,7 +1,8 @@
 /**
- * @fileoverview Adapter, der einen Regel-Baum (RuleStructure) in einen
+ * Adapter, der einen Regel-Baum (RuleStructure) in einen
  * visualisierbaren Baum (TreeNode) für die Tree-Engine umwandelt.
  * Ermöglicht Interaktion (Klick zum Deaktivieren).
+ * @fileoverview
  */
 
 const RuleTreeAdapter = {

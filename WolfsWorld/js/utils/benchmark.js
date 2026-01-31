@@ -1,5 +1,6 @@
 /**
  * Utility-Klasse zur Messung von Laufzeiten.
+ * @fileoverview
  * @class Benchmark
  */
 class Benchmark {
