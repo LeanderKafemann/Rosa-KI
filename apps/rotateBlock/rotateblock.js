@@ -26,6 +26,7 @@ let currentBoard;      // Das aktive Spielobjekt
 let optimalPath = [];  // Speichert die Richtungen (L/R) der KI
 let isOffPath = false; // Status, ob der Spieler vom KI-Weg abgewichen ist
 let isAnimating = false; // Verhindert Mehrfacheingaben während der Lösung
+let rotationCount = 0; // Zählt Rotationen für Level-Tracking
 
 // --- 2. KLASSE BOARD ---
 
@@ -91,7 +92,8 @@ class Board {
         [this.rows, this.cols] = [this.cols, this.rows];
         
         // Entscheide: Animation (Spieler) oder Sofort-Fall (KI)
-        if (!this.isSimulation && document.getElementById('animateToggle').checked && !isAnimating) {
+        const animToggle = document.getElementById('animateToggle');
+        if (!this.isSimulation && animToggle && animToggle.checked && !isAnimating) {
             relaxWithAnimation();
         } else {
             this.relaxBoard();
@@ -222,17 +224,24 @@ async function solve() {
 
 function displaySolution(path, nodes) {
     optimalPath = path; isOffPath = false;
-    document.getElementById('aiOutput').classList.remove('hidden');
-    document.getElementById('pathWarning').classList.add('hidden');
-    document.getElementById('stat-depth').innerText = path.length;
-    document.getElementById('stat-nodes').innerText = nodes;
-
+    const aiOutput = document.getElementById('aiOutput');
+    const pathWarning = document.getElementById('pathWarning');
+    const statDepth = document.getElementById('stat-depth');
+    const statNodes = document.getElementById('stat-nodes');
     const pathDiv = document.getElementById('solutionPath');
-    pathDiv.innerHTML = '';
-    path.forEach((d, i) => {
-        const s = document.createElement('span'); s.className = 'step'; 
-        s.id = `step-${i+1}`; s.innerText = d; pathDiv.appendChild(s);
-    });
+    
+    if (aiOutput) aiOutput.classList.remove('hidden');
+    if (pathWarning) pathWarning.classList.add('hidden');
+    if (statDepth) statDepth.innerText = path.length;
+    if (statNodes) statNodes.innerText = nodes;
+
+    if (pathDiv) {
+        pathDiv.innerHTML = '';
+        path.forEach((d, i) => {
+            const s = document.createElement('span'); s.className = 'step'; 
+            s.id = `step-${i+1}`; s.innerText = d; pathDiv.appendChild(s);
+        });
+    }
 }
 
 // --- 4. ANIMATIONS-SYSTEM ---
@@ -241,7 +250,8 @@ function displaySolution(path, nodes) {
 async function relaxWithAnimation() {
     currentBoard.isFalling = true;
     let changed = true;
-    const speed = FALL_SPEED_CONFIG[document.getElementById('boardSelect').value] || 0.15;
+    const boardSelect = document.getElementById('boardSelect');
+    const speed = FALL_SPEED_CONFIG[boardSelect ? boardSelect.value : '0'] || 0.15;
 
     while (changed) {
         changed = false;
@@ -282,19 +292,21 @@ async function animateSolution() {
     if (steps.length === 0) return;
     
     isAnimating = true;
-    document.getElementById('animateBtn').disabled = true;
+    const animateBtn = document.getElementById('animateBtn');
+    const speedSlider = document.getElementById('speedSlider');
+    if (animateBtn) animateBtn.disabled = true;
 
     for (let i = 0; i < steps.length; i++) {
         if (!isAnimating) break;
         currentBoard.rotate(steps[i].innerText === 'R');
         render();
-        const delay = 2100 - document.getElementById('speedSlider').value;
+        const delay = speedSlider ? (2100 - speedSlider.value) : 1000;
         await new Promise(r => setTimeout(r, delay));
         // Warten, bis alle Blöcke ausgeglitten sind
         while(currentBoard.isFalling) await new Promise(r => setTimeout(r, 50));
     }
     isAnimating = false;
-    document.getElementById('animateBtn').disabled = false;
+    if (animateBtn) animateBtn.disabled = false;
 }
 
 // --- 5. UI & EVENT-HANDLING ---
@@ -305,10 +317,14 @@ const ctx = canvas.getContext('2d');
 /** Setzt das Spiel zurück */
 function init() {
     canvas.width = 600; canvas.height = 600;
-    currentBoard = new Board(document.getElementById('boardSelect').value);
-    optimalPath = []; isOffPath = false;
-    document.getElementById('aiOutput').classList.add('hidden');
-    document.getElementById('winMessage').classList.add('hidden');
+    const boardSelect = document.getElementById('boardSelect');
+    const boardValue = boardSelect ? boardSelect.value : '0';
+    currentBoard = new Board(boardValue);
+    optimalPath = []; isOffPath = false; rotationCount = 0;
+    const aiOutput = document.getElementById('aiOutput');
+    const winMessage = document.getElementById('winMessage');
+    if (aiOutput) aiOutput.classList.add('hidden');
+    if (winMessage) winMessage.classList.add('hidden');
     render();
 }
 
@@ -317,7 +333,8 @@ function render() {
     if (!currentBoard) return;
     ctx.clearRect(0, 0, 600, 600);
     currentBoard.draw(ctx, 600);
-    document.getElementById('moveCount').innerText = currentBoard.moves;
+    const moveCount = document.getElementById('moveCount');
+    if (moveCount) moveCount.innerText = currentBoard.moves;
 
     // Aktiven Schritt in der KI-Leiste markieren
     document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
@@ -328,7 +345,30 @@ function render() {
             s.scrollIntoView({behavior:'smooth', block:'nearest'});
         }
     }
-    if (currentBoard.won) document.getElementById('winMessage').classList.remove('hidden');
+    if (currentBoard.won) {
+        const winMessage = document.getElementById('winMessage');
+        if (winMessage) winMessage.classList.remove('hidden');
+        
+        // postMessage an parent window senden (für iframe integration)
+        if (window.parent !== window) {
+            const boardSelect = document.getElementById('boardSelect');
+            window.parent.postMessage({
+                type: 'gameWon',
+                moves: currentBoard.moves,
+                level: boardSelect ? boardSelect.value : '0'
+            }, '*');
+        }
+    }
+    
+    // postMessage für Rotationen (z.B. für "nach 5 Drehungen")
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'gameState',
+            moves: currentBoard.moves,
+            rotationCount: rotationCount,
+            won: currentBoard.won
+        }, '*');
+    }
 }
 
 // Tastatursteuerung
@@ -336,11 +376,13 @@ window.addEventListener('keydown', (e) => {
     if (!currentBoard || currentBoard.isFalling || isAnimating || currentBoard.won) return;
     let d = e.key === 'ArrowLeft' ? 'L' : e.key === 'ArrowRight' ? 'R' : null;
     if (d) {
+        rotationCount++; // Zähle Rotationen
         // Prüfen, ob der Spieler noch auf dem KI-Weg ist
         if (optimalPath.length > 0 && !isOffPath) {
             if (d !== optimalPath[currentBoard.moves]) {
                 isOffPath = true;
-                document.getElementById('pathWarning').classList.remove('hidden');
+                const pathWarning = document.getElementById('pathWarning');
+                if (pathWarning) pathWarning.classList.remove('hidden');
             }
         }
         currentBoard.rotate(d === 'R');
@@ -349,10 +391,72 @@ window.addEventListener('keydown', (e) => {
 });
 
 // Event-Listener für Buttons
-document.getElementById('boardSelect').addEventListener('change', init);
-document.getElementById('resetBtn').addEventListener('click', init);
-document.getElementById('solveBtn').addEventListener('click', solve);
-document.getElementById('animateBtn').addEventListener('click', animateSolution);
+const boardSelect = document.getElementById('boardSelect');
+const resetBtn = document.getElementById('resetBtn');
+const solveBtn = document.getElementById('solveBtn');
+const animateBtn = document.getElementById('animateBtn');
+
+if (boardSelect) boardSelect.addEventListener('change', init);
+if (resetBtn) resetBtn.addEventListener('click', init);
+if (solveBtn) solveBtn.addEventListener('click', solve);
+if (animateBtn) animateBtn.addEventListener('click', animateSolution);
+
+// URL Parameter Handling
+function checkUrlParams() {
+    const params = new URLSearchParams(window.location.search);
+    
+    // Level parameter
+    const level = params.get('level');
+    if (level !== null && document.querySelector(`#boardSelect option[value="${level}"]`)) {
+        document.getElementById('boardSelect').value = level;
+    }
+
+    // hide_ai: Versteckt KI-Lösen Button
+    if (params.has('hide_ai') || params.get('hide_ai') === 'true') {
+        document.getElementById('solveBtn').style.display = 'none';
+        document.querySelector('.stats-panel hr').style.display = 'none';
+    }
+    
+    // hideControls: Versteckt gesamtes Menü
+    if (params.has('hideControls') || params.get('hideControls') === 'true') {
+        document.getElementById('menu').style.display = 'none';
+        document.getElementById('game-area').style.gridColumn = '1 / -1';
+        document.getElementById('game-area').style.maxWidth = '100%';
+    }
+    
+    // hideLevelSelect: Versteckt nur die Level-Auswahl
+    if (params.has('hideLevelSelect') || params.get('hideLevelSelect') === 'true') {
+        const levelGroup = document.querySelector('#boardSelect').closest('.control-group');
+        if (levelGroup) levelGroup.style.display = 'none';
+    }
+    
+    // hideReset: Versteckt Reset Button
+    if (params.has('hideReset') || params.get('hideReset') === 'true') {
+        document.getElementById('resetBtn').style.display = 'none';
+    }
+    
+    // hideAnimation: Versteckt Animation Checkbox
+    if (params.has('hideAnimation') || params.get('hideAnimation') === 'true') {
+        const animToggle = document.querySelector('#animateToggle').closest('.control-group');
+        if (animToggle) animToggle.style.display = 'none';
+    }
+    
+    // hideInstructions: Versteckt die Spielbeschreibung
+    if (params.has('hideInstructions') || params.get('hideInstructions') === 'true') {
+        const instructions = document.querySelector('.instructions');
+        if (instructions) instructions.style.display = 'none';
+    }
+}
 
 // Spiel starten
+checkUrlParams();
 init();
+
+// Canvas fokussieren, damit Tastatureingaben sofort funktionieren
+window.addEventListener('load', () => {
+    const canvas = document.getElementById('gameCanvas');
+    if (canvas) {
+        canvas.setAttribute('tabindex', '0'); // Canvas fokussierbar machen
+        canvas.focus(); // Canvas fokussieren
+    }
+});
