@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Einführung</title>
+    <meta name="course-config" content="course.json">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/learning-path.css">
+    <style>
+        body { margin: 0; padding: 0; overflow-x: hidden; width: 100vw; }
+        .fullwidth-layout {
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            width: 100%;
+        }
+        .intro-header {
+            text-align: center;
+            padding: 2rem 0;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 100%;
+        }
+        .tree-container {
+            flex: 1;
+            width: 100%;
+            background: #f5f7fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .tree-wrapper {
+            width: 100%;
+            height: 100%;
+            background: white;
+            overflow: hidden;
+        }
+        .content-section {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+<div class="fullwidth-layout">
+    
+    <div class="intro-header">
+        <h1 style="font-size: 2.5rem; margin: 0;">Suchbäume & Games</h1>
+    </div>
+
+    <div class="tree-container">
+        <div class="tree-wrapper">
+            <iframe src="../../playground/rotatebox-viz.html?level=3&maxDepth=5&duplicates=false&hideControls=true" style="width: 100%; height: 100%; border:none;"></iframe>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h3>In diesem Kurs lernst du:</h3>
+        <ul style="font-size: 1.1rem; line-height: 1.8;">
+            <li>Wie man Probleme als Baumstruktur darstellt</li>
+            <li>Warum Computer manchmal Milliarden Jahre rechnen müssten</li>
+            <li>Welche Tricks ("Heuristiken") wir nutzen, damit es schneller geht</li>
+            <li>Wir nutzen das Spiel "RotateBox" als Beispiel</li>
+        </ul>
+        
+        <div class="lp-navigation" style="margin-top: 2rem; display: flex; justify-content: center; gap: 20px;"></div>
+    </div>
+
+</div>
+<script>
+window.COURSE_DATA = {"id":"search-trees-rotatebox","title":"Suchbäume mit RotateBox verstehen","description":"Lerne wie Computer komplexe Rätsel lösen, indem wir das Spiel RotateBox untersuchen.","author":"Alexander Wolf","version":"1.0","lessons":[{"id":"intro","title":"Einführung: Wie löst eine KI Rätsel?","file":"00_intro.html","type":"intro"},{"id":"game-basics","title":"Das Spiel und die Interaktion","file":"01_game.html","type":"practice"},{"id":"puzzle-challenge","title":"Rätseln mit Hilfe","file":"02_puzzle.html","type":"practice"},{"id":"ai-intro","title":"Der Computer hilft","file":"03_ai.html","type":"interactive"},{"id":"tree-basics","title":"Der Suchbaum","file":"04_tree_1.html","type":"theory"},{"id":"tree-growth","title":"Der Suchbaum wächst","file":"05_tree_2.html","type":"theory"},{"id":"complexity","title":"Komplexität von Binärbäumen","file":"06_complexity.html","type":"math"},{"id":"limits","title":"Wir sprengen den Algorithmus","file":"07_limits.html","type":"advanced"},{"id":"duplicates","title":"Die Auswirkung von Doppelungen","file":"08_duplicates.html","type":"theory"},{"id":"final-quiz","title":"Abschlussquiz","file":"09_quiz.html","type":"quiz"}]};
+</script>
+<script src="../../js/learning-path.js"></script>
+<script>
+    // Intro hat keine Aufgabe - Weiter-Button sofort aktivieren
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            if (window.learningPath) {
+                window.learningPath.enableNextButton();
+            }
+        }, 100);
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{
+    "id": "unique-course-id",
+    "title": "Titel des Lernpfades",
+    "description": "Kurze Beschreibung worum es geht.",
+    "author": "Autorenname",
+    "version": "1.0",
+    "settings": {
+        "allowSkip": true,
+        "showProgressBar": true
+    },
+    "lessons": [
+        {
+            "id": "lesson-1",
+            "title": "Einführung",
+            "file": "01_intro.html",
+            "type": "theory"
+        },
+        {
+            "id": "lesson-2",
+            "title": "Erste Aufgabe",
+            "file": "02_task.html",
+            "type": "practice",
+            "requirements": []
+        },
+        {
+            "id": "lesson-3",
+            "title": "Vertiefung",
+            "file": "03_deep_dive.html",
+            "type": "optional"
+        }
+    ]
+}

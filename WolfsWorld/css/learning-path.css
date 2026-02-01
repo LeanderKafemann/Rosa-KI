@@ -1,0 +1,227 @@
+:root {
+    --lp-bg-color: #f8f9fa; /* Lighter gray for better contrast */
+    --lp-sidebar-width: 350px;
+    --lp-text-color: #333;
+    --lp-accent-color: #3498db;
+    --lp-success-color: #2ecc71;
+    --lp-warning-color: #f1c40f;
+    --lp-danger-color: #e74c3c;
+    --lp-spacing: 1.5rem;
+}
+
+/* OVERRIDE Global Body Scroll for Learning Paths */
+body {
+    overflow-y: auto !important; 
+    height: auto !important;
+}
+
+/* Learning Path Layout - centered text (default) */
+.lp-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 2rem;
+    background: white;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px rgba(0,0,0,0.05);
+}
+
+/* --- NEW: Sidebar Layout (Game Mode) --- */
+.lp-layout-game-container {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    overflow: hidden;
+    position: fixed;
+    top: 0; 
+    left: 0;
+}
+
+.lp-sidebar {
+    width: var(--lp-sidebar-width);
+    background: white;
+    border-right: 1px solid #ddd;
+    display: flex;
+    flex-direction: column;
+    z-index: 10;
+    box-shadow: 2px 0 10px rgba(0,0,0,0.05);
+    height: 100vh;
+}
+
+.lp-sidebar-header {
+    padding: 1rem;
+    background: #2c3e50;
+    color: white;
+}
+.lp-sidebar-header h1 {
+    font-size: 1.2rem;
+    margin: 0;
+}
+.lp-sidebar-header .subtitle {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.lp-sidebar-content {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 1rem;
+}
+
+.lp-sidebar-footer {
+    padding: 1rem;
+    border-top: 1px solid #eee;
+    background: #f8f9fa;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.lp-main-content {
+    flex-grow: 1;
+    background: #dfe6e9;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.lp-game-frame-full {
+    border: none;
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+
+/* --- NEW: Split Layout (Complexity) --- */
+.lp-layout-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+    height: calc(100vh - 150px); /* Approx height minus header/footer */
+}
+.lp-split-left {
+    overflow-y: auto;
+    padding-right: 1rem;
+}
+.lp-split-right {
+    background: #f0f2f5;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Shared Element Styles */
+.lp-header {
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lp-block {
+    margin-bottom: var(--lp-spacing);
+    padding: 1.2rem;
+    border-radius: 6px;
+    background: white;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.lp-task {
+    background-color: #f0f7fb;
+    border-left: 4px solid var(--lp-accent-color);
+}
+.lp-task::before {
+    content: "Aufgabe";
+    font-weight: bold;
+    color: var(--lp-accent-color);
+    display: block;
+    margin-bottom: 0.5rem;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+}
+
+.lp-explanation {
+    background-color: #f9f9f9;
+    border-left: 4px solid #95a5a6;
+}
+
+.lp-hint {
+    font-style: italic;
+    color: #666;
+    margin-top: 0.5rem;
+    background: #fff;
+    padding: 0.5rem;
+    border: 1px dashed #ccc;
+    border-radius: 4px;
+}
+
+/* Buttons */
+.lp-btn {
+    padding: 0.6rem 1rem;
+    border: none;
+    border-radius: 4px;
+    background-color: var(--lp-accent-color);
+    color: white;
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+.lp-btn:hover { background-color: #2980b9; }
+.lp-btn-outline {
+    background-color: transparent;
+    border: 1px solid var(--lp-accent-color);
+    color: var(--lp-accent-color);
+}
+.lp-btn-outline:hover {
+    background-color: var(--lp-accent-color);
+    color: white;
+}
+.lp-btn-sm { padding: 0.4rem 0.8rem; font-size: 0.8rem; }
+
+/* Progress Bar */
+.lp-progress-bar {
+    width: 100%;
+    height: 6px;
+    background-color: #eee;
+    border-radius: 3px;
+    overflow: hidden;
+    margin-top: 5px;
+}
+.lp-progress-fill {
+    height: 100%;
+    background-color: var(--lp-success-color);
+    width: 0%; 
+    transition: width 0.3s ease;
+}
+
+/* Quiz Wizard */
+.lp-quiz-step { display: none; }
+.lp-quiz-step.active { display: block; animation: fadeIn 0.3s; }
+.lp-quiz-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    margin: 8px 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.lp-quiz-option:hover { background-color: #f5f5f5; }
+.lp-quiz-option.selected { border-color: var(--lp-accent-color); background-color: #eaf6fd; }
+.lp-quiz-option.correct { background-color: #d4edda; border-color: #c3e6cb; }
+.lp-quiz-option.wrong { background-color: #f8d7da; border-color: #f5c6cb; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

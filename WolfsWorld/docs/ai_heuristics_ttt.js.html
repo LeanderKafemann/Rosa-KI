@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ai/heuristics/ttt.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a><ul class='methods'><li data-type='method'><a href="Agent.html#getAction">getAction</a></li></ul></li><li><a href="AlgorithmRunner.html">AlgorithmRunner</a><ul class='methods'><li data-type='method'><a href="AlgorithmRunner.html#setSpeed">setSpeed</a></li><li data-type='method'><a href="AlgorithmRunner.html#start">start</a></li><li data-type='method'><a href="AlgorithmRunner.html#stop">stop</a></li><li data-type='method'><a href="AlgorithmRunner.html#triggerStep">triggerStep</a></li></ul></li><li></li><li><a href="AtomicRule.html">AtomicRule</a></li><li><a href="BFSTreeAdapter.html">BFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="BFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="BFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="BFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="BFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="BFSTreeAdapter.html#startHandshake">startHandshake</a></li></ul></li><li><a href="BaseGameController.html">BaseGameController</a><ul class='methods'><li data-type='method'><a href="BaseGameController.html#checkTurn">checkTurn</a></li><li data-type='method'><a href="BaseGameController.html#coordsToMove">coordsToMove</a></li><li data-type='method'><a href="BaseGameController.html#createAIAgent">createAIAgent</a></li><li data-type='method'><a href="BaseGameController.html#createGame">createGame</a></li><li data-type='method'><a href="BaseGameController.html#drawGame">drawGame</a></li><li data-type='method'><a href="BaseGameController.html#getAISpeed">getAISpeed</a></li><li data-type='method'><a href="BaseGameController.html#handleCanvasClick">handleCanvasClick</a></li><li data-type='method'><a href="BaseGameController.html#init">init</a></li><li data-type='method'><a href="BaseGameController.html#reset">reset</a></li><li data-type='method'><a href="BaseGameController.html#updateUI">updateUI</a></li></ul></li><li><a href="Benchmark.html">Benchmark</a><ul class='methods'><li data-type='method'><a href="Benchmark.html#getAverage">getAverage</a></li><li data-type='method'><a href="Benchmark.html#getDuration">getDuration</a></li><li data-type='method'><a href="Benchmark.html#record">record</a></li><li data-type='method'><a href="Benchmark.html#reset">reset</a></li><li data-type='method'><a href="Benchmark.html#start">start</a></li><li data-type='method'><a href="Benchmark.html#stop">stop</a></li></ul></li><li><a href="ConditionNode.html">ConditionNode</a></li><li><a href="Connect43D.html">Connect43D</a></li><li><a href="Connect4Regular.html">Connect4Regular</a><ul class='methods'><li data-type='method'><a href="Connect4Regular.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="Connect4Regular.html#makeMove">makeMove</a></li></ul></li><li><a href="DFSTreeAdapter.html">DFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="DFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="DFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="DFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="DFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="DFSTreeAdapter.html#startHandshake">startHandshake</a></li><li data-type='method'><a href="DFSTreeAdapter.html#visualizeSearch">visualizeSearch</a></li></ul></li><li><a href="DecisionTree.html">DecisionTree</a></li><li><a href="FlowchartVisualizer.html">FlowchartVisualizer</a></li><li><a href="GameAdapter.html">GameAdapter</a><ul class='methods'><li data-type='method'><a href="GameAdapter.html#clone">clone</a></li><li data-type='method'><a href="GameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getBoard">getBoard</a></li><li data-type='method'><a href="GameAdapter.html#getCurrentPlayer">getCurrentPlayer</a></li><li data-type='method'><a href="GameAdapter.html#getRemainingMoves">getRemainingMoves</a></li><li data-type='method'><a href="GameAdapter.html#getState">getState</a></li><li data-type='method'><a href="GameAdapter.html#getValidMoves">getValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getWinner">getWinner</a></li><li data-type='method'><a href="GameAdapter.html#isGameOver">isGameOver</a></li><li data-type='method'><a href="GameAdapter.html#makeMove">makeMove</a></li></ul></li><li><a href="KnightBoard.html">KnightBoard</a><ul class='methods'><li data-type='method'><a href="KnightBoard.html#_getMovesFrom">_getMovesFrom</a></li><li data-type='method'><a href="KnightBoard.html#clone">clone</a></li><li data-type='method'><a href="KnightBoard.html#getDegree">getDegree</a></li><li data-type='method'><a href="KnightBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="KnightBoard.html#getPossibleMoves">getPossibleMoves</a></li><li data-type='method'><a href="KnightBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="KnightBoard.html#initGrid">initGrid</a></li><li data-type='method'><a href="KnightBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="KnightBoard.html#isInside">isInside</a></li><li data-type='method'><a href="KnightBoard.html#isValidMove">isValidMove</a></li><li data-type='method'><a href="KnightBoard.html#move">move</a></li><li data-type='method'><a href="KnightBoard.html#undo">undo</a></li></ul></li><li><a href="LearningPath.html">LearningPath</a><ul class='methods'><li data-type='method'><a href="LearningPath.html#enableNextButton">enableNextButton</a></li></ul></li><li><a href="MinimaxAgent.html">MinimaxAgent</a><ul class='methods'><li data-type='method'><a href="MinimaxAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="MinimaxEngine.html">MinimaxEngine</a><ul class='methods'><li data-type='method'><a href="MinimaxEngine.html#findBestMove">findBestMove</a></li></ul></li><li><a href="NIMGameLogic.html">NIMGameLogic</a><ul class='methods'><li data-type='method'><a href="NIMGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="NIMGameLogic.html#clone">clone</a></li><li data-type='method'><a href="NIMGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="NIMGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="NIMGameLogic.html#makeMove">makeMove</a></li><li data-type='method'><a href="NIMGameLogic.html#toString">toString</a></li></ul></li><li><a href="RandomAgent.html">RandomAgent</a><ul class='methods'><li data-type='method'><a href="RandomAgent.html#getAction">getAction</a></li></ul></li><li><a href="RotateBoard.html">RotateBoard</a><ul class='methods'><li data-type='method'><a href="RotateBoard.html#canFall">canFall</a></li><li data-type='method'><a href="RotateBoard.html#clone">clone</a></li><li data-type='method'><a href="RotateBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="RotateBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="RotateBoard.html#initFromId">initFromId</a></li><li data-type='method'><a href="RotateBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="RotateBoard.html#moveDown">moveDown</a></li><li data-type='method'><a href="RotateBoard.html#relaxBoardSync">relaxBoardSync</a></li><li data-type='method'><a href="RotateBoard.html#rotate">rotate</a></li></ul></li><li><a href="RuleBasedAgent.html">RuleBasedAgent</a><ul class='methods'><li data-type='method'><a href="RuleBasedAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="RuleGroup.html">RuleGroup</a></li><li><a href="RuleNode.html">RuleNode</a><ul class='methods'><li data-type='method'><a href="RuleNode.html#evaluate">evaluate</a></li></ul></li><li><a href="RuleVisualizer.html">RuleVisualizer</a></li><li><a href="SearchEngine.html">SearchEngine</a><ul class='methods'><li data-type='method'><a href="SearchEngine.html#solve">solve</a></li></ul></li><li></li><li><a href="TTT3DBoard.html">TTT3DBoard</a><ul class='methods'><li data-type='method'><a href="TTT3DBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTT3DBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTT3DBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTT3DBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTBase.html">TTTBase</a><ul class='methods'><li data-type='method'><a href="TTTBase.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTGameAdapter.html">TTTGameAdapter</a><ul class='methods'><li data-type='method'><a href="TTTGameAdapter.html#clone">clone</a></li><li data-type='method'><a href="TTTGameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTGameAdapter.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTGameAdapter.html#toJSON">toJSON</a></li></ul></li><li><a href="TTTRegularBoard.html">TTTRegularBoard</a><ul class='methods'><li data-type='method'><a href="TTTRegularBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTTRegularBoard.html#clone">clone</a></li><li data-type='method'><a href="TTTRegularBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTRegularBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TTTRegularBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTRegularBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TemplateGameLogic.html">TemplateGameLogic</a><ul class='methods'><li data-type='method'><a href="TemplateGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="TemplateGameLogic.html#_isMoveInList">_isMoveInList</a></li><li data-type='method'><a href="TemplateGameLogic.html#clone">clone</a></li><li data-type='method'><a href="TemplateGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TemplateGameLogic.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="TemplateGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TemplateGameLogic.html#isGoal">isGoal</a></li><li data-type='method'><a href="TemplateGameLogic.html#makeMove">makeMove</a></li></ul></li><li><a href="TreeNode.html">TreeNode</a></li><li><a href="TreeVisualizer.html">TreeVisualizer</a><ul class='methods'><li data-type='method'><a href="TreeVisualizer.html#drawTree">drawTree</a></li></ul></li><li><a href="TreeVizEngine.html">TreeVizEngine</a><ul class='methods'><li data-type='method'><a href="TreeVizEngine.html#addNode">addNode</a></li><li data-type='method'><a href="TreeVizEngine.html#assignCoordinates">assignCoordinates</a></li><li data-type='method'><a href="TreeVizEngine.html#calculateSubtreeWidth">calculateSubtreeWidth</a></li><li data-type='method'><a href="TreeVizEngine.html#clear">clear</a></li><li data-type='method'><a href="TreeVizEngine.html#drawBoardNode">drawBoardNode</a></li><li data-type='method'><a href="TreeVizEngine.html#drawEdges">drawEdges</a></li><li data-type='method'><a href="TreeVizEngine.html#drawGridBoard">drawGridBoard</a></li><li data-type='method'><a href="TreeVizEngine.html#drawKnightBoard">drawKnightBoard</a></li><li data-type='method'><a href="TreeVizEngine.html#drawLabels">drawLabels</a></li><li data-type='method'><a href="TreeVizEngine.html#drawNodes">drawNodes</a></li><li data-type='method'><a href="TreeVizEngine.html#executeBatch">executeBatch</a></li><li data-type='method'><a href="TreeVizEngine.html#executeCommand">executeCommand</a></li><li data-type='method'><a href="TreeVizEngine.html#fitTreeToView">fitTreeToView</a></li><li data-type='method'><a href="TreeVizEngine.html#highlightEdge">highlightEdge</a></li><li data-type='method'><a href="TreeVizEngine.html#highlightNode">highlightNode</a></li><li data-type='method'><a href="TreeVizEngine.html#init">init</a></li><li data-type='method'><a href="TreeVizEngine.html#layoutTree">layoutTree</a></li><li data-type='method'><a href="TreeVizEngine.html#removeHighlight">removeHighlight</a></li><li data-type='method'><a href="TreeVizEngine.html#render">render</a></li><li data-type='method'><a href="TreeVizEngine.html#resetView">resetView</a></li><li data-type='method'><a href="TreeVizEngine.html#setFocus">setFocus</a></li><li data-type='method'><a href="TreeVizEngine.html#setupCanvas">setupCanvas</a></li><li data-type='method'><a href="TreeVizEngine.html#setupInteraction">setupInteraction</a></li><li data-type='method'><a href="TreeVizEngine.html#setupPostMessage">setupPostMessage</a></li><li data-type='method'><a href="TreeVizEngine.html#setupTouchSupport">setupTouchSupport</a></li><li data-type='method'><a href="TreeVizEngine.html#updateNode">updateNode</a></li></ul></li><li><a href="UltimateBoard.html">UltimateBoard</a><ul class='methods'><li data-type='method'><a href="UltimateBoard.html#_checkSmallWin">_checkSmallWin</a></li><li data-type='method'><a href="UltimateBoard.html#_isBoardFull">_isBoardFull</a></li><li data-type='method'><a href="UltimateBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="UltimateBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="UltimateBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="ai_minimax.js.html">ai/minimax.js</a></li></ul><h3>Namespaces</h3><ul><li><a href="viz_legacy_minimax-adapter.js.html">viz/legacy/minimax-adapter.js</a></li></ul><h3>Interfaces</h3><ul><li><a href="GameState.html">GameState</a><ul class='methods'><li data-type='method'><a href="GameState.html#clone">clone</a></li><li data-type='method'><a href="GameState.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameState.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="GameState.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="GameState.html#isGoal">isGoal</a></li><li data-type='method'><a href="GameState.html#makeMove">makeMove</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#GameFactories">GameFactories</a></li><li><a href="global.html#TTTGameFactory">TTTGameFactory</a></li><li><a href="global.html#animateRelax">animateRelax</a></li><li><a href="global.html#checkSmallWin">checkSmallWin</a></li><li><a href="global.html#createAgentFromProfile">createAgentFromProfile</a></li><li><a href="global.html#createGame">createGame</a></li><li><a href="global.html#createStrategyTree">createStrategyTree</a></li><li><a href="global.html#drawRotateBoard">drawRotateBoard</a></li><li><a href="global.html#getAvailableGames">getAvailableGames</a></li><li><a href="global.html#getAvailableProfiles">getAvailableProfiles</a></li><li><a href="global.html#getProfilesByType">getProfilesByType</a></li><li><a href="global.html#solveBFS">solveBFS</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">ai/heuristics/ttt.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Tic-Tac-Toe-spezifische Heuristiken (Standard, 3D, Ultimate, KnightsTour).
+ * Erweitert die HeuristicsLibrary.
+ * @fileoverview
+ */
+
+/**
+ * Heuristic for Standard 3x3 Tic-Tac-Toe.
+ */
+HeuristicsLibrary.regularTTT = (game, player) => {
+    // 1. Direct Terminal
+    if (game.winner === player) return 1000;
+    if (game.winner !== 0 &amp;&amp; game.winner !== 3) return -1000;
+    if (game.winner === 3) return 0; // Remis
+
+    let score = 0;
+    const opponent = player === 1 ? 2 : 1;
+
+    // 2. Open Lines (Win Opportunities)
+    const lines = [
+        [0,1,2], [3,4,5], [6,7,8], 
+        [0,3,6], [1,4,7], [2,5,8], 
+        [0,4,8], [2,4,6]
+    ];
+
+    for (const line of lines) {
+        let myCount = 0;
+        let oppCount = 0;
+        let emptyCount = 0;
+
+        for (const idx of line) {
+            const val = game.grid[idx];
+            if (val === player) myCount++;
+            else if (val === opponent) oppCount++;
+            else emptyCount++;
+        }
+
+        if (myCount === 2 &amp;&amp; emptyCount === 1) score += 10;  // Good chance
+        if (oppCount === 2 &amp;&amp; emptyCount === 1) score -= 10; // Danger
+        
+        if (myCount === 1 &amp;&amp; emptyCount === 2) score += 1;
+        if (oppCount === 1 &amp;&amp; emptyCount === 2) score -= 1;
+    }
+    return score;
+};
+
+/**
+ * Heuristik für 3D Tic-Tac-Toe (3x3x3).
+ * Bewertet Linien (2-in-Reihe, Zentrum).
+ */
+HeuristicsLibrary.ttt3d = (game, player) => {
+   if (game.winner === player) return 10000;
+   if (game.winner !== 0 &amp;&amp; game.winner !== 3) return -10000;
+   if (game.winner === 3) return 0;
+
+   // 2. Center Control (Middle of the cube 1,1,1 is best)
+   const center = 13; // 4 + 3*3 = 13? (1,1,1) -> 1 + 1*3 + 1*9 = 1+3+9 = 13.
+   let score = 0;
+   if (game.grid[center] === player) score += 20;
+   else if (game.grid[center] === ((player===1)?2:1)) score -= 20;
+
+   // 3. Line Evaluation
+   // Helper to check lines
+   const checkLine = (idx1, idx2, idx3) => {
+       const v1 = game.grid[idx1], v2 = game.grid[idx2], v3 = game.grid[idx3];
+       const opp = player === 1 ? 2 : 1;
+       let my = 0, op = 0, em = 0;
+       
+       if (v1 === player) my++; else if (v1 === opp) op++; else em++;
+       if (v2 === player) my++; else if (v2 === opp) op++; else em++;
+       if (v3 === player) my++; else if (v3 === opp) op++; else em++;
+
+       if (my === 2 &amp;&amp; em === 1) return 10;
+       if (op === 2 &amp;&amp; em === 1) return -10;
+       if (my === 1 &amp;&amp; em === 2) return 1;
+       if (op === 1 &amp;&amp; em === 2) return -1;
+       return 0;
+   };
+
+   // Generate all lines? Or iterate.
+   // We can precompute lines for 3x3x3.
+   if (!HeuristicsLibrary._lines3d) {
+       const lines = [];
+       // 1. Orthogonal (x, y, z varies)
+       for(let i=0; i&lt;3; i++) for(let j=0; j&lt;3; j++) {
+           lines.push([i, i+3, i+6].map(x => x + j*9)); // Vertical cols in each slice Z (actually Y axis in local grid?)
+           lines.push([0,1,2].map(x => x + i*3 + j*9)); // Rows in each slice
+           lines.push([j, j+9, j+18].map(x => x + i*3)); // Pillars (Z axis)
+       }
+       // 2. Face Diagonals
+       for(let i=0; i&lt;3; i++) {
+           // XY Planes (Z fixed at i)
+           lines.push([0, 4, 8].map(x => x + i*9));
+           lines.push([2, 4, 6].map(x => x + i*9));
+           // XZ Planes (Y fixed at i)
+           lines.push([0, 10, 20].map(x => x + i*3)); // 0+0*9+0, 1+1*9+0... wait.
+           // x + z*9 + y*3.
+           // 0, 1, 2 = x. 0, 3, 6 = y. 0, 9, 18 = z.
+           // Diagonal XZ: x++, z++ (fixed y). Delta = 1 + 9 = 10.
+           lines.push([2, 11, 20].map(x => x + i*3)); // Delta = 9 - 1 = 8? No. 2, 11, 20. 2->11(+9), 11->20(+9). Grid is linear 0..26.
+           // Let's use generic calc.
+       }
+       // Actually simpler loop for directions
+        const s = 3;
+        const directions = [
+           [1,0,0], [0,1,0], [0,0,1], // Ortho
+           [1,1,0], [1,-1,0], [1,0,1], [1,0,-1], [0,1,1], [0,-1,1], // Face
+           [1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1] // Space
+        ];
+        
+        const valid = (x,y,z) => x>=0 &amp;&amp; x&lt;3 &amp;&amp; y>=0 &amp;&amp; y&lt;3 &amp;&amp; z>=0 &amp;&amp; z&lt;3;
+        const getIdx = (x,y,z) => x + y*3 + z*9;
+
+        HeuristicsLibrary._lines3d = [];
+        const seen = new Set();
+       
+        for(let z=0; z&lt;3; z++) for(let y=0; y&lt;3; y++) for(let x=0; x&lt;3; x++) {
+            for(let [dx,dy,dz] of directions) {
+                // Check if line starts here (for length 3, only start at 0 is possible for +1 dir)
+                // We need general line generation.
+                // Just trace from x,y,z in direction.
+                let cells = [];
+                for(let k=0; k&lt;3; k++) {
+                     if(valid(x+k*dx, y+k*dy, z+k*dz)) cells.push(getIdx(x+k*dx, y+k*dy, z+k*dz));
+                     else break;
+                }
+                if(cells.length === 3) {
+                    const key = cells.slice().sort().join(',');
+                    if(!seen.has(key)) {
+                        HeuristicsLibrary._lines3d.push(cells);
+                        seen.add(key);
+                    }
+                }
+            }
+        }
+   }
+
+   for(const line of HeuristicsLibrary._lines3d) {
+       score += checkLine(line[0], line[1], line[2]);
+   }
+
+   return score;
+};
+
+/**
+ * Heuristic for Ultimate Tic-Tac-Toe.
+ * Evaluates local boards and macro board state.
+ */
+HeuristicsLibrary.ultimateTTT = (game, player) => {
+    // 1. Global Win
+    if (game.winner === player) return 100000;
+    if (game.winner !== 0 &amp;&amp; game.winner !== 3) return -100000;
+    if (game.winner === 3) return 0;
+    
+    let score = 0;
+    const opp = player === 1 ? 2 : 1;
+
+    // 2. Evaluate Global Board (Metaboard)
+    // game.macroBoard (0..8) tells who won which sector.
+    // If a sector is won by player, it's good.
+    // Also use regularTTT logic on the global board (treating won sectors as X/O).
+    
+    // Create a mock mini-game for global board evaluation
+    const scoreGlobal = (grid) => {
+        let s = 0;
+        const lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+        for (const l of lines) {
+             let m=0, o=0;
+             for(const idx of l) {
+                 if(grid[idx] === player) m++;
+                 else if(grid[idx] === opp) o++;
+             }
+             if(m===2 &amp;&amp; o===0) s+=50;
+             if(o===2 &amp;&amp; m===0) s-=50;
+             if(m===1 &amp;&amp; o===0) s+=10;
+             if(o===1 &amp;&amp; m===0) s-=10;
+        }
+        return s;
+    };
+    
+    const macro = Array.isArray(game.macroBoard) ? game.macroBoard : Array(9).fill(0);
+    score += scoreGlobal(macro) * 50; // High weight on macro strategy
+
+    // 3. Evaluate Local Boards
+    // Sum up score of each active board? 
+    // Or all boards? Even won boards matter (they are static).
+    // If a board is won, it's just a point in global. 
+    // If not won, we evaluate position.
+    
+    for(let i=0; i&lt;9; i++) {
+        const owner = macro[i];
+        if(owner === player) {
+            score += 20; 
+        } else if(owner === opp) {
+            score -= 20;
+        } else if(owner === 0) {
+            // Not won yet, evaluate contents
+            // Extract sub-grid
+            // game.grid is 9x9? No, typically game.boards[i] or flat array?
+            // Checking UltimateBoard class structure... Usually logic is separate.
+            // If we access game.grid, we must know structure.
+            // Assuming game.boards[i] is an array of 9.
+            if(game.boards &amp;&amp; game.boards[i]) {
+                 // Hack: use regularTTT on the sub-board
+                 // But regularTTT expects a "game" object with .grid
+                 const subGame = { winner: 0, grid: game.boards[i] };
+                 const subScore = HeuristicsLibrary.regularTTT(subGame, player);
+                 // Weight local boards less than global
+                 score += subScore * 1.0; 
+            }
+        }
+    }
+    
+    return score;
+};
+
+/**
+ * Knights Tour Heuristic (Warnsdorff's Rule).
+ * Counts available moves from current position.
+ */
+HeuristicsLibrary.knightsTour = (game, player) => {
+    // Implement if needed for AI solving Knights Tour
+    return 0;
+};
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Feb 02 2026 00:39:09 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

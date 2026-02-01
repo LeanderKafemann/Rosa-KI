@@ -1,0 +1,69 @@
+{
+    "id": "search-trees-rotatebox",
+    "title": "Suchbäume mit RotateBox verstehen",
+    "description": "Lerne wie Computer komplexe Rätsel lösen, indem wir das Spiel RotateBox untersuchen.",
+    "author": "Alexander Wolf",
+    "version": "1.0",
+    "lessons": [
+        {
+            "id": "intro",
+            "title": "Einführung: Wie löst eine KI Rätsel?",
+            "file": "00_intro.html",
+            "type": "intro"
+        },
+        {
+            "id": "game-basics",
+            "title": "Das Spiel und die Interaktion",
+            "file": "01_game.html",
+            "type": "practice"
+        },
+        {
+            "id": "puzzle-challenge",
+            "title": "Rätseln mit Hilfe",
+            "file": "02_puzzle.html",
+            "type": "practice"
+        },
+        {
+            "id": "ai-intro",
+            "title": "Der Computer hilft",
+            "file": "03_ai.html",
+            "type": "interactive"
+        },
+        {
+            "id": "tree-basics",
+            "title": "Der Suchbaum",
+            "file": "04_tree_1.html",
+            "type": "theory"
+        },
+        {
+            "id": "tree-growth",
+            "title": "Der Suchbaum wächst",
+            "file": "05_tree_2.html",
+            "type": "theory"
+        },
+        {
+            "id": "complexity",
+            "title": "Komplexität von Binärbäumen",
+            "file": "06_complexity.html",
+            "type": "math"
+        },
+        {
+            "id": "limits",
+            "title": "Wir sprengen den Algorithmus",
+            "file": "07_limits.html",
+            "type": "advanced"
+        },
+        {
+            "id": "duplicates",
+            "title": "Die Auswirkung von Doppelungen",
+            "file": "08_duplicates.html",
+            "type": "theory"
+        },
+        {
+            "id": "final-quiz",
+            "title": "Abschlussquiz",
+            "file": "09_quiz.html",
+            "type": "quiz"
+        }
+    ]
+}

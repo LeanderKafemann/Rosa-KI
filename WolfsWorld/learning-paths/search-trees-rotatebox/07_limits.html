@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wir sprengen den Algorithmus</title>
+    <meta name="course-config" content="course.json">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/learning-path.css">
+</head>
+<body class="lp-layout-game">
+
+<div class="lp-layout-game-container">
+    
+    <div class="lp-sidebar">
+        <div class="lp-sidebar-header">
+            <h1>Wir sprengen den Algorithmus</h1>
+        </div>
+        
+        <div class="lp-sidebar-content">
+            <div id="step1" class="lp-block lp-explanation" style="margin-top:0;">
+                <p><strong>Level 3</strong> sieht gar nicht so schwierig aus...</p>
+                <p>Lass die KI eine Lösung finden!</p>
+                <button id="activateAiBtn" class="lp-btn" style="width:100%; margin-top:1rem;">KI aktivieren</button>
+            </div>
+            
+            <div id="step2" class="lp-block" style="display:none; background:#fff3cd; border-left:4px solid #ffc107;">
+                <p>Klicke im Spiel auf <strong>"KI Lösung suchen"</strong> und dann auf <strong>"Lösung animieren"</strong></p>
+            </div>
+            
+            <div id="step3" class="lp-block" style="display:none; background:#ffebee; border-left:4px solid #f44336;">
+                <h3 style="margin-top:0;">😱 Unglaublich!</h3>
+                <p>Der vollständige Suchbaum hat <strong id="nodeCount">2^91 - 1</strong> Knoten!</p>
+                <p style="font-size:2rem; text-align:center; margin:1rem 0;">
+                    <span id="scientificNotation">~2.48 × 10²⁷</span>
+                </p>
+            </div>
+            
+            <div id="step4" class="lp-block" style="display:none;">
+                <h4>Wie lange würde das dauern?</h4>
+                <p>Angenommen, ein Computer kann <strong>1 Milliarde</strong> Knoten pro Sekunde berechnen...</p>
+                <label>Anzahl Knoten pro Sekunde:</label>
+                <input type="number" id="nodesPerSec" value="1000000000" class="lp-input" style="width:100%; margin:0.5rem 0;">
+                <button id="calcBtn" class="lp-btn" style="width:100%;">Berechnen</button>
+                <div id="calcResult" style="margin-top:1rem; display:none; padding:1rem; background:#e3f2fd; border-radius:4px;">
+                    <p><strong>Dauer:</strong> <span id="duration"></span></p>
+                    <p><strong>Vergleich:</strong> Das Universum ist ca. 13.8 Milliarden Jahre alt. Diese Berechnung würde <strong id="universeComparison"></strong> so lange dauern!</p>
+                </div>
+            </div>
+            
+            <div id="step5" class="lp-block" style="display:none; background:#fff3cd; border-left:4px solid #ffc107; margin-top:1rem;">
+                <h4>Wie findet der Computer dann so schnell eine Lösung?</h4>
+                <p>Das erfährst du auf den nächsten Seiten... 🤫</p>
+            </div>
+            
+            <div id="task-status" class="lp-block" style="display:none; background:#e8f5e9; border-left:4px solid #4caf50; margin-top:1rem;">
+                <p style="margin:0; color:#2e7d32;"><strong>✓ Aufgabe erfüllt!</strong><br>Alle Schritte abgeschlossen.</p>
+            </div>
+        </div>
+
+        <div class="lp-sidebar-footer lp-navigation"></div>
+    </div>
+
+    <div class="lp-main-content">
+        <iframe id="gameFrame" src="../../../apps/rotateBlock/index.html?level=3&hide_ai=true&hideLevelSelect=true&hideInstructions=true" class="lp-game-frame-full"></iframe>
+    </div>
+
+</div>
+
+<script>
+window.COURSE_DATA = {"id":"search-trees-rotatebox","title":"Suchbäume mit RotateBox verstehen","description":"Lerne wie Computer komplexe Rätsel lösen, indem wir das Spiel RotateBox untersuchen.","author":"Alexander Wolf","version":"1.0","lessons":[{"id":"intro","title":"Einführung: Wie löst eine KI Rätsel?","file":"00_intro.html","type":"intro"},{"id":"game-basics","title":"Das Spiel und die Interaktion","file":"01_game.html","type":"practice"},{"id":"puzzle-challenge","title":"Rätseln mit Hilfe","file":"02_puzzle.html","type":"practice"},{"id":"ai-intro","title":"Der Computer hilft","file":"03_ai.html","type":"interactive"},{"id":"tree-basics","title":"Der Suchbaum","file":"04_tree_1.html","type":"theory"},{"id":"tree-growth","title":"Der Suchbaum wächst","file":"05_tree_2.html","type":"theory"},{"id":"complexity","title":"Komplexität von Binärbäumen","file":"06_complexity.html","type":"math"},{"id":"limits","title":"Wir sprengen den Algorithmus","file":"07_limits.html","type":"advanced"},{"id":"duplicates","title":"Die Auswirkung von Doppelungen","file":"08_duplicates.html","type":"theory"},{"id":"final-quiz","title":"Abschlussquiz","file":"09_quiz.html","type":"quiz"}]};
+</script>
+<script src="../../js/learning-path.js"></script>
+<script>
+    let aiActivated = false;
+    let solutionSeen = false;
+    let taskCompleted = false;
+    
+    // Step 1: Activate AI
+    document.getElementById('activateAiBtn').addEventListener('click', () => {
+        aiActivated = true;
+        document.getElementById('gameFrame').src = "../../../apps/rotateBlock/index.html?level=3&hideLevelSelect=true&hideInstructions=true";
+        document.getElementById('step2').style.display = 'block';
+        document.getElementById('activateAiBtn').style.display = 'none';
+    });
+    
+    // Listen for game won
+    window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'gameWon' && !solutionSeen) {
+            solutionSeen = true;
+            // Show the shocking numbers
+            setTimeout(() => {
+                document.getElementById('step3').style.display = 'block';
+                document.getElementById('step4').style.display = 'block';
+            }, 500);
+        }
+    });
+    
+    // Calculate duration
+    document.getElementById('calcBtn').addEventListener('click', () => {
+        const nodesPerSec = parseFloat(document.getElementById('nodesPerSec').value) || 1000000000;
+        const totalNodes = Math.pow(2, 91) - 1;
+        const seconds = totalNodes / nodesPerSec;
+        const years = seconds / (365.25 * 24 * 60 * 60);
+        const universeAge = 13.8e9; // years
+        const ratio = years / universeAge;
+        
+        document.getElementById('duration').innerHTML = `
+            <strong>${years.toExponential(2)}</strong> Jahre<br>
+            (das sind ${seconds.toExponential(2)} Sekunden)
+        `;
+        document.getElementById('universeComparison').textContent = `${ratio.toExponential(2)} mal`;
+        document.getElementById('calcResult').style.display = 'block';
+        
+        // Show final question
+        setTimeout(() => {
+            document.getElementById('step5').style.display = 'block';
+            if (!taskCompleted) {
+                taskCompleted = true;
+                document.getElementById('task-status').style.display = 'block';
+                if (window.learningPath) {
+                    window.learningPath.enableNextButton();
+                }
+            }
+        }, 1000);
+    });
+</script>
+</body>
+</html>

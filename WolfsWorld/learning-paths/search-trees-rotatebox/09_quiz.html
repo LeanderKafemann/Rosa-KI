@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abschlussquiz</title>
+    <meta name="course-config" content="course.json">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/learning-path.css">
+    <style>
+        .quiz-question { background: white; padding: 1.5rem; border-radius: 8px; margin-bottom: 1rem; }
+        .quiz-option { padding: 0.75rem; margin: 0.5rem 0; border: 2px solid #ddd; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+        .quiz-option:hover { background: #f0f0f0; }
+        .quiz-option.selected { background: #e3f2fd; border-color: #2196f3; }
+        .quiz-option.correct { background: #e8f5e9; border-color: #4caf50; }
+        .quiz-option.incorrect { background: #ffebee; border-color: #f44336; }
+        .quiz-image { max-width: 300px; margin: 1rem auto; display: block; border: 1px solid #ddd; border-radius: 4px; }
+    </style>
+</head>
+<body>
+<div class="lp-container" style="max-width: 900px;">
+
+    <h1 style="text-align: center;">Abschlussquiz</h1>
+    <p style="text-align: center; color: #666;">Beantworte 10 Fragen zu Suchbäumen</p>
+
+    <div id="quiz-container"></div>
+
+    <div style="margin-top: 2rem; display: flex; justify-content: space-between; align-items: center;">
+        <div id="progress" style="color: #666;"></div>
+        <button id="submitBtn" class="lp-btn" style="display: none;">Auswerten</button>
+    </div>
+
+    <div id="results" style="display: none; margin-top: 2rem; text-align: center;">
+        <h2>Ergebnis</h2>
+        <p id="score" style="font-size: 2.5rem; font-weight: bold; margin: 1rem 0;"></p>
+        <p id="feedback" style="font-size: 1.2rem; margin: 1rem 0;"></p>
+        <div id="task-status" style="display:none; background:#e8f5e9; border-left:4px solid #4caf50; padding:1rem; margin:1rem auto; max-width:400px;">
+            <p style="margin:0; color:#2e7d32;"><strong>✓ Aufgabe erfüllt!</strong><br>Quiz abgeschlossen!</p>
+        </div>
+        <div class="lp-navigation" style="margin-top: 2rem; justify-content: center;"></div>
+    </div>
+
+</div>
+
+<script>
+window.COURSE_DATA = {"id":"search-trees-rotatebox","title":"Suchbäume mit RotateBox verstehen","description":"Lerne wie Computer komplexe Rätsel lösen, indem wir das Spiel RotateBox untersuchen.","author":"Alexander Wolf","version":"1.0","lessons":[{"id":"intro","title":"Einführung: Wie löst eine KI Rätsel?","file":"00_intro.html","type":"intro"},{"id":"game-basics","title":"Das Spiel und die Interaktion","file":"01_game.html","type":"practice"},{"id":"puzzle-challenge","title":"Rätseln mit Hilfe","file":"02_puzzle.html","type":"practice"},{"id":"ai-intro","title":"Der Computer hilft","file":"03_ai.html","type":"interactive"},{"id":"tree-basics","title":"Der Suchbaum","file":"04_tree_1.html","type":"theory"},{"id":"tree-growth","title":"Der Suchbaum wächst","file":"05_tree_2.html","type":"theory"},{"id":"complexity","title":"Komplexität von Binärbäumen","file":"06_complexity.html","type":"math"},{"id":"limits","title":"Wir sprengen den Algorithmus","file":"07_limits.html","type":"advanced"},{"id":"duplicates","title":"Die Auswirkung von Doppelungen","file":"08_duplicates.html","type":"theory"},{"id":"final-quiz","title":"Abschlussquiz","file":"09_quiz.html","type":"quiz"}]};
+</script>
+<script src="../../js/learning-path.js"></script>
+<script>
+    const allQuestions = [
+        { q: "Was ist die Wurzel eines Suchbaums?", options: ["Der Startzustand", "Das Ziel", "Ein Blatt", "Die Lösung"], a: 0 },
+        { q: "Wie wächst ein Binärbaum in der Tiefe?", options: ["Linear", "Exponentiell", "Quadratisch", "Konstant"], a: 1 },
+        { q: "Was verhindern Doppelungs-Checks?", options: ["Langsame Suche", "Endlosschleifen", "Graphikfehler", "Nichts"], a: 1 },
+        { q: "Wie viele Knoten hat Ebene k in einem Binärbaum?", options: ["k", "2k", "2^k", "k^2"], a: 2 },
+        { q: "Was ist eine Heuristik?", options: ["Eine exakte Regel", "Eine Schätzung/Faustregel", "Ein Fehler", "Ein Datentyp"], a: 1 },
+        { q: "Welches Verfahren nutzt RotateBox zur Lösungssuche?", options: ["Tiefensuche", "Breitensuche", "Binäre Suche", "Lineare Suche"], a: 1 },
+        { q: "Was bedeutet 'exponentielles Wachstum'?", options: ["Verdopplung pro Schritt", "Addition pro Schritt", "Konstant", "Langsames Wachstum"], a: 0 },
+        { q: "Wie viele Gesamtknoten hat ein Binärbaum bis Ebene 3?", options: ["8", "15", "16", "7"], a: 1 },
+        { q: "Warum ist Level 3 so schwer zu berechnen?", options: ["Zu viele Farben", "Zu groß", "2^91-1 Knoten", "Zu schnell"], a: 2 },
+        { q: "Was ist ein Blatt im Baum?", options: ["Die Wurzel", "Ein Knoten ohne Kinder", "Das Ziel", "Ein Fehler"], a: 1 },
+        { q: "Was passiert bei Duplikaterkennung?", options: ["Nichts", "Suchraum wird kleiner", "Baum wird größer", "Fehler"], a: 1 },
+        { q: "Wie viele Züge braucht die optimale Lösung für Level 1?", options: ["4", "5", "6", "7"], a: 2 },
+        { q: "Was ist der Vorteil von Breitensuche?", options: ["Findet immer kürzesten Weg", "Sehr schnell", "Braucht wenig Speicher", "Einfach"], a: 0 },
+        { q: "Wie viele Kinder hat ein Knoten im Binärbaum maximal?", options: ["1", "2", "3", "Unbegrenzt"], a: 1 },
+        { q: "Was ist ein Zustand?", options: ["Ein Fehler", "Eine Konfiguration des Spielfelds", "Ein Algorithmus", "Eine Farbe"], a: 1 },
+        { q: "Welche Operation macht RotateBox?", options: ["Verschieben", "Rotieren", "Springen", "Tauschen"], a: 1 },
+        { q: "Wie reduziert Duplikaterkennung den Suchraum bei Level 2, Tiefe 7?", options: ["Von 255 auf 127", "Von 255 auf 63", "Von 127 auf 63", "Gar nicht"], a: 1 },
+        { q: "Was ist das Ziel der Suche?", options: ["Alle Knoten besuchen", "Einen Lösungszustand finden", "Den Baum zeichnen", "Nichts"], a: 1 },
+        { q: "Warum kann Level 3 nicht vollständig berechnet werden?", options: ["Zu wenig RAM", "Zu viele Knoten (2^91-1)", "Fehler im Code", "Zu langsam"], a: 1 },
+        { q: "Was ist die Tiefe eines Baums?", options: ["Anzahl Knoten", "Längster Pfad von Wurzel zu Blatt", "Anzahl Ebenen", "Breite"], a: 1 },
+        { q: "Welcher Wert beschreibt 2^90 am besten?", options: ["1 Million", "1 Milliarde", "~10^27", "Unendlich"], a: 2 },
+        { q: "Was macht der Computer bei der Suche?", options: ["Raten", "Systematisches Ausprobieren", "Zufall", "Nichts"], a: 1 },
+        { q: "Wie viele Möglichkeiten gibt es pro Zug in RotateBox?", options: ["1", "2 (Links/Rechts)", "4", "8"], a: 1 },
+        { q: "Was ist ein Pfad im Baum?", options: ["Eine Kante", "Eine Folge von Knoten", "Ein Blatt", "Die Wurzel"], a: 1 },
+        { q: "Warum nutzen wir Suchbäume?", options: ["Zum Zeichnen", "Um systematisch Lösungen zu finden", "Für Grafiken", "Aus Spaß"], a: 1 }
+    ];
+
+    // Select 10 random questions
+    const questions = allQuestions.sort(() => Math.random() - 0.5).slice(0, 10);
+    const userAnswers = new Array(questions.length).fill(null);
+    
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+        
+        questions.forEach((q, index) => {
+            const qDiv = document.createElement('div');
+            qDiv.className = 'quiz-question';
+            qDiv.innerHTML = `
+                <h3>Frage ${index + 1}</h3>
+                <p style="font-size:1.1rem; margin:1rem 0;">${q.q}</p>
+                <div class="quiz-options">
+                    ${q.options.map((opt, i) => `
+                        <div class="quiz-option" data-question="${index}" data-option="${i}">
+                            ${String.fromCharCode(65 + i)}) ${opt}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            container.appendChild(qDiv);
+        });
+        
+        // Add click handlers
+        document.querySelectorAll('.quiz-option').forEach(opt => {
+            opt.addEventListener('click', function() {
+                const qIndex = parseInt(this.dataset.question);
+                const optIndex = parseInt(this.dataset.option);
+                
+                // Deselect all options for this question
+                document.querySelectorAll(`[data-question="${qIndex}"]`).forEach(o => {
+                    o.classList.remove('selected');
+                });
+                
+                // Select this option
+                this.classList.add('selected');
+                userAnswers[qIndex] = optIndex;
+                
+                updateProgress();
+            });
+        });
+        
+        updateProgress();
+    }
+    
+    function updateProgress() {
+        const answered = userAnswers.filter(a => a !== null).length;
+        document.getElementById('progress').textContent = `${answered} / ${questions.length} beantwortet`;
+        
+        if (answered === questions.length) {
+            document.getElementById('submitBtn').style.display = 'block';
+        }
+    }
+    
+    document.getElementById('submitBtn').addEventListener('click', () => {
+        let correct = 0;
+        
+        questions.forEach((q, index) => {
+            const userAnswer = userAnswers[index];
+            const correctAnswer = q.a;
+            const options = document.querySelectorAll(`[data-question="${index}"]`);
+            
+            options.forEach((opt, i) => {
+                if (i === correctAnswer) {
+                    opt.classList.add('correct');
+                } else if (i === userAnswer && userAnswer !== correctAnswer) {
+                    opt.classList.add('incorrect');
+                }
+                opt.style.pointerEvents = 'none';
+            });
+            
+            if (userAnswer === correctAnswer) {
+                correct++;
+            }
+        });
+        
+        const percentage = (correct / questions.length * 100).toFixed(0);
+        document.getElementById('score').textContent = `${correct} / ${questions.length} richtig (${percentage}%)`;
+        
+        let feedbackText = '';
+        if (percentage >= 90) feedbackText = '🎉 Ausgezeichnet! Du hast alles verstanden!';
+        else if (percentage >= 70) feedbackText = '👍 Sehr gut! Du kennst dich gut aus!';
+        else if (percentage >= 50) feedbackText = '👌 Gut gemacht! Wiederhole vielleicht noch ein paar Konzepte.';
+        else feedbackText = '💪 Schau dir den Kurs nochmal an, es lohnt sich!';
+        
+        document.getElementById('feedback').textContent = feedbackText;
+        
+        document.getElementById('quiz-container').style.display = 'none';
+        document.getElementById('submitBtn').style.display = 'none';
+        document.getElementById('progress').style.display = 'none';
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('task-status').style.display = 'block';
+        
+        if (window.learningPath) {
+            window.learningPath.enableNextButton();
+        }
+        
+        // Scroll to top
+        window.scrollTo(0, 0);
+    });
+    
+    // Initialize
+    renderQuiz();
+</script>
+</body>
+</html>

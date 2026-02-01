@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rätseln mit Hilfe</title>
+    <meta name="course-config" content="course.json">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/learning-path.css">
+</head>
+<body class="lp-layout-game">
+
+<div class="lp-layout-game-container">
+    
+    <div class="lp-sidebar">
+        <div class="lp-sidebar-header">
+            <h1>Rätseln mit Hilfe</h1>
+        </div>
+        
+        <div class="lp-sidebar-content">
+            <div class="lp-block lp-explanation" style="margin-top:0;">
+                <p>Versuche, das Level in <strong>genau 6 Schritten</strong> zu lösen.</p>
+                <p>Brauchst du Hilfe?</p>
+            </div>
+            
+            <button id="showHintBtn" class="lp-btn" style="width:100%; margin-bottom:1rem;">Tipps anzeigen</button>
+            
+            <div id="hint" class="lp-block" style="display:none; background:#fff3cd; border-left:4px solid #ffc107;">
+                <p style="margin:0;"><strong>Tipp:</strong> Starte mit Links → Links → Links</p>
+            </div>
+            
+            <div id="success-msg" class="lp-block" style="display:none; background:#e8f5e9; border-left:4px solid #4caf50; margin-top:1rem;">
+                <p style="margin:0; color:#2e7d32;"><strong>✓ Perfekt!</strong><br>Du hast das Level in 6 Schritten gelöst!</p>
+            </div>
+            
+            <div id="good-msg" class="lp-block" style="display:none; background:#e3f2fd; border-left:4px solid #2196f3; margin-top:1rem;">
+                <p style="margin:0; color:#1565c0;"><strong>Gut gemacht!</strong><br>Es geht aber auch in weniger Schritten. Versuche es nochmal.</p>
+            </div>
+        </div>
+
+        <div class="lp-sidebar-footer lp-navigation"></div>
+    </div>
+
+    <div class="lp-main-content">
+        <iframe id="gameFrame" src="../../../apps/rotateBlock/index.html?level=1&hide_ai=true&hideLevelSelect=true&hideInstructions=true" class="lp-game-frame-full"></iframe>
+    </div>
+
+</div>
+
+<script>
+window.COURSE_DATA = {"id":"search-trees-rotatebox","title":"Suchbäume mit RotateBox verstehen","description":"Lerne wie Computer komplexe Rätsel lösen, indem wir das Spiel RotateBox untersuchen.","author":"Alexander Wolf","version":"1.0","lessons":[{"id":"intro","title":"Einführung: Wie löst eine KI Rätsel?","file":"00_intro.html","type":"intro"},{"id":"game-basics","title":"Das Spiel und die Interaktion","file":"01_game.html","type":"practice"},{"id":"puzzle-challenge","title":"Rätseln mit Hilfe","file":"02_puzzle.html","type":"practice"},{"id":"ai-intro","title":"Der Computer hilft","file":"03_ai.html","type":"interactive"},{"id":"tree-basics","title":"Der Suchbaum","file":"04_tree_1.html","type":"theory"},{"id":"tree-growth","title":"Der Suchbaum wächst","file":"05_tree_2.html","type":"theory"},{"id":"complexity","title":"Komplexität von Binärbäumen","file":"06_complexity.html","type":"math"},{"id":"limits","title":"Wir sprengen den Algorithmus","file":"07_limits.html","type":"advanced"},{"id":"duplicates","title":"Die Auswirkung von Doppelungen","file":"08_duplicates.html","type":"theory"},{"id":"final-quiz","title":"Abschlussquiz","file":"09_quiz.html","type":"quiz"}]};
+</script>
+<script src="../../js/learning-path.js"></script>
+<script>
+    // Show hint
+    document.getElementById('showHintBtn').addEventListener('click', () => {
+        document.getElementById('hint').style.display = 'block';
+        document.getElementById('showHintBtn').textContent = 'Tipp angezeigt ↑';
+        document.getElementById('showHintBtn').disabled = true;
+    });
+    
+    // Listen for game completion
+    let taskCompleted = false;
+    window.addEventListener('message', (event) => {
+        if (event.data && event.data.type === 'gameWon') {
+            const moves = event.data.moves;
+            if (moves === 6) {
+                taskCompleted = true;
+                document.getElementById('success-msg').style.display = 'block';
+                document.getElementById('good-msg').style.display = 'none';
+                if (window.learningPath) {
+                    window.learningPath.enableNextButton();
+                }
+            } else if (moves > 6) {
+                document.getElementById('good-msg').style.display = 'block';
+                document.getElementById('success-msg').style.display = 'none';
+            }
+        }
+    });
+</script>
+</body>
+</html>

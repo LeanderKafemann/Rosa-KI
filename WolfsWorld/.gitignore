@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+BACKUPS/
 
 # Mac OS Systemdateien (nerven oft)
 .DS_Store

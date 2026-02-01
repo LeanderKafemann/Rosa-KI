@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Suchbaum Visualisierung</title>
+    <title>Suchbaum Visualisierung v2.0</title>
     
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/tree-viz.css">
@@ -18,6 +18,19 @@
             height: 100vh; 
             overflow: hidden; 
             background: #f0f3f4;
+        }
+        
+        /* Iframe container */
+        .viz-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        #vizFrame {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
     </style>
 </head>
@@ -51,71 +64,90 @@
 
         <div class="viz-checkboxes">
             <label class="viz-checkbox-label">
-                <input type="checkbox" id="chkDuplicates" checked> Duplikate markieren
+                <input type="checkbox" id="chkDuplicates"> Duplikate markieren
             </label>
-            <label class="viz-checkbox-label">
-                <input type="checkbox" id="chkContinueSol"> Nach Ziel weiter
-            </label>
-            <button class="viz-btn btn-action" onclick="updateTree()">Baum generieren</button>
         </div>
 
         <div id="stats" class="viz-stats">Bereit.</div>
-
-        
     </div>
 
     <div class="viz-container">
-        <canvas id="treeCanvas" class="viz-canvas"></canvas>
+        <iframe id="vizFrame" src="tree-viz-v2.html?v=2.3&autoFitZoom=true"></iframe>
     </div>
 
-    <script src="../js/core/game-state.js"></script>
-    
+    <!-- RotateBoard Logic -->
     <script src="../js/games/rotatebox/logic.js"></script>
     
-    <script src="../js/viz/tree-engine.js"></script>
-    <script src="../js/games/rotatebox/tree-adapter.js"></script>
+    <!-- Tree Adapters -->
+    <script src="../js/adapters/bfs-tree-adapter.js"></script>
+    <script src="../js/adapters/dfs-tree-adapter.js"></script>
 
     <script>
-        // Visualisierer initialisieren
-        const viz = new TreeVisualizer('treeCanvas');
+        // URL-Parameter auslesen
+        const urlParams = new URLSearchParams(window.location.search);
+        
+        // Pass parameters to inner iframe
+        const innerFrame = document.getElementById('vizFrame');
+        let src = innerFrame.getAttribute('src');
+        if (urlParams.has('autoFitZoom')) src += `&autoFitZoom=${urlParams.get('autoFitZoom')}`;
+        if (urlParams.has('showOverlay')) src += `&showOverlay=${urlParams.get('showOverlay')}`;
+        innerFrame.src = src;
+
+        // Adapter instances
+        const iframe = document.getElementById('vizFrame');
+        let bfsAdapter = null;
+        let dfsAdapter = null;
+        
+        function initAdapters() {
+            if (!bfsAdapter) bfsAdapter = new BFSTreeAdapter(iframe);
+            if (!dfsAdapter) dfsAdapter = new DFSTreeAdapter(iframe);
+            console.log('Playground: Adapters initialisiert');
+        }
+        
+        // Warten bis iframe geladen ist
+        iframe.addEventListener('load', () => {
+            initAdapters();
+            setTimeout(buildCurrentTree, 300);
+        });
+        
+        // Listen for messages from parent (Learning Path)
+        window.addEventListener('message', (event) => {
+            if (event.data && event.data.type === 'UPDATE_PARAMS') {
+                const p = event.data;
+                console.log('RotateBoxViz: Received update', p);
+                
+                // Update UI controls
+                if (p.level !== undefined) document.getElementById('levelSelect').value = p.level;
+                if (p.maxDepth !== undefined) document.getElementById('depthInput').value = p.maxDepth;
+                if (p.duplicates !== undefined) document.getElementById('chkDuplicates').checked = p.duplicates;
+                if (p.algorithm !== undefined) document.getElementById('algoSelect').value = p.algorithm;
+                
+                // Rebuild tree
+                updateTree();
+            }
+        });
+        
+        // Fallback: Auch beim Fenster-Laden probieren
+        window.addEventListener('load', () => {
+            initAdapters();
+            setTimeout(buildCurrentTree, 500);
+        });
 
         /**
-         * Hilfsfunktion: Zeichnet das Board kompakt in den Node.
-         * Zeichnet einfache Rechtecke statt der aufwändigen Grafik des Hauptspiels,
-         * um Performance zu sparen und bei kleinen Nodes lesbar zu bleiben.
+         * Hilfsfunktion: Baut den Baum mit Retry-Logik.
          */
-        function drawCompactBoard(ctx, board, size) {
-            const COLORS = ['#e74c3c', '#2ecc71', '#f1c40f', '#3498db', '#e67e22'];
-            
-            const maxDim = Math.max(board.rows, board.cols);
-            if (maxDim === 0) return;
-            
-            // Blockgröße berechnen
-            const bs = size / maxDim; 
-            const ox = (size - (board.cols * bs)) / 2;
-            const oy = (size - (board.rows * bs)) / 2;
+        function buildCurrentTree() {
+            initAdapters(); 
+            const algo = document.getElementById('algoSelect').value;
+            const adapter = (algo === 'DFS') ? dfsAdapter : bfsAdapter;
 
-            for (let r = 0; r < board.rows; r++) {
-                for (let c = 0; c < board.cols; c++) {
-                    const v = board.grid[r][c];
-                    const x = ox + c * bs;
-                    const y = oy + r * bs;
-                    
-                    if (v === -2) { // Wand
-                        ctx.fillStyle = '#2c3e50'; 
-                        ctx.fillRect(x, y, bs, bs); 
-                    } else if (v === -3) { // Ziel
-                        ctx.fillStyle = '#ecf0f1';
-                        ctx.fillRect(x, y, bs, bs);
-                        ctx.strokeStyle = '#e74c3c'; 
-                        ctx.lineWidth = 2; 
-                        ctx.strokeRect(x+1, y+1, bs-2, bs-2);
-                    } else if (v >= 0) { // Box
-                        ctx.fillStyle = COLORS[v % COLORS.length];
-                        ctx.fillRect(x+1, y+1, bs-2, bs-2);
-                    }
-                }
+            if (!adapter || !adapter.ready) {
+                console.log('Playground: Warte auf Adapter ready...');
+                setTimeout(buildCurrentTree, 100);
+                return;
             }
+            
+            updateTree();
         }
 
         /**
@@ -124,34 +156,88 @@
         function updateTree() {
             // 1. UI Werte lesen
             const levelId = document.getElementById('levelSelect').value;
-            const options = {
-                maxDepth: parseInt(document.getElementById('depthInput').value),
-                algorithm: document.getElementById('algoSelect').value,
-                checkDuplicates: document.getElementById('chkDuplicates').checked,
-                continueAfterSolution: document.getElementById('chkContinueSol').checked
-            };
-
-            // 2. Startzustand laden
-            const startBoard = new RotateBoard(levelId); // Nutzt logic.js
+            const maxDepth = parseInt(document.getElementById('depthInput').value);
+            const checkDuplicates = document.getElementById('chkDuplicates').checked;
+            const algo = document.getElementById('algoSelect').value;
             
-            // 3. Baum generieren (Adapter)
-            const root = RotateBoxAdapter.generateTree(startBoard, options);
+            // Choose provider
+            const adapter = (algo === 'DFS') ? dfsAdapter : bfsAdapter;
 
-            // 4. Statistik (Nodes zählen)
-            let count = 0;
-            const countNodes = (n) => { count++; n.children.forEach(countNodes); };
-            countNodes(root);
-            document.getElementById('stats').innerText = `Nodes: ${count}`;
-
-            // 5. Zeichnen (Engine)
-            viz.drawTree(root, { 
-                drawNodeFn: drawCompactBoard,
-                config: { nodePadding: 2 } 
+            if (!adapter || !adapter.ready) {
+                console.warn('Playground: Adapter noch nicht bereit');
+                return;
+            }
+            
+            // 2. Startzustand laden
+            const startBoard = new RotateBoard(levelId);
+            
+            // 3. Adapter zurücksetzen (wichtig für Duplikate-Erkennung)
+            adapter.nodeMap.clear();
+            adapter.nodeIdCounter = 0;
+            adapter.sendCommand({ action: 'CLEAR' });
+            
+            // 4. Baum generieren über Adapter
+            console.log(`Generating tree using ${algo}...`);
+            const startTime = performance.now();
+            
+            adapter.buildToDepth(startBoard, maxDepth, {
+                duplicates: checkDuplicates
             });
+            
+            const endTime = performance.now();
+            
+            // 5. Statistik
+            const nodeCount = adapter.getNodeCount ? adapter.getNodeCount() : adapter.nodeIdCounter;
+            document.getElementById('stats').innerText = 
+                `Nodes: ${nodeCount} | Time: ${(endTime - startTime).toFixed(1)}ms | Algo: ${algo}`;
+            
+            console.log(`Playground: Baum generiert (${algo}) - ${nodeCount} Nodes`);
         }
 
-        // Starten beim Laden
-        window.onload = updateTree;
+
+        // URL-Parameter verarbeiten beim Laden
+        window.addEventListener('load', function() {
+            // Toolbar Controls verstecken falls hideControls=true
+            const hideControls = urlParams.get('hideControls') === 'true';
+            if (hideControls) {
+                document.querySelector('.viz-toolbar').style.display = 'none';
+            }
+            
+            // Einzelne Controls verstecken
+            const showLevelSelect = urlParams.get('showLevelSelect') !== 'false';
+            const showDuplicateToggle = urlParams.get('showDuplicateToggle') !== 'false';
+            const showAlgoSelect = urlParams.get('showAlgoSelect') !== 'false';
+            
+            if (!showLevelSelect) {
+                document.querySelector('#levelSelect').closest('.viz-control-group').style.display = 'none';
+            }
+            if (!showDuplicateToggle) {
+                document.querySelector('#chkDuplicates').closest('.viz-checkbox-label').style.display = 'none';
+            }
+            if (!showAlgoSelect) {
+                document.querySelector('#algoSelect').closest('.viz-control-group').style.display = 'none';
+            }
+            
+            // Parameter-basierte Defaults setzen
+            if (urlParams.has('level')) {
+                document.getElementById('levelSelect').value = urlParams.get('level');
+            }
+            if (urlParams.has('maxDepth')) {
+                document.getElementById('depthInput').value = urlParams.get('maxDepth');
+            }
+            if (urlParams.has('duplicates')) {
+                document.getElementById('chkDuplicates').checked = urlParams.get('duplicates') === 'true';
+            }
+            if (urlParams.has('algorithm')) {
+                document.getElementById('algoSelect').value = urlParams.get('algorithm');
+            }
+            
+            // Event Listener für automatische Updates bei ALLEN Änderungen
+            document.getElementById('levelSelect').addEventListener('change', updateTree);
+            document.getElementById('depthInput').addEventListener('change', updateTree);
+            document.getElementById('chkDuplicates').addEventListener('change', updateTree);
+            document.getElementById('algoSelect').addEventListener('change', updateTree);
+        });
     </script>
 </body>
 </html>

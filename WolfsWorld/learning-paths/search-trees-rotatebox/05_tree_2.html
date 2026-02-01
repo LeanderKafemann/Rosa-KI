@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Der Suchbaum wächst</title>
+    <meta name="course-config" content="course.json">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/learning-path.css">
+</head>
+<body class="lp-layout-game">
+
+<div class="lp-layout-game-container">
+    
+    <div class="lp-sidebar">
+        <div class="lp-sidebar-header">
+            <h1>Der Suchbaum wächst</h1>
+            <div class="subtitle">Level 2</div>
+        </div>
+        
+        <div class="lp-sidebar-content">
+            <div class="lp-block lp-explanation" style="margin-top:0;">
+                <h3 style="margin-top:0;">Die wachsende Komplexität</h3>
+                <p>Bei Level 2 wird es schnell kompliziert!</p>
+                <p><strong>Beobachte während der Animation:</strong></p>
+                <ul>
+                    <li>In jeder Ebene <strong>verdoppelt</strong> sich die Anzahl der Knoten</li>
+                    <li>Ebene 0: 1 Knoten (Start)</li>
+                    <li>Ebene 1: 2 Knoten (L, R)</li>
+                    <li>Ebene 2: 4 Knoten (LL, LR, RL, RR)</li>
+                    <li>Ebene 3: 8 Knoten ...</li>
+                    <li>Ebene 8: <strong>256 Knoten!</strong></li>
+                </ul>
+                <p style="margin-top:1rem; padding:0.75rem; background:#ffebee; border-left:3px solid #f44336; font-size:0.9rem;">
+                    ⚠️ <strong>Problem:</strong> Bei höheren Ebenen wird es sehr schnell unübersichtlich!
+                </p>
+            </div>
+
+            <button id="animateBtn" class="lp-btn" style="width:100%; margin:1rem 0;">
+                Animation starten (0 bis 8)
+            </button>
+            
+            <div class="lp-block" style="background:#e3f2fd; padding:0.75rem;">
+                <p style="margin:0; font-size:0.9rem;">Status: <strong id="statusText">Bereit</strong></p>
+            </div>
+            
+            <div id="task-status" class="lp-block" style="display:none; background:#e8f5e9; border-left:4px solid #4caf50; margin-top:1rem;">
+                <p style="margin:0; color:#2e7d32;"><strong>✓ Aufgabe erfüllt!</strong><br>Animation vollständig abgespielt.</p>
+            </div>
+        </div>
+
+        <div class="lp-sidebar-footer lp-navigation"></div>
+    </div>
+
+    <div class="lp-main-content">
+        <iframe id="vizFrame" src="../../playground/rotatebox-viz.html?level=2&maxDepth=0&duplicates=false&hideControls=true&autoFitZoom=true&showOverlay=false" class="lp-game-frame-full"></iframe>
+    </div>
+
+</div>
+
+<script>
+window.COURSE_DATA = {"id":"search-trees-rotatebox","title":"Suchbäume mit RotateBox verstehen","description":"Lerne wie Computer komplexe Rätsel lösen, indem wir das Spiel RotateBox untersuchen.","author":"Alexander Wolf","version":"1.0","lessons":[{"id":"intro","title":"Einführung: Wie löst eine KI Rätsel?","file":"00_intro.html","type":"intro"},{"id":"game-basics","title":"Das Spiel und die Interaktion","file":"01_game.html","type":"practice"},{"id":"puzzle-challenge","title":"Rätseln mit Hilfe","file":"02_puzzle.html","type":"practice"},{"id":"ai-intro","title":"Der Computer hilft","file":"03_ai.html","type":"interactive"},{"id":"tree-basics","title":"Der Suchbaum","file":"04_tree_1.html","type":"theory"},{"id":"tree-growth","title":"Der Suchbaum wächst","file":"05_tree_2.html","type":"theory"},{"id":"complexity","title":"Komplexität von Binärbäumen","file":"06_complexity.html","type":"math"},{"id":"limits","title":"Wir sprengen den Algorithmus","file":"07_limits.html","type":"advanced"},{"id":"duplicates","title":"Die Auswirkung von Doppelungen","file":"08_duplicates.html","type":"theory"},{"id":"final-quiz","title":"Abschlussquiz","file":"09_quiz.html","type":"quiz"}]};
+</script>
+<script src="../../js/learning-path.js"></script>
+<script>
+    let isAnimating = false;
+    let taskCompleted = false;
+    
+    document.getElementById('animateBtn').addEventListener('click', function(event) {
+        if (isAnimating) return;
+        isAnimating = true;
+        let depth = 0;
+        const btn = event.target;
+        btn.disabled = true;
+        btn.textContent = 'Animation läuft...';
+        document.getElementById('statusText').textContent = 'Animation läuft...';
+        
+        const vizFrame = document.getElementById('vizFrame').contentWindow;
+
+        const interval = setInterval(() => {
+            // Use postMessage instead of reloading iframe
+            vizFrame.postMessage({
+                type: 'UPDATE_PARAMS',
+                level: 2,
+                maxDepth: depth,
+                duplicates: false
+            }, '*');
+
+            document.getElementById('statusText').textContent = `Ebene ${depth} von 8`;
+            depth++;
+            if (depth > 8) {
+                clearInterval(interval);
+                btn.disabled = false;
+                btn.textContent = 'Animation abgeschlossen ✓';
+                document.getElementById('statusText').textContent = 'Fertig!';
+                isAnimating = false;
+                
+                if (!taskCompleted) {
+                    taskCompleted = true;
+                    document.getElementById('task-status').style.display = 'block';
+                    if (window.learningPath) {
+                        window.learningPath.enableNextButton();
+                    }
+                }
+            }
+        }, 1200);
+    });
+</script>
+</body>
+</html>

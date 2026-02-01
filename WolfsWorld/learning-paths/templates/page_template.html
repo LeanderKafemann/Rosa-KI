@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lernpfad Seite</title>
+    
+    <!-- Config for Learning Path Engine -->
+    <meta name="course-config" content="course.json"> 
+
+    <!-- Global Styles -->
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/learning-path.css">
+    
+    <!-- Specific Game Styles if needed -->
+    <!-- <link rel="stylesheet" href="../../css/rotatebox.css"> -->
+</head>
+<body>
+
+<div class="lp-container">
+    
+    <!-- Header with Progress -->
+    <div class="lp-header">
+        <div class="lp-headers-container">
+            <h1>Seitentitel</h1>
+            <p class="text-muted">Untertitel oder kurze Einleitung</p>
+        </div>
+        <div style="width: 200px;">
+            <div class="viz-label">Fortschritt</div>
+            <div class="lp-progress-bar"><div class="lp-progress-fill"></div></div>
+        </div>
+    </div>
+
+    <div class="lp-content">
+        
+        <!-- Explanation Block -->
+        <div class="lp-block lp-explanation">
+            <p>Hier steht eine theoretische Einführung oder Erklärung.</p>
+        </div>
+
+        <!-- Definition Block -->
+        <div class="lp-block lp-definition">
+            <p><strong>Begriff:</strong> Definition des Begriffs.</p>
+        </div>
+
+        <!-- Task Block -->
+        <div class="lp-block lp-task">
+            <p>Formulierung der Aufgabe für den Schüler.</p>
+            
+            <!-- Optional: Hints -->
+            <div class="lp-hint">Tipp: Achte auf...</div>
+        </div>
+
+        <!-- Game/Simulation Embedding -->
+        <div class="lp-game-embed">
+            <!-- Embedding via Iframe usually easiest to isolate game logic -->
+            <iframe src="../../apps/rotateBlock/index.html?mode=simple" class="lp-game-frame"></iframe>
+            
+            <!-- OR Direct Embedding if game supports it -->
+            <!-- <div id="game-container"></div> -->
+        </div>
+
+        <!-- Toggleable Answer -->
+        <div class="lp-block">
+            <button class="lp-btn lp-btn-outline lp-toggle-answer" data-target="answer-1">Lösung anzeigen</button>
+            <div id="answer-1" class="lp-answer">
+                <p>Hier steht die ausführliche Lösung.</p>
+            </div>
+        </div>
+
+        <!-- Quiz Example -->
+        <div class="lp-block lp-quiz">
+            <h3>Quizfrage</h3>
+            <p>Welche Aussage ist korrekt?</p>
+            <label class="lp-quiz-option">
+                <input type="radio" name="q1" value="false"> Falsche Antwort
+            </label>
+            <label class="lp-quiz-option">
+                <input type="radio" name="q1" value="true"> Richtige Antwort
+            </label>
+            <label class="lp-quiz-option">
+                <input type="radio" name="q1" value="false"> Noch eine falsche Antwort
+            </label>
+            <button class="lp-btn lp-quiz-check" style="margin-top:10px;">Prüfen</button>
+            <div class="lp-quiz-result" style="margin-top:10px; font-weight:bold;"></div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Footer (Filled by JS) -->
+    <div class="lp-navigation lp-footer">
+        <!-- Buttons will be injected here -->
+    </div>
+
+</div>
+
+<!-- Logic Scripts -->
+<script src="../../js/learning-path.js"></script>
+
+<!-- Custom Page Script -->
+<script>
+    // Page specific logic here
+</script>
+
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Der Suchbaum</title>
+    <meta name="course-config" content="course.json">
+    <link rel="stylesheet" href="../../css/style.css">
+    <link rel="stylesheet" href="../../css/learning-path.css">
+</head>
+<body class="lp-layout-game">
+
+<div class="lp-layout-game-container">
+    
+    <div class="lp-sidebar">
+        <div class="lp-sidebar-header">
+            <h1>Der Suchbaum</h1>
+            <div class="subtitle">Level 1</div>
+        </div>
+        
+        <div class="lp-sidebar-content">
+            <div class="lp-block lp-explanation" style="margin-top:0;">
+                <h3 style="margin-top:0;">Wie wird der Baum aufgebaut?</h3>
+                <p>Der Computer startet am Wurzelknoten (Startposition des Spiels).</p>
+                <p><strong>In jeder Ebene</strong> werden alle Möglichkeiten ausprobiert:</p>
+                <ul>
+                    <li>Von jedem Knoten gehen <strong>2 Äste</strong> ab: Links drehen (L) und Rechts drehen (R)</li>
+                    <li>Jede neue Drehung erzeugt einen neuen Spielzustand</li>
+                    <li>So entsteht ein <strong>Binärbaum</strong> (2 Verzweigungen pro Knoten)</li>
+                </ul>
+                <p style="margin-top:1rem; padding:0.75rem; background:#fff3cd; border-left:3px solid #ffc107; font-size:0.9rem;">
+                    💡 <strong>Tipp:</strong> Klicke mehrmals auf "Ebene hinzufügen" und beobachte, wie der Baum wächst!
+                </p>
+            </div>
+
+            <button id="addLevelBtn" class="lp-btn" style="width:100%; margin:1rem 0;">
+                Ebene hinzufügen
+            </button>
+            
+            <div class="lp-block" style="background:#e3f2fd; padding:0.75rem;">
+                <p style="margin:0; font-size:0.9rem;">Aktuelle Tiefe: <strong id="currentDepth">0</strong></p>
+                <p style="margin:0.5rem 0 0 0; font-size:0.85rem; color:#666;">Ziel: Ebene 4 erreichen</p>
+            </div>
+            
+            <div id="task-status" class="lp-block" style="display:none; background:#e8f5e9; border-left:4px solid #4caf50; margin-top:1rem;">
+                <p style="margin:0; color:#2e7d32;"><strong>✓ Aufgabe erfüllt!</strong><br>Du hast den Baumaufbau verstanden.</p>
+            </div>
+        </div>
+
+        <div class="lp-sidebar-footer lp-navigation"></div>
+    </div>
+
+    <div class="lp-main-content">
+        <iframe id="vizFrame" src="../../playground/tree-viz-v2.html?autoFitZoom=true&v=2.3" class="lp-game-frame-full"></iframe>
+    </div>
+
+</div>
+
+<script>
+window.COURSE_DATA = {"id":"search-trees-rotatebox","title":"Suchbäume mit RotateBox verstehen","description":"Lerne wie Computer komplexe Rätsel lösen, indem wir das Spiel RotateBox untersuchen.","author":"Alexander Wolf","version":"1.0","lessons":[{"id":"intro","title":"Einführung: Wie löst eine KI Rätsel?","file":"00_intro.html","type":"intro"},{"id":"game-basics","title":"Das Spiel und die Interaktion","file":"01_game.html","type":"practice"},{"id":"puzzle-challenge","title":"Rätseln mit Hilfe","file":"02_puzzle.html","type":"practice"},{"id":"ai-intro","title":"Der Computer hilft","file":"03_ai.html","type":"interactive"},{"id":"tree-basics","title":"Der Suchbaum","file":"04_tree_1.html","type":"theory"},{"id":"tree-growth","title":"Der Suchbaum wächst","file":"05_tree_2.html","type":"theory"},{"id":"complexity","title":"Komplexität von Binärbäumen","file":"06_complexity.html","type":"math"},{"id":"limits","title":"Wir sprengen den Algorithmus","file":"07_limits.html","type":"advanced"},{"id":"duplicates","title":"Die Auswirkung von Doppelungen","file":"08_duplicates.html","type":"theory"},{"id":"final-quiz","title":"Abschlussquiz","file":"09_quiz.html","type":"quiz"}]};
+</script>
+<script src="../../js/learning-path.js"></script>
+<!-- Load RotateBoard game logic -->
+<script src="../../js/games/rotatebox/logic.js"></script>
+<!-- Load BFS Adapter -->
+<script src="../../js/adapters/bfs-tree-adapter.js"></script>
+<script>
+    let currentDepth = 0;
+    const maxDepth = 4;
+    const targetDepth = 4;
+    let taskCompleted = false;
+    let adapter = null;
+    
+    // Initialize adapter when iframe is ready
+    const iframe = document.getElementById('vizFrame');
+    
+    // Function to ensure adapter is initialized
+    function initAdapter() {
+        if (adapter) return;
+        adapter = new BFSTreeAdapter(iframe);
+        console.log('04_tree_1: BFSTreeAdapter initialized');
+        // Initial build will be handled by buildCurrentTree
+    }
+    
+    // Try on iframe load
+    iframe.addEventListener('load', initAdapter);
+    
+    // Also try on window load, and periodically until init
+    window.addEventListener('load', () => {
+        initAdapter();
+        // Start retry loop to build tree once adapter is ready
+        buildCurrentTree();
+    });
+    
+    // Function to build tree (can be called multiple times)
+    function buildCurrentTree() {
+        // Ensure adapter is initialized if not already
+        initAdapter();
+        
+        if (!adapter || !adapter.ready) {
+            console.log('Adapter not ready, waiting...');
+            setTimeout(buildCurrentTree, 100);
+            return;
+        }
+        
+        const initialState = new RotateBoard('1'); // Level 1 as string
+        adapter.buildToDepth(initialState, currentDepth, { duplicates: false });
+    }
+    
+    document.getElementById('addLevelBtn').addEventListener('click', () => {
+        if (currentDepth < maxDepth && adapter) {
+            currentDepth++;
+            document.getElementById('currentDepth').textContent = currentDepth;
+            
+            // Build tree to new depth WITHOUT page reload
+            buildCurrentTree();
+            
+            if (currentDepth >= targetDepth && !taskCompleted) {
+                taskCompleted = true;
+                document.getElementById('task-status').style.display = 'block';
+                if (window.learningPath) {
+                    window.learningPath.enableNextButton();
+                }
+            }
+            
+            if (currentDepth >= maxDepth) {
+                document.getElementById('addLevelBtn').disabled = true;
+                document.getElementById('addLevelBtn').textContent = 'Ebene 4 erreicht ✓';
+            }
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Visualization v2.0</title>
+    <script>
+        window.onerror = function(msg, url, line, col, error) {
+            const loading = document.getElementById('loading');
+            if (loading) {
+                loading.innerHTML = '<div style="color:red; text-align:left; padding:10px;">' + 
+                    '<strong>Error:</strong> ' + msg + '<br>' +
+                    '<small>' + url.split('/').pop() + ':' + line + '</small>' +
+                    '</div>';
+            }
+            console.error('Tree Viz Error:', msg, url, line, error);
+            return false;
+        };
+    </script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        #container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        #treeCanvas {
+            flex: 1;
+            display: block;
+            background: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Loading overlay */
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.95);
+            padding: 2rem 3rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            z-index: 1000;
+        }
+        
+        #loading.hidden {
+            display: none;
+        }
+        
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        /* Control panel (if needed for standalone testing) */
+        #controls {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 1rem;
+            display: none; /* Hidden by default, can be shown via URL param */
+            border-bottom: 1px solid #ddd;
+        }
+        
+        #controls.visible {
+            display: block;
+        }
+        
+        .control-group {
+            margin-bottom: 0.5rem;
+        }
+        
+        .control-group label {
+            display: inline-block;
+            width: 120px;
+            font-weight: 500;
+        }
+        
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-right: 0.5rem;
+            transition: background 0.2s;
+        }
+        
+        button:hover {
+            background: #5568d3;
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        input[type="range"] {
+            width: 200px;
+            vertical-align: middle;
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            #controls {
+                padding: 0.5rem;
+                font-size: 12px;
+            }
+            
+            button {
+                padding: 0.4rem 0.8rem;
+                font-size: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <!-- Optional control panel for testing -->
+        <div id="controls">
+            <div class="control-group">
+                <label>Test Controls:</label>
+                <button id="testAddNode">Add Node</button>
+                <button id="testClear">Clear</button>
+                <button id="testResetView">Reset View</button>
+            </div>
+        </div>
+        
+        <!-- Main canvas -->
+        <canvas id="treeCanvas"></canvas>
+        
+        <!-- Loading indicator -->
+        <div id="loading">
+            <div class="spinner"></div>
+            <p>Initializing Tree Visualization...</p>
+        </div>
+    </div>
+    
+    <!-- Load TreeVizEngine -->
+    <script src="../js/viz/tree-engine-v2.js?v=2.3"></script>
+    
+    <script>
+        // URL Parameters
+        const params = new URLSearchParams(window.location.search);
+        const showControls = params.has('showControls');
+        const autoFitZoom = params.get('autoFitZoom') === 'true';
+        const showOverlay = params.get('showOverlay') !== 'false';
+        
+        // Show controls if requested
+        if (showControls) {
+            document.getElementById('controls').classList.add('visible');
+        }
+        
+        // Initialize Engine
+        const canvas = document.getElementById('treeCanvas');
+        const engine = new TreeVizEngine(canvas, {
+            nodeRadius: 40,
+            levelHeight: 120,
+            horizontalSpacing: 100,
+            fontSize: 12,
+            autoFitZoom: autoFitZoom,
+            showOverlay: showOverlay
+        });
+        
+        // Loading overlay wird von executeBatch() versteckt
+        
+        // Test controls (for development)
+        if (showControls) {
+            let testNodeId = 0;
+            
+            document.getElementById('testAddNode').addEventListener('click', () => {
+                const parentId = testNodeId === 0 ? null : Math.floor(Math.random() * testNodeId);
+                const commands = [{
+                    command: 'ADD_NODE',
+                    data: {
+                        id: testNodeId,
+                        parentId: parentId,
+                        label: `N${testNodeId}`,
+                        color: `hsl(${Math.random() * 360}, 70%, 60%)`
+                    }
+                }];
+                
+                engine.executeCommand('BATCH', { commands });
+                testNodeId++;
+            });
+            
+            document.getElementById('testClear').addEventListener('click', () => {
+                engine.executeCommand('CLEAR');
+                testNodeId = 0;
+            });
+            
+            document.getElementById('testResetView').addEventListener('click', () => {
+                engine.executeCommand('RESET_VIEW');
+            });
+        }
+        
+        // Keyboard shortcuts
+        window.addEventListener('keydown', (e) => {
+            // R = Reset view
+            if (e.key === 'r' || e.key === 'R') {
+                engine.executeCommand('RESET_VIEW');
+            }
+            
+            // C = Clear (only in test mode)
+            if ((e.key === 'c' || e.key === 'C') && showControls) {
+                engine.executeCommand('CLEAR');
+            }
+            
+            // + / - = Zoom (alternative to mouse wheel)
+            if (e.key === '+' || e.key === '=') {
+                engine.viewport.scale = Math.min(engine.viewport.maxScale, engine.viewport.scale * 1.1);
+                engine.render();
+            }
+            if (e.key === '-' || e.key === '_') {
+                engine.viewport.scale = Math.max(engine.viewport.minScale, engine.viewport.scale * 0.9);
+                engine.render();
+            }
+        });
+        
+        // Export engine for external access (debugging)
+        window.treeEngine = engine;
+        
+        console.log('TreeVizEngine v2.0 initialized');
+        console.log('Keyboard shortcuts: R=Reset View, +/-=Zoom');
+        if (showControls) {
+            console.log('Test mode active - controls visible');
+        }
+    </script>
+</body>
+</html>

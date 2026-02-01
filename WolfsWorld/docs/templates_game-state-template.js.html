@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>templates/game-state-template.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a><ul class='methods'><li data-type='method'><a href="Agent.html#getAction">getAction</a></li></ul></li><li><a href="AlgorithmRunner.html">AlgorithmRunner</a><ul class='methods'><li data-type='method'><a href="AlgorithmRunner.html#setSpeed">setSpeed</a></li><li data-type='method'><a href="AlgorithmRunner.html#start">start</a></li><li data-type='method'><a href="AlgorithmRunner.html#stop">stop</a></li><li data-type='method'><a href="AlgorithmRunner.html#triggerStep">triggerStep</a></li></ul></li><li></li><li><a href="AtomicRule.html">AtomicRule</a></li><li><a href="BFSTreeAdapter.html">BFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="BFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="BFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="BFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="BFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="BFSTreeAdapter.html#startHandshake">startHandshake</a></li></ul></li><li><a href="BaseGameController.html">BaseGameController</a><ul class='methods'><li data-type='method'><a href="BaseGameController.html#checkTurn">checkTurn</a></li><li data-type='method'><a href="BaseGameController.html#coordsToMove">coordsToMove</a></li><li data-type='method'><a href="BaseGameController.html#createAIAgent">createAIAgent</a></li><li data-type='method'><a href="BaseGameController.html#createGame">createGame</a></li><li data-type='method'><a href="BaseGameController.html#drawGame">drawGame</a></li><li data-type='method'><a href="BaseGameController.html#getAISpeed">getAISpeed</a></li><li data-type='method'><a href="BaseGameController.html#handleCanvasClick">handleCanvasClick</a></li><li data-type='method'><a href="BaseGameController.html#init">init</a></li><li data-type='method'><a href="BaseGameController.html#reset">reset</a></li><li data-type='method'><a href="BaseGameController.html#updateUI">updateUI</a></li></ul></li><li><a href="Benchmark.html">Benchmark</a><ul class='methods'><li data-type='method'><a href="Benchmark.html#getAverage">getAverage</a></li><li data-type='method'><a href="Benchmark.html#getDuration">getDuration</a></li><li data-type='method'><a href="Benchmark.html#record">record</a></li><li data-type='method'><a href="Benchmark.html#reset">reset</a></li><li data-type='method'><a href="Benchmark.html#start">start</a></li><li data-type='method'><a href="Benchmark.html#stop">stop</a></li></ul></li><li><a href="ConditionNode.html">ConditionNode</a></li><li><a href="Connect43D.html">Connect43D</a></li><li><a href="Connect4Regular.html">Connect4Regular</a><ul class='methods'><li data-type='method'><a href="Connect4Regular.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="Connect4Regular.html#makeMove">makeMove</a></li></ul></li><li><a href="DFSTreeAdapter.html">DFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="DFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="DFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="DFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="DFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="DFSTreeAdapter.html#startHandshake">startHandshake</a></li><li data-type='method'><a href="DFSTreeAdapter.html#visualizeSearch">visualizeSearch</a></li></ul></li><li><a href="DecisionTree.html">DecisionTree</a></li><li><a href="FlowchartVisualizer.html">FlowchartVisualizer</a></li><li><a href="GameAdapter.html">GameAdapter</a><ul class='methods'><li data-type='method'><a href="GameAdapter.html#clone">clone</a></li><li data-type='method'><a href="GameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getBoard">getBoard</a></li><li data-type='method'><a href="GameAdapter.html#getCurrentPlayer">getCurrentPlayer</a></li><li data-type='method'><a href="GameAdapter.html#getRemainingMoves">getRemainingMoves</a></li><li data-type='method'><a href="GameAdapter.html#getState">getState</a></li><li data-type='method'><a href="GameAdapter.html#getValidMoves">getValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getWinner">getWinner</a></li><li data-type='method'><a href="GameAdapter.html#isGameOver">isGameOver</a></li><li data-type='method'><a href="GameAdapter.html#makeMove">makeMove</a></li></ul></li><li><a href="KnightBoard.html">KnightBoard</a><ul class='methods'><li data-type='method'><a href="KnightBoard.html#_getMovesFrom">_getMovesFrom</a></li><li data-type='method'><a href="KnightBoard.html#clone">clone</a></li><li data-type='method'><a href="KnightBoard.html#getDegree">getDegree</a></li><li data-type='method'><a href="KnightBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="KnightBoard.html#getPossibleMoves">getPossibleMoves</a></li><li data-type='method'><a href="KnightBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="KnightBoard.html#initGrid">initGrid</a></li><li data-type='method'><a href="KnightBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="KnightBoard.html#isInside">isInside</a></li><li data-type='method'><a href="KnightBoard.html#isValidMove">isValidMove</a></li><li data-type='method'><a href="KnightBoard.html#move">move</a></li><li data-type='method'><a href="KnightBoard.html#undo">undo</a></li></ul></li><li><a href="LearningPath.html">LearningPath</a><ul class='methods'><li data-type='method'><a href="LearningPath.html#enableNextButton">enableNextButton</a></li></ul></li><li><a href="MinimaxAgent.html">MinimaxAgent</a><ul class='methods'><li data-type='method'><a href="MinimaxAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="MinimaxEngine.html">MinimaxEngine</a><ul class='methods'><li data-type='method'><a href="MinimaxEngine.html#findBestMove">findBestMove</a></li></ul></li><li><a href="NIMGameLogic.html">NIMGameLogic</a><ul class='methods'><li data-type='method'><a href="NIMGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="NIMGameLogic.html#clone">clone</a></li><li data-type='method'><a href="NIMGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="NIMGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="NIMGameLogic.html#makeMove">makeMove</a></li><li data-type='method'><a href="NIMGameLogic.html#toString">toString</a></li></ul></li><li><a href="RandomAgent.html">RandomAgent</a><ul class='methods'><li data-type='method'><a href="RandomAgent.html#getAction">getAction</a></li></ul></li><li><a href="RotateBoard.html">RotateBoard</a><ul class='methods'><li data-type='method'><a href="RotateBoard.html#canFall">canFall</a></li><li data-type='method'><a href="RotateBoard.html#clone">clone</a></li><li data-type='method'><a href="RotateBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="RotateBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="RotateBoard.html#initFromId">initFromId</a></li><li data-type='method'><a href="RotateBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="RotateBoard.html#moveDown">moveDown</a></li><li data-type='method'><a href="RotateBoard.html#relaxBoardSync">relaxBoardSync</a></li><li data-type='method'><a href="RotateBoard.html#rotate">rotate</a></li></ul></li><li><a href="RuleBasedAgent.html">RuleBasedAgent</a><ul class='methods'><li data-type='method'><a href="RuleBasedAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="RuleGroup.html">RuleGroup</a></li><li><a href="RuleNode.html">RuleNode</a><ul class='methods'><li data-type='method'><a href="RuleNode.html#evaluate">evaluate</a></li></ul></li><li><a href="RuleVisualizer.html">RuleVisualizer</a></li><li><a href="SearchEngine.html">SearchEngine</a><ul class='methods'><li data-type='method'><a href="SearchEngine.html#solve">solve</a></li></ul></li><li></li><li><a href="TTT3DBoard.html">TTT3DBoard</a><ul class='methods'><li data-type='method'><a href="TTT3DBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTT3DBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTT3DBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTT3DBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTBase.html">TTTBase</a><ul class='methods'><li data-type='method'><a href="TTTBase.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTGameAdapter.html">TTTGameAdapter</a><ul class='methods'><li data-type='method'><a href="TTTGameAdapter.html#clone">clone</a></li><li data-type='method'><a href="TTTGameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTGameAdapter.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTGameAdapter.html#toJSON">toJSON</a></li></ul></li><li><a href="TTTRegularBoard.html">TTTRegularBoard</a><ul class='methods'><li data-type='method'><a href="TTTRegularBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTTRegularBoard.html#clone">clone</a></li><li data-type='method'><a href="TTTRegularBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTRegularBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TTTRegularBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTRegularBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TemplateGameLogic.html">TemplateGameLogic</a><ul class='methods'><li data-type='method'><a href="TemplateGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="TemplateGameLogic.html#_isMoveInList">_isMoveInList</a></li><li data-type='method'><a href="TemplateGameLogic.html#clone">clone</a></li><li data-type='method'><a href="TemplateGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TemplateGameLogic.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="TemplateGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TemplateGameLogic.html#isGoal">isGoal</a></li><li data-type='method'><a href="TemplateGameLogic.html#makeMove">makeMove</a></li></ul></li><li><a href="TreeNode.html">TreeNode</a></li><li><a href="TreeVisualizer.html">TreeVisualizer</a><ul class='methods'><li data-type='method'><a href="TreeVisualizer.html#drawTree">drawTree</a></li></ul></li><li><a href="TreeVizEngine.html">TreeVizEngine</a><ul class='methods'><li data-type='method'><a href="TreeVizEngine.html#addNode">addNode</a></li><li data-type='method'><a href="TreeVizEngine.html#assignCoordinates">assignCoordinates</a></li><li data-type='method'><a href="TreeVizEngine.html#calculateSubtreeWidth">calculateSubtreeWidth</a></li><li data-type='method'><a href="TreeVizEngine.html#clear">clear</a></li><li data-type='method'><a href="TreeVizEngine.html#drawBoardNode">drawBoardNode</a></li><li data-type='method'><a href="TreeVizEngine.html#drawEdges">drawEdges</a></li><li data-type='method'><a href="TreeVizEngine.html#drawGridBoard">drawGridBoard</a></li><li data-type='method'><a href="TreeVizEngine.html#drawKnightBoard">drawKnightBoard</a></li><li data-type='method'><a href="TreeVizEngine.html#drawLabels">drawLabels</a></li><li data-type='method'><a href="TreeVizEngine.html#drawNodes">drawNodes</a></li><li data-type='method'><a href="TreeVizEngine.html#executeBatch">executeBatch</a></li><li data-type='method'><a href="TreeVizEngine.html#executeCommand">executeCommand</a></li><li data-type='method'><a href="TreeVizEngine.html#fitTreeToView">fitTreeToView</a></li><li data-type='method'><a href="TreeVizEngine.html#highlightEdge">highlightEdge</a></li><li data-type='method'><a href="TreeVizEngine.html#highlightNode">highlightNode</a></li><li data-type='method'><a href="TreeVizEngine.html#init">init</a></li><li data-type='method'><a href="TreeVizEngine.html#layoutTree">layoutTree</a></li><li data-type='method'><a href="TreeVizEngine.html#removeHighlight">removeHighlight</a></li><li data-type='method'><a href="TreeVizEngine.html#render">render</a></li><li data-type='method'><a href="TreeVizEngine.html#resetView">resetView</a></li><li data-type='method'><a href="TreeVizEngine.html#setFocus">setFocus</a></li><li data-type='method'><a href="TreeVizEngine.html#setupCanvas">setupCanvas</a></li><li data-type='method'><a href="TreeVizEngine.html#setupInteraction">setupInteraction</a></li><li data-type='method'><a href="TreeVizEngine.html#setupPostMessage">setupPostMessage</a></li><li data-type='method'><a href="TreeVizEngine.html#setupTouchSupport">setupTouchSupport</a></li><li data-type='method'><a href="TreeVizEngine.html#updateNode">updateNode</a></li></ul></li><li><a href="UltimateBoard.html">UltimateBoard</a><ul class='methods'><li data-type='method'><a href="UltimateBoard.html#_checkSmallWin">_checkSmallWin</a></li><li data-type='method'><a href="UltimateBoard.html#_isBoardFull">_isBoardFull</a></li><li data-type='method'><a href="UltimateBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="UltimateBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="UltimateBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="ai_minimax.js.html">ai/minimax.js</a></li></ul><h3>Namespaces</h3><ul><li><a href="viz_legacy_minimax-adapter.js.html">viz/legacy/minimax-adapter.js</a></li></ul><h3>Interfaces</h3><ul><li><a href="GameState.html">GameState</a><ul class='methods'><li data-type='method'><a href="GameState.html#clone">clone</a></li><li data-type='method'><a href="GameState.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameState.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="GameState.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="GameState.html#isGoal">isGoal</a></li><li data-type='method'><a href="GameState.html#makeMove">makeMove</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#GameFactories">GameFactories</a></li><li><a href="global.html#TTTGameFactory">TTTGameFactory</a></li><li><a href="global.html#animateRelax">animateRelax</a></li><li><a href="global.html#checkSmallWin">checkSmallWin</a></li><li><a href="global.html#createAgentFromProfile">createAgentFromProfile</a></li><li><a href="global.html#createGame">createGame</a></li><li><a href="global.html#createStrategyTree">createStrategyTree</a></li><li><a href="global.html#drawRotateBoard">drawRotateBoard</a></li><li><a href="global.html#getAvailableGames">getAvailableGames</a></li><li><a href="global.html#getAvailableProfiles">getAvailableProfiles</a></li><li><a href="global.html#getProfilesByType">getProfilesByType</a></li><li><a href="global.html#solveBFS">solveBFS</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">templates/game-state-template.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Template für die Implementierung eines neuen Spiels.
+ * Kopiere diese Datei und passe die Klassennamen + Logik an.
+ * 
+ * Dieses Template zeigt, wie man das GameState-Interface richtig implementiert.
+ * Es enthält alle erforderlichen Methoden mit ausführlichem Kommentar.
+ * 
+ * @fileoverview GameState Template für Schülerprojekte
+ * @example
+ * class MyGameLogic extends GameState {
+ *     constructor() {
+ *         super();
+ *         // Initialisiere dein Spiel hier
+ *     }
+ * }
+ */
+
+/**
+ * Beispiel-Template für ein einfaches Spiel (z.B. NIM oder Bauernschach).
+ * 
+ * WICHTIG: 
+ * 1. Ersetze "TemplateGame" mit deinem Spiel-Namen (z.B. "NIMGame", "BauernschachLogic")
+ * 2. Implementiere ALLE Methoden mit ✅
+ * 3. Optionale Methoden mit ⭐ sind nur nötig, wenn SearchEngine verwendet wird
+ * 4. Testes gründlich mit Arena und Minimax!
+ */
+class TemplateGameLogic extends GameState {
+    /**
+     * ✅ ERFORDERLICH: Konstruktor
+     * Initialisiert das Spiel in den Startzustand.
+     */
+    constructor() {
+        super();
+        
+        // === Basis-Eigenschaften ===
+        this.currentPlayer = 1;  // Spieler 1 startet
+        this.winner = 0;         // 0 = noch nicht entschieden
+        this.isGameOver = false; // Spiel läuft noch
+        
+        // === Spiel-spezifische Daten ===
+        // BEISPIEL für NIM:
+        // this.piles = [3, 3, 3];  // Drei Haufen mit je 3 Streichhölzern
+        //
+        // BEISPIEL für Bauernschach:
+        // this.board = Array(4*8).fill(0); // 4x8 Brett
+        // this.board[0] = 1; // Weiße Bauern Startposition
+        // this.board[28] = 2; // Schwarze Bauern Startposition
+    }
+
+    /**
+     * ✅ ERFORDERLICH: getAllValidMoves()
+     * 
+     * Liefert ALLE legalen Züge für den aktuellen Spieler.
+     * Diese Methode ist kritisch für die KI - sie muss korrekt und vollständig sein.
+     * 
+     * @returns {Array&lt;number|Object>} Array von möglichen Zügen
+     * 
+     * @example
+     * // Einfaches Format: nur Zahlen
+     * return [0, 1, 2, 3];  // Für RotateBox oder TTT
+     * 
+     * @example
+     * // Komplexes Format: Objekte
+     * return [
+     *     {pile: 0, count: 1},
+     *     {pile: 0, count: 2},
+     *     {pile: 1, count: 1},
+     *     // ... mehr Züge
+     * ];
+     */
+    getAllValidMoves() {
+        if (this.isGameOver) return [];
+        
+        const moves = [];
+        
+        // TODO: Implementiere deine Logik
+        // Beispiel für NIM:
+        // for (let pileIdx = 0; pileIdx &lt; this.piles.length; pileIdx++) {
+        //     for (let count = 1; count &lt;= this.piles[pileIdx]; count++) {
+        //         moves.push({ pile: pileIdx, count });
+        //     }
+        // }
+        
+        return moves;
+    }
+
+    /**
+     * ✅ ERFORDERLICH: makeMove(move)
+     * 
+     * Führt einen Zug AUS und aktualisiert den Zustand.
+     * Dies ist die "Mutation-Funktion" des Spiels.
+     * 
+     * WICHTIG:
+     * - Ändere den INTERNEN Zustand
+     * - Aktualisiere this.winner, this.isGameOver
+     * - Wechsle this.currentPlayer
+     * - Gib TRUE zurück, wenn gültig; FALSE wenn ungültig
+     * 
+     * @param {number|Object} move - Der Zug (Format wie in getAllValidMoves)
+     * @returns {boolean} true wenn erfolgreich, false wenn ungültig
+     */
+    makeMove(move) {
+        // Basis-Checks
+        if (this.isGameOver) {
+            console.warn("Spiel ist bereits vorbei");
+            return false;
+        }
+        
+        const validMoves = this.getAllValidMoves();
+        if (!this._isMoveInList(move, validMoves)) {
+            console.warn("Ungültiger Zug:", move);
+            return false;
+        }
+        
+        // TODO: Implementiere deine Zug-Logik
+        // Beispiel für NIM:
+        // const { pile, count } = move;
+        // this.piles[pile] -= count;
+        
+        // NACH dem Zug:
+        // 1. Prüfe auf Spielende
+        this._checkGameEnd();
+        
+        // 2. Spieler wechseln (wenn Spiel nicht vorbei)
+        if (!this.isGameOver) {
+            this.currentPlayer = this.currentPlayer === 1 ? 2 : 1;
+        }
+        
+        return true;
+    }
+
+    /**
+     * ✅ ERFORDERLICH: clone()
+     * 
+     * Erstellt eine TIEFE KOPIE des aktuellen Zustands.
+     * Dies ist essentiell für die KI (Minimax, Suchbäume):
+     * Die KI simuliert Züge, ohne das echte Spiel zu beeinflussen.
+     * 
+     * WICHTIG: Kopiere ALLE Eigenschaften, nicht nur primitive Daten!
+     * 
+     * @returns {TemplateGameLogic} Exakte Kopie dieses Zustands
+     */
+    clone() {
+        const copy = new TemplateGameLogic();
+        
+        // Kopiere Basis-Eigenschaften
+        copy.currentPlayer = this.currentPlayer;
+        copy.winner = this.winner;
+        copy.isGameOver = this.isGameOver;
+        
+        // Kopiere spiel-spezifische Daten
+        // TODO: Passe an dein Spiel an
+        // Beispiel für NIM:
+        // copy.piles = [...this.piles];  // Flache Kopie des Arrays
+        //
+        // Beispiel für Bauernschach (2D Array):
+        // copy.board = this.board.map(row => [...row]);  // Tiefe Kopie
+        
+        return copy;
+    }
+
+    /**
+     * ✅ ERFORDERLICH: getStateKey()
+     * 
+     * Generiert einen EINDEUTIGEN String für diesen Spielzustand.
+     * Wird verwendet für:
+     * - Duplikaterkennung im Suchbaum
+     * - Transposition Tables (Caching in Minimax)
+     * - Zustands-Hashing
+     * 
+     * WICHTIG: 
+     * - Gleiche Zustände → gleiche Keys
+     * - Unterschiedliche Zustände → unterschiedliche Keys
+     * - JSON.stringify() ist oft die einfachste Lösung
+     * 
+     * @returns {string} Eindeutiger Hash für diesen Zustand
+     */
+    getStateKey() {
+        // TODO: Passe an dein Spiel an
+        // Beispiel für NIM:
+        // return JSON.stringify({
+        //     piles: this.piles,
+        //     player: this.currentPlayer
+        // });
+        
+        // Allgemeines Fallback:
+        return JSON.stringify({
+            state: this,
+            player: this.currentPlayer
+        });
+    }
+
+    // ============== OPTIONAL (für SearchEngine) ==============
+
+    /**
+     * ⭐ OPTIONAL: isGoal()
+     * 
+     * Wird nur benötigt, wenn du SearchEngine für Puzzle-Spiele nutzt.
+     * Prüft, ob ein ZIELZUSTAND erreicht ist (z.B. für RotateBox).
+     * 
+     * NICHT benötigt für:
+     * - Normale Spiele mit zwei Spielern (nutze stattdessen winner)
+     * - Wenn du diese Methode nicht brauchst, lass einfach die Fehler-Exception
+     * 
+     * @returns {boolean} true wenn Ziel erreicht
+     */
+    isGoal() {
+        // Für Zwei-Spieler-Spiele: nutze stattdessen winner prüfung
+        throw new Error("Optional method 'isGoal()' not implemented for " + this.constructor.name);
+    }
+
+    /**
+     * ⭐ OPTIONAL: getNextStates()
+     * 
+     * Wird nur benötigt, wenn du SearchEngine nutzt.
+     * Liefert ALLE möglichen Nachfolgezustände.
+     * 
+     * @returns {Array&lt;{move: (number|Object), state: GameState}>}
+     */
+    getNextStates() {
+        const nextStates = [];
+        const moves = this.getAllValidMoves();
+        
+        for (const move of moves) {
+            const nextState = this.clone();
+            if (nextState.makeMove(move)) {
+                nextStates.push({
+                    move: move,
+                    state: nextState
+                });
+            }
+        }
+        
+        return nextStates;
+    }
+
+    // ============== HILFS-METHODEN (spiel-spezifisch) ==============
+
+    /**
+     * Hilfsfunktion: Prüft, ob ein Zug in der Züge-Liste enthalten ist.
+     * Wird für Validierung benötigt.
+     * 
+     * @param {number|Object} move 
+     * @param {Array} validMoves 
+     * @returns {boolean}
+     */
+    _isMoveInList(move, validMoves) {
+        if (typeof move === 'number') {
+            return validMoves.includes(move);
+        }
+        
+        // Für Objekt-Züge
+        return validMoves.some(m => 
+            typeof m === 'object' &amp;&amp; 
+            JSON.stringify(m) === JSON.stringify(move)
+        );
+    }
+
+    /**
+     * Hilfsfunktion: Prüfe auf Spielende.
+     * Wird nach jedem Zug aufgerufen.
+     * Setzt: this.winner, this.isGameOver
+     */
+    _checkGameEnd() {
+        // TODO: Implementiere deine Gewinn-Bedingungen
+        
+        // Beispiel für NIM (normal):
+        // if (this.piles.every(p => p === 0)) {
+        //     this.winner = this.currentPlayer;  // Wer den letzten nimmt gewinnt
+        //     this.isGameOver = true;
+        // }
+        
+        // Beispiel für Stalemate (keine Züge möglich):
+        // if (this.getAllValidMoves().length === 0) {
+        //     if (some_winning_condition) {
+        //         this.winner = this.currentPlayer;
+        //     } else {
+        //         this.winner = 3;  // Remis
+        //     }
+        //     this.isGameOver = true;
+        // }
+    }
+}
+
+// ============== EXPORT ==============
+// Für Node.js (Tests):
+if (typeof module !== 'undefined' &amp;&amp; module.exports) {
+    module.exports = TemplateGameLogic;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Feb 02 2026 00:39:09 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

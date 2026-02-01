@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Springerproblem - Suchbaum Visualisierung</title>
+    
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tree-viz.css">
+    
+    <style>
+        body { margin: 0; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #f0f3f4; }
+        
+        .nav-header { background: #2c3e50; color: white; padding: 0 20px; display: flex; align-items: center; gap: 20px; height: 50px; flex-shrink: 0; }
+        .nav-header h1 { margin: 0; font-size: 1.2rem; font-weight: normal; }
+        .btn-back { text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem; }
+        .btn-back:hover { background: rgba(255,255,255,0.1); }
+
+        .main-layout { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+        
+        .viz-toolbar { background: white; padding: 10px 20px; border-bottom: 1px solid #ddd; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; flex-shrink: 0; }
+        .viz-control-group { display: flex; align-items: center; gap: 5px; font-size: 0.9rem; }
+        .viz-select, .viz-input { padding: 4px; border: 1px solid #ccc; border-radius: 3px; }
+        
+        .split-container { flex: 1; display: flex; min-height: 0; }
+        .tree-pane { flex: 1; border-right: 1px solid #ccc; background: #fff; position: relative; }
+        .board-pane { width: 350px; background: #f8f9fa; display: flex; flex-direction: column; border-left: 1px solid #ccc; flex-shrink: 0; overflow-y: auto; }
+        
+        #vizFrame { width: 100%; height: 100%; border: none; }
+        
+        /* Board Area */
+        .board-container { padding: 20px; display: flex; justify-content: center; }
+        canvas { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 4px; max-width: 100%; }
+        
+        /* Playback Controls */
+        .controls-area { padding: 0 20px 20px; }
+        .playback-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        
+        .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        #stepSlider { flex: 1; }
+        #stepDisplay { font-family: monospace; font-size: 0.9rem; width: 60px; text-align: right; }
+        
+        .btn-row { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
+        .viz-btn { padding: 6px 12px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; font-size: 1rem; }
+        .viz-btn:hover:not(:disabled) { background: #f0f0f0; }
+        .viz-btn:disabled { opacity: 0.5; cursor: default; }
+        .btn-primary { background: #3498db; color: white; border-color: #2980b9; }
+        .btn-primary:hover:not(:disabled) { background: #2980b9; }
+
+        .speed-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #666; justify-content: center; border-top: 1px solid #eee; padding-top: 10px; }
+        #speedSlider { width: 100px; }
+        
+        .stats-display { font-size: 0.9rem; color: #666; margin-left: auto; }
+    </style>
+</head>
+<body>
+
+    <div class="nav-header">
+        <a href="../index.html" class="btn-back">⬅ Menü</a>
+        <h1>Springerproblem Explorer</h1>
+    </div>
+
+    <div class="main-layout generic-layout">
+        
+        <!-- Top Toolbar -->
+        <div class="viz-toolbar">
+            <div class="viz-control-group">
+                <label>Größe</label>
+                <select id="sizeSelect" class="viz-select">
+                    <option value="3">3 x 3</option>
+                    <option value="4">4 x 4</option>
+                    <option value="5" selected>5 x 5</option>
+                </select>
+            </div>
+            
+            <div class="viz-control-group">
+                <label>Start</label>
+                <input type="text" id="startPos" value="0,0" class="viz-input" style="width: 50px;">
+            </div>
+
+            <div class="viz-control-group">
+                <label>Tiefe</label>
+                <input type="number" id="depthInput" value="3" max="10" class="viz-input" style="width: 50px;">
+            </div>
+
+            <div class="viz-control-group">
+                <label>Strategie</label>
+                <select id="algoSelect" class="viz-select">
+                    <option value="DFS">Tiefensuche (DFS)</option>
+                    <option value="DFS-Warnsdorf">Warnsdorf (Heuristik)</option>
+                </select>
+            </div>
+
+            <button id="generateBtn" class="viz-btn btn-primary">▶ Generieren</button>
+            <div id="stats" class="stats-display">Bereit.</div>
+        </div>
+
+        <!-- Split Content -->
+        <div class="split-container">
+            <!-- Left: Tree Visualization -->
+            <div class="tree-pane">
+                <iframe id="vizFrame" src="tree-viz-v2.html?v=2.3"></iframe>
+            </div>
+
+            <!-- Right: Board & Controls -->
+            <div class="board-pane">
+                <div class="board-container">
+                    <canvas id="boardCanvas"></canvas>
+                </div>
+                
+                <div class="controls-area">
+                    <div class="playback-card">
+                        <div class="slider-row">
+                            <input type="range" id="stepSlider" min="0" value="0" disabled>
+                            <span id="stepDisplay">0 / 0</span>
+                        </div>
+                        
+                        <div class="btn-row">
+                            <button id="btnPrev" class="viz-btn" disabled>⏮</button>
+                            <button id="btnPlay" class="viz-btn" disabled>▶</button>
+                            <button id="btnPause" class="viz-btn" style="display:none;">⏸</button>
+                            <button id="btnNext" class="viz-btn" disabled>⏭</button>
+                        </div>
+                        
+                        <div class="speed-row">
+                            <label>Tempo:</label>
+                            <input type="range" id="speedSlider" min="10" max="1000" value="500">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> <!-- End main-layout -->
+
+    <!-- Knights Tour Logic -->
+    <script src="../js/games/knights-tour/logic.js"></script>
+    
+    <!-- DFS Tree Adapter v2.0 -->
+    <script src="../js/adapters/dfs-tree-adapter.js"></script>
+
+    <script>
+        // --- Game Board Visualization ---
+        const boardCanvas = document.getElementById('boardCanvas');
+        const boardCtx = boardCanvas.getContext('2d');
+        
+        function drawBoard(state) {
+            const size = state.size;
+            // Get actual display size to fix blurriness
+            const rect = boardCanvas.getBoundingClientRect();
+            // Fix high DPI screens
+            const dpr = window.devicePixelRatio || 1;
+            boardCanvas.width = rect.width * dpr;
+            boardCanvas.height = rect.height * dpr;
+            
+            const w = boardCanvas.width;
+            const h = boardCanvas.height;
+            const cellSize = w / size;
+            
+            // Background
+            boardCtx.clearRect(0, 0, w, h);
+            
+            for (let r = 0; r < size; r++) {
+                for (let c = 0; c < size; c++) {
+                    const x = c * cellSize;
+                    const y = r * cellSize;
+                    
+                    // Checkerboard
+                    const isLight = (r + c) % 2 === 0;
+                    boardCtx.fillStyle = isLight ? '#f0d9b5' : '#b58863';
+                    boardCtx.fillRect(x, y, cellSize, cellSize);
+                    
+                    // Visited number
+                    const moveNum = state.grid[r][c];
+                    if (moveNum > 0) {
+                        boardCtx.fillStyle = 'rgba(0,0,0,0.7)';
+                        boardCtx.font = `bold ${cellSize * 0.4}px Arial`;
+                        boardCtx.textAlign = 'center';
+                        boardCtx.textBaseline = 'middle';
+                        boardCtx.fillText(moveNum, x + cellSize/2, y + cellSize/2);
+                    }
+                    
+                    // Highlight current position (Knight)
+                    if (state.currentPos && r === state.currentPos.r && c === state.currentPos.c) {
+                        boardCtx.font = `${cellSize * 0.7}px Arial`;
+                        boardCtx.textAlign = 'center';
+                        boardCtx.textBaseline = 'middle';
+                        boardCtx.fillStyle = '#2c3e50';
+                        boardCtx.fillText('♞', x + cellSize/2, y + cellSize/2 + 4);
+                    }
+                }
+            }
+        }
+
+        // --- Controller Logic ---
+        const iframe = document.getElementById('vizFrame');
+        let adapter = new DFSTreeAdapter(iframe);
+
+        // History storage for time-travel
+        let history = []; 
+        let currentStep = 0;
+        let isPlaying = false;
+        let playInterval = null;
+        
+        // UI Elements
+        const slider = document.getElementById('stepSlider');
+        const stepDisplay = document.getElementById('stepDisplay');
+        const speedSlider = document.getElementById('speedSlider');
+        const btnPrev = document.getElementById('btnPrev');
+        const btnNext = document.getElementById('btnNext');
+        const btnPlay = document.getElementById('btnPlay');
+        const btnPause = document.getElementById('btnPause');
+
+        // Forward declaration
+        let updateControls = function() {};
+
+        function play() {
+            if (currentStep >= history.length - 1) return;
+            isPlaying = true;
+            btnPlay.style.display = 'none';
+            btnPause.style.display = 'inline-block';
+            slider.disabled = true;
+            
+            // Speed logic (linear mapping for now)
+            const delay = 1010 - parseInt(speedSlider.value); 
+            
+            playInterval = setInterval(() => {
+                if (currentStep < history.length - 1) {
+                    currentStep++;
+                    updateControls(true); // true = auto-playing
+                } else {
+                    pause();
+                }
+            }, delay);
+        }
+        
+        function pause() {
+            isPlaying = false;
+            clearInterval(playInterval);
+            btnPlay.style.display = 'inline-block';
+            btnPause.style.display = 'none';
+            slider.disabled = false;
+        }
+        
+        // --- Event Listeners ---
+        btnPlay.addEventListener('click', play);
+        btnPause.addEventListener('click', pause);
+        btnNext.addEventListener('click', () => { pause(); if(currentStep < history.length-1) { currentStep++; updateControls(); } });
+        btnPrev.addEventListener('click', () => { pause(); if(currentStep > 0) { currentStep--; updateControls(); } });
+        
+        slider.addEventListener('input', (e) => {
+            if (isPlaying) pause();
+            currentStep = parseInt(e.target.value);
+            updateControls();
+        });
+        
+        speedSlider.addEventListener('change', () => {
+            if (isPlaying) {
+                pause();
+                play();
+            }
+        });
+
+        async function generateTree() {
+            if (!adapter || !adapter.ready) return;
+            
+            // Reset UI
+            pause();
+            currentStep = 0;
+            history = [];
+            adapter.sendCommand({ action: 'CLEAR' });
+            document.getElementById('stats').innerText = "Generiere...";
+            
+            // Read Params
+            const size = parseInt(document.getElementById('sizeSelect').value);
+            const posStr = document.getElementById('startPos').value.split(',');
+            const startR = parseInt(posStr[0]);
+            const startC = parseInt(posStr[1]);
+            const maxDepth = parseInt(document.getElementById('depthInput').value);
+            const algo = document.getElementById('algoSelect').value;
+            
+            // Initial Board
+            const startBoard = new KnightBoard(size);
+            startBoard.move(startR, startC);
+            drawBoard(startBoard);
+            
+            console.log('Generating tree logic...');
+            
+            // 1. Hijack adapter.sendCommand to record instead of send
+            const realSendCommand = adapter.sendCommand.bind(adapter);
+            let recordedCommands = [];
+            
+            adapter.sendCommand = (cmd) => {
+                if (cmd.action === 'BATCH') {
+                    // Flatten batch for granular playback
+                    cmd.commands.forEach(c => recordedCommands.push(c));
+                } else {
+                    recordedCommands.push(cmd);
+                }
+            };
+            
+            // 2. Setup Heuristic if needed
+            if (algo === 'DFS-Warnsdorf') {
+                const originalGetNextStates = startBoard.getNextStates.bind(startBoard);
+                startBoard.getNextStates = function() {
+                    const states = originalGetNextStates();
+                    states.sort((a, b) => {
+                        const da = a.state.getDegree(a.state.currentPos.r, a.state.currentPos.c);
+                        const db = b.state.getDegree(b.state.currentPos.r, b.state.currentPos.c);
+                        return da - db;
+                    });
+                    return states;
+                };
+            }
+            
+            // 3. Run Algorithm (Logic only)
+            await adapter.buildToDepth(startBoard, maxDepth, {
+                duplicates: false, // Normal DFS doesn't mark duplicates in this viz usually
+                backtracking: true
+            });
+            
+            // 4. Restore Adapter
+            adapter.sendCommand = realSendCommand;
+            
+            console.log(`Recorded ${recordedCommands.length} commands.`);
+            
+            // 5. Build History Array
+            // We need to associate each step with the *Board State* it represents.
+            // The adapter logic sends 'ADD_NODE' with 'boardData'. We can use that.
+            
+            // Start with initial state
+            history.push({
+                type: 'init',
+                boardData: startBoard, // Initial empty board
+                command: { action: 'CLEAR' }
+            });
+            
+            recordedCommands.forEach(cmd => {
+                let step = {
+                    command: cmd,
+                    boardData: null
+                };
+                
+                if (cmd.action === 'ADD_NODE') {
+                    // This command contains the board state
+                    step.boardData = cmd.boardData;
+                } else if (cmd.action === 'HIGHLIGHT_NODE') {
+                    // If we highlight, we want to see the board of that node?
+                    // Actually, ADD_NODE is creation. HIGHLIGHT is visit.
+                    // For playback, we might want to carry over the previous boardData if null.
+                }
+                
+                history.push(step);
+            });
+            
+            // Post-process: Fill missing boardData
+            let lastBoard = startBoard;
+            // Map node IDs to board states for referencing
+            const nodeBoardMap = new Map();
+            
+            history.forEach(step => {
+                if (step.command.action === 'ADD_NODE') {
+                    nodeBoardMap.set(step.command.id, step.command.boardData);
+                }
+                
+                if (step.boardData) {
+                    lastBoard = step.boardData;
+                } else if (step.command.action === 'HIGHLIGHT_NODE' || step.command.action === 'SET_FOCUS') {
+                    // Try to retrieve board state for this node
+                    const id = step.command.id;
+                    if (nodeBoardMap.has(id)) {
+                        step.boardData = nodeBoardMap.get(id);
+                    } else {
+                         step.boardData = lastBoard;
+                    }
+                } else {
+                     step.boardData = lastBoard;
+                }
+            });
+            
+            // 6. Enable UI
+            slider.max = Math.max(0, history.length - 1);
+            slider.disabled = false;
+            btnPlay.disabled = false;
+            btnNext.disabled = false;
+            btnPrev.disabled = false;
+            
+            // Update Control Function
+            let lastRenderedStep = -1;
+            
+            updateControls = function(isAuto = false) {
+                // UI
+                if (!isAuto) slider.value = currentStep;
+                stepDisplay.textContent = `${currentStep} / ${history.length - 1}`;
+                
+                // Diff-Update Tree
+                // If jumping (slider), clear and rebuild batch
+                if (Math.abs(currentStep - lastRenderedStep) > 1) {
+                    adapter.sendCommand({ action: 'CLEAR' });
+                    const batch = history.slice(1, currentStep + 1).map(h => h.command);
+                    // Split batch if too large? Adapter handles it?
+                    // Send in chunks of 50 to avoid freezing
+                    const chunkSize = 50;
+                    for (let i = 0; i < batch.length; i += chunkSize) {
+                        adapter.sendCommand({ action: 'BATCH', commands: batch.slice(i, i + chunkSize) });
+                    }
+                } else if (currentStep > lastRenderedStep) {
+                    // Forward 1 step
+                    adapter.sendCommand(history[currentStep].command);
+                } else if (currentStep < lastRenderedStep) {
+                     // Backwards 1 step? Not easy in TreeViz without Undo.
+                     // Easier to Rebuild
+                    adapter.sendCommand({ action: 'CLEAR' });
+                    const batch = history.slice(1, currentStep + 1).map(h => h.command);
+                    adapter.sendCommand({ action: 'BATCH', commands: batch });
+                }
+                
+                lastRenderedStep = currentStep;
+                
+                // Draw Board
+                const step = history[currentStep];
+                if (step && step.boardData) {
+                    drawBoard(step.boardData);
+                }
+            };
+            
+            // Render first frame
+            updateControls();
+             document.getElementById('stats').innerText = `${history.length} Schritte aufgezeichnet.`;
+        }
+        
+        // Listener
+        document.getElementById('generateBtn').addEventListener('click', generateTree);
+        
+        // Initializer
+        iframe.addEventListener('load', () => {
+             const check = setInterval(() => {
+                 if (adapter.ready) {
+                     clearInterval(check);
+                     // Auto-Generate a small one for demo
+                     setTimeout(generateTree, 500);
+                 }
+             }, 200);
+        });
+
+    </script>
+</body>
+</html>
