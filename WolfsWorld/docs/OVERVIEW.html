@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WolfsWorld - Projektübersicht</title>
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <style>
+        body { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        .overview-section { margin: 30px 0; padding: 20px; border-left: 4px solid #0066cc; background: #f9f9f9; }
+        .overview-section h2 { margin-top: 0; color: #0066cc; }
+        .file-tree { background: #fff; padding: 15px; border-radius: 4px; font-family: monospace; white-space: pre; overflow-x: auto; }
+        .module-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin: 20px 0; }
+        .module-card { border: 1px solid #ddd; padding: 15px; border-radius: 4px; }
+        .module-card h3 { margin-top: 0; color: #0066cc; }
+        .module-card code { background: #f4f4f4; padding: 2px 4px; border-radius: 2px; }
+        .uml-section { background: #e8f4f8; padding: 15px; border-radius: 4px; margin: 15px 0; }
+        .uml-list { list-style-type: none; padding: 0; }
+        .uml-list li { padding: 8px 0; }
+        .uml-list a { color: #0066cc; text-decoration: none; }
+        .uml-list a:hover { text-decoration: underline; }
+        nav { background: #f0f0f0; padding: 15px; border-radius: 4px; margin-bottom: 30px; }
+        nav a { margin-right: 20px; color: #0066cc; text-decoration: none; }
+        nav a:hover { text-decoration: underline; }
+        .warning { background: #fff3cd; border-left: 4px solid #ffc107; padding: 15px; margin: 15px 0; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="index.html">← Zurück zur JSDoc</a>
+        <a href="#struktur">Projektstruktur</a>
+        <a href="#module">Module</a>
+        <a href="#architektur">Architektur (UML)</a>
+    </nav>
+
+    <h1>🎓 WolfsWorld - Interaktive KI-Lernplattform</h1>
+    <p>Eine umfassende Lernumgebung für Künstliche Intelligenz mit Fokus auf Spieltheorie, Suchalgorithmen und strategisches Denken.</p>
+
+    <!-- Projektübersicht -->
+    <div class="overview-section">
+        <h2>📌 Projektziele</h2>
+        <ul>
+            <li><strong>Spieltheorie:</strong> Minimax, Alpha-Beta-Pruning, Game Trees</li>
+            <li><strong>Suchalgorithmen:</strong> BFS, DFS, Heuristische Suche</li>
+            <li><strong>KI-Systeme:</strong> Rule-Based Agents, Entscheidungsbäume, Heuristics</li>
+            <li><strong>Interaktive Visualisierung:</strong> Echtzeit-Baum-Rendering, Animationen</li>
+            <li><strong>Schülerprojekte:</strong> Vorlagen und Lernpfade für Lerngruppen</li>
+        </ul>
+    </div>
+
+    <!-- Spielsammlung -->
+    <div class="overview-section">
+        <h2>🎮 Enthaltene Spiele</h2>
+        <div class="module-grid">
+            <div class="module-card">
+                <h3>Tic-Tac-Toe</h3>
+                <p><code>js/games/tictactoe/</code></p>
+                <ul>
+                    <li><strong>Regular:</strong> Klassischer 3x3</li>
+                    <li><strong>3D:</strong> 4x4x4 auf 3 Ebenen</li>
+                    <li><strong>Ultimate:</strong> Meta-Board mit Unter-Spielen</li>
+                </ul>
+            </div>
+            <div class="module-card">
+                <h3>Connect 4</h3>
+                <p><code>js/games/connect4/</code></p>
+                <ul>
+                    <li><strong>Regular:</strong> Klassisches 7x6</li>
+                    <li><strong>3D:</strong> 4x4x4 Vier Gewinnt</li>
+                </ul>
+            </div>
+            <div class="module-card">
+                <h3>Puzzles</h3>
+                <p><code>js/games/</code></p>
+                <ul>
+                    <li><strong>Knight's Tour:</strong> Springerproblem</li>
+                    <li><strong>RotateBox:</strong> Schiebepuzzle</li>
+                    <li><strong>Nim:</strong> Zahlenspiel</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- Projektstruktur -->
+    <div class="overview-section" id="struktur">
+        <h2>📁 Aktuelle Projektstruktur</h2>
+        <div class="file-tree">WolfsWorld/ (v3.0)
+├── js/                          # JavaScript Quellcode
+│   ├── core/                    # Kern-Interfaces
+│   │   ├── agent.js            # Agent-Basisklasse
+│   │   ├── game-state.js       # GameState-Interface
+│   │   ├── game-adapter.js     # Spiel-Adapter
+│   │   └── base-game-controller.js
+│   │
+│   ├── ai/                      # KI-Algorithmen & Agents
+│   │   ├── agents/             # Agent-Implementierungen
+│   │   │   ├── random-agent.js
+│   │   │   ├── rule-based-agent.js
+│   │   │   └── minimax-agent.js
+│   │   ├── heuristics/         # Spielspezifische Heuristiken
+│   │   │   ├── base.js
+│   │   │   ├── ttt.js
+│   │   │   └── connect4.js
+│   │   ├── rules/              # Regelbasierte KI
+│   │   │   ├── rule-structure.js
+│   │   │   ├── ttt-rules.js
+│   │   │   └── connect4-rules.js
+│   │   ├── minimax.js          # Minimax Engine
+│   │   ├── game-adapter.js     # Arena Game Adapter
+│   │   ├── agent-profiles.js   # Agent-Profile
+│   │   ├── algorithm-runner.js # Schrittweise Ausführung
+│   │   ├── search-algorithms.js # BFS/DFS
+│   │   └── arena.js            # Tournament Engine
+│   │
+│   ├── games/                   # Spielimplementierungen
+│   │   ├── tictactoe/          # Tic-Tac-Toe Varianten
+│   │   │   ├── logic.js
+│   │   │   ├── renderer.js
+│   │   │   ├── regular-controller.js
+│   │   │   ├── 3d-controller.js
+│   │   │   └── ultimate-controller.js
+│   │   ├── connect4/           # Connect 4 Varianten
+│   │   │   ├── logic.js
+│   │   │   ├── renderer.js
+│   │   │   ├── regular-controller.js
+│   │   │   └── 3d-controller.js
+│   │   ├── knights-tour/       # Knight's Tour
+│   │   │   ├── logic.js
+│   │   │   ├── renderer.js
+│   │   │   └── controller.js
+│   │   ├── rotatebox/          # RotateBox Puzzle
+│   │   │   ├── logic.js
+│   │   │   ├── renderer.js
+│   │   │   ├── controller.js
+│   │   │   ├── solver.js
+│   │   │   └── tree-adapter.js
+│   │   └── nim/                # Nim Game
+│   │       └── logic.js
+│   │
+│   ├── viz/                     # Visualisierungssystem (v3.0)
+│   │   ├── tree-viz/           # Tree Visualization Engine
+│   │   │   ├── tree-engine.js  # Hauptorchestration
+│   │   │   ├── config/
+│   │   │   │   └── status-config.js     # Status-Definitionen
+│   │   │   ├── engines/        # Spezialisierte Engines
+│   │   │   │   ├── renderer.js           # Canvas-Rendering
+│   │   │   │   ├── layout-engine.js      # Knoten-Positionierung
+│   │   │   │   ├── interaction-engine.js # Benutzerinteraktion
+│   │   │   │   ├── minimax-nodes.js      # Minimax-spezifisches Rendering
+│   │   │   │   ├── knights-tour-nodes.js # Knights-Tour-Rendering
+│   │   │   │   └── rotatebox-nodes.js    # RotateBox-Rendering
+│   │   │   ├── features/       # Optionale Features
+│   │   │   │   ├── features-engine.js    # Status-Management
+│   │   │   │   └── node-expansion.js     # Kollabierbare Knoten
+│   │   │   └── utils/
+│   │   │       └── node-status-manager.js # Zentrale Status-Verwaltung
+│   │   ├── adapters/           # Tree-Adapter für verschiedene Algorithmen
+│   │   │   └── tree-adapters/
+│   │   │       ├── minimax-tree-adapter.js      # Minimax v2.0 mit relativer Bewertung
+│   │   │       ├── alpha-beta-tree-adapter.js   # Alpha-Beta Pruning
+│   │   │       ├── bfs-tree-adapter.js          # Breadth-First Search
+│   │   │       └── dfs-tree-adapter.js          # Depth-First Search
+│   │   ├── core/               # Basis-Klassen
+│   │   │   ├── base-visualizer.js      # Abstrakte Basis-Klasse
+│   │   │   └── visualization-utils.js  # Hilfsfunktionen
+│   │   ├── specializers/       # Spezialisierte Visualizer
+│   │   │   ├── flowchart/
+│   │   │   │   └── flowchart-visualizer.js
+│   │   │   └── rules/
+│   │   │       └── rule-visualizer.js
+│   │   └── legacy/             # Alte Versionen (für Referenz)
+│   │       └── ...
+│   │
+│   ├── utils/                   # Hilfsfunktionen
+│   │   └── benchmark.js        # Performance-Messungen
+│   │
+│   └── templates/              # Schüler-Projektvorlagen
+│       └── game-state-template.js
+│
+├── index.html                  # Hauptseite
+├── docs/                       # JSDoc-Dokumentation (generiert)
+│   ├── *.html                  # Generierte API-Dokumentation
+│   ├── uml/                    # UML-Diagramme (PlantUML)
+│   │   ├── game-system-class.puml
+│   │   ├── ai-system-class.puml
+│   │   ├── tree-visualization-class.puml
+│   │   ├── tree-visualization-sequence.puml
+│   │   └── minimax-sequence.puml
+│   └── OVERVIEW.html           # Diese Datei
+├── apps/                       # Student-Projekte
+├── css/                        # Stylesheets
+├── Materialien/                # Lehrmaterialien
+└── WolfsWorld/               # Komplettes System
+    ├── ToDos/                # Entwicklungs-Aufgaben
+    │   ├── 01_HEURISTIC_...
+    │   ├── 02_ALPHA_BETA_... 
+    │   └── 03_LEARNING_PATH...
+    └── ...
+        </div>
+    </div>
+
+    <!-- Module -->
+    <div class="overview-section" id="module">
+        <h2>🔧 Hauptmodule (v3.0)</h2>
+        
+        <h3>TreeVizEngine - Baumvisualisierung</h3>
+        <p><code>js/viz/tree-viz/tree-engine.js</code> (914 Zeilen, v3.0)</p>
+        <p><strong>Zweck:</strong> Generisches System zur Visualisierung beliebiger Suchbäume mit Echtzeit-Rendering.</p>
+        <ul>
+            <li><strong>ModularArchitektur:</strong> Renderer, LayoutEngine, InteractionEngine, FeaturesEngine</li>
+            <li><strong>Adapter-Pattern:</strong> Tree-Adapters für verschiedene Algorithmen</li>
+            <li><strong>Status-Management:</strong> Zentrale NodeStatusManager-Komponente</li>
+            <li><strong>Relative Bewertung:</strong> Minimax mit rootPlayer-abhängiger Evaluation (Blue/Red)</li>
+        </ul>
+
+        <h3>Tree-Adapter</h3>
+        <ul>
+            <li><strong>MinimaxTreeAdapter</strong> - Relative Minimax-Bewertung (v2.0)
+                <br/>Features: rootPlayer-basierte Scoring, treeStructure (Map), status-Tracking</li>
+            <li><strong>AlphaBetaTreeAdapter</strong> - Alpha-Beta Pruning Visualisierung
+                <br/>Features: Pruning-Entscheidungen, alpha/beta-Tracking, pruned nodes</li>
+            <li><strong>BFSTreeAdapter</strong> - Breadth-First Search
+                <br/>Features: level-basiertes Expandieren, Duplikat-Erkennung</li>
+            <li><strong>DFSTreeAdapter</strong> - Depth-First Search mit Backtracking
+                <br/>Features: Animiertes Backtracking, Dead-End-Erkennung</li>
+        </ul>
+
+        <h3>Status-Management</h3>
+        <p><code>js/viz/tree-viz/utils/node-status-manager.js</code></p>
+        <p><strong>Zentrale Status-Verwaltung:</strong></p>
+        <ul>
+            <li>16+ Status-Typen (ACTIVE, WAIT, READY, EVALUATED, PRUNED, WIN_BLUE, WIN_RED, DRAW, DUPLICATE, DEAD_END, ...)</li>
+            <li>Exklusive Status-Behandlung (nur ein Status pro Knoten)</li>
+            <li>Visuelle Styling-Konfiguration in status-config.js</li>
+        </ul>
+    </div>
+
+    <!-- Architektur & UML -->
+    <div class="overview-section" id="architektur">
+        <h2>🏗️ Architektur & UML-Diagramme</h2>
+        
+        <div class="uml-section">
+            <h3>📊 Klassendiagramme</h3>
+            <p>PlantUML-Diagramme zur Dokumentation der Systemarchitektur:</p>
+            <ul class="uml-list">
+                <li>
+                    <strong>Tree Visualization System</strong>
+                    <br/><code>uml/tree-visualization-class.puml</code>
+                    <br/>TreeVizEngine, Renderer, Adapter, Interfaces
+                    <br/><a href="http://www.plantuml.com/plantuml/uml/" target="_blank">→ Online rendern</a>
+                </li>
+                <li>
+                    <strong>Game System</strong>
+                    <br/><code>uml/game-system-class.puml</code>
+                    <br/>GameState, GameAdapter, Board-Klassen, Spielimplementierungen
+                    <br/><a href="http://www.plantuml.com/plantuml/uml/" target="_blank">→ Online rendern</a>
+                </li>
+                <li>
+                    <strong>AI System</strong>
+                    <br/><code>uml/ai-system-class.puml</code>
+                    <br/>Agent-Hierarchie, MinimaxEngine, Heuristics, Rule-System
+                    <br/><a href="http://www.plantuml.com/plantuml/uml/" target="_blank">→ Online rendern</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="uml-section">
+            <h3>🔄 Sequenzdiagramme</h3>
+            <p>Ablaufdiagramme für wichtige Prozesse:</p>
+            <ul class="uml-list">
+                <li>
+                    <strong>Tree Visualization Ablauf</strong>
+                    <br/><code>uml/tree-visualization-sequence.puml</code>
+                    <br/>Initialisierung → Adapter-Setup → Rendering → Interaktion
+                    <br/><a href="http://www.plantuml.com/plantuml/uml/" target="_blank">→ Online rendern</a>
+                </li>
+                <li>
+                    <strong>Minimax Algorithm</strong>
+                    <br/><code>uml/minimax-sequence.puml</code>
+                    <br/>Minimax-Ablauf mit Alpha-Beta-Pruning und Heuristics
+                    <br/><a href="http://www.plantuml.com/plantuml/uml/" target="_blank">→ Online rendern</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="warning">
+            <strong>💡 Tipp:</strong> Um die UML-Diagramme anzuschauen:
+            <ol>
+                <li>Öffne <a href="http://www.plantuml.com/plantuml/uml/" target="_blank">PlantUML Online Editor</a></li>
+                <li>Kopiere eine <code>.puml</code>-Datei aus <code>docs/uml/</code></li>
+                <li>Füge den Inhalt im Editor ein</li>
+                <li>Das Diagramm wird automatisch gerendert</li>
+            </ol>
+            <p>Oder nutze ein IDE-Plugin (VS Code: PlantUML Extension)</p>
+        </div>
+    </div>
+
+    <!-- Versionshistorie -->
+    <div class="overview-section">
+        <h2>📝 Versionshistorie</h2>
+        <ul>
+            <li><strong>v3.0 (aktuell):</strong> Dokumentations-Cleanup, doppelte Blöcke entfernt, JSDoc regeneriert</li>
+            <li><strong>v2.0:</strong> Minimax relative player evaluation, NodeStatusManager, 19-file viz refactor</li>
+            <li><strong>v1.0:</strong> Initial release - Game system, agents, basic visualization</li>
+        </ul>
+    </div>
+
+    <!-- Dokumentation Links -->
+    <div class="overview-section">
+        <h2>📚 Weitere Dokumentation</h2>
+        <ul>
+            <li><a href="index.html">JSDoc API-Dokumentation</a> - Vollständige Klassendokumentation (119+ Seiten)</li>
+            <li><code>WolfsWorld/ToDos/</code> - Entwicklungs-Roadmap für zukünftige Features</li>
+            <li><code>DOCUMENTATION/</code> - Ausführliche technische Berichte</li>
+        </ul>
+    </div>
+
+    <hr/>
+    <p style="color: #666; font-size: 0.9em;">
+        WolfsWorld © 2026 | Alexander Wolf | 
+        <a href="index.html">← Zurück zur JSDoc-Dokumentation</a>
+    </p>
+</body>
+</html>
