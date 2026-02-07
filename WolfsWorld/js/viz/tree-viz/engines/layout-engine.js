@@ -10,14 +10,6 @@
  * @author Alexander Wolf
  * @version 1.0
  */
-
-/**
- * TreeLayoutEngine - Modul für Positionierung von Knoten im Baum
- * Implementiert verschiedene Layout-Algorithmen (Standard, Auto-Balance)
- * 
- * @author Alexander Wolf
- * @version 1.0
- */
 var TreeLayoutEngine = {
     /**
      * Berechnet Position eines neuen Knotens

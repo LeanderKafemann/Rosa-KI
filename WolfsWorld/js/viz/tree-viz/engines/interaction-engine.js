@@ -11,14 +11,6 @@
  * @author Alexander Wolf
  * @version 1.0
  */
-
-/**
- * TreeInteractionEngine - Modul für Benutzerinteraktion (Zoom, Pan, Click, Touch)
- * Extrahiert aus tree-engine.js für bessere Wartbarkeit
- * 
- * @author Alexander Wolf
- * @version 1.0
- */
 var TreeInteractionEngine = {
     /**
      * Setup: Maus-Wheel Zoom (mit Pause für Active Node Tracking)

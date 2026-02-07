@@ -10,16 +10,6 @@
  * @author Alexander Wolf
  * @version 1.0
  */
-
-/**
- * RotateBoxNodeRenderer - Spezialisierter Renderer für RotateBox Boards in Tree-Nodes
- * Bietet zwei Render-Styles:
- * - "grid": Vollflächig eingefärbte Quadrate
- * - "compact": Nur Zahlen/Labels
- * 
- * @author Alexander Wolf
- * @version 1.0
- */
 var RotateBoxNodeRenderer = {
     /**
      * Rendert ein RotateBox Board mit wählbarem Style

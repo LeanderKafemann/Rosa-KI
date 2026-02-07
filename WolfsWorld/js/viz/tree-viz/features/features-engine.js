@@ -15,34 +15,6 @@
  * @author Alexander Wolf
  * @version 1.0
  */
-
-/**
- * GLOBALE RENDERING-EFFEKTE - Zentrale Schalter für alle visuellen Effekte
- * 
- * WICHTIG: Diese Konstante wird von status-config.js bereitgestellt
- * status-config.js MUSS vor diesem Modul geladen sein
- * 
- * Referenz zur global verfügbaren STYLE_CONFIG_GLOBAL (deklariert in status-config.js)
- */
-
-/**
- * ZENTRALE STYLE-DEFINITIONEN für alle Node-Typen
- * 
- * WICHTIG: Diese Konstante wird von status-config.js bereitgestellt
- * status-config.js MUSS vor diesem Modul geladen sein
- * 
- * Referenz zur global verfügbaren STYLE_CONFIG (bereitgestellt via StatusConfig.getStyleConfig())
- */
-
-/**
- * TreeFeaturesEngine - Modul für spezielle Features
- * - Dead-End Detection & Marking
- * - Active Node Tracking & Centering
- * - Node Status Management
- * 
- * @author Alexander Wolf
- * @version 1.0
- */
 // Make TreeFeaturesEngine global (not const, so it's accessible without window.)
 var TreeFeaturesEngine = window.TreeFeaturesEngine || {
     // Safe getters for global STYLE_CONFIG and STYLE_CONFIG_GLOBAL

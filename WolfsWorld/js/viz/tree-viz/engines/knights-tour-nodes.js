@@ -10,16 +10,6 @@
  * @author Alexander Wolf
  * @version 1.0
  */
-
-/**
- * KnightsTourNodeRenderer - Spezialisierter Renderer für Knights-Tour Boards in Tree-Nodes
- * Bietet zwei Render-Styles:
- * - "classic": Echtes Schachbrett mit schwarzen Zahlen + rote Umrandung (original)
- * - "modern": Grüne besuchte Felder (aktuell)
- * 
- * @author Alexander Wolf
- * @version 1.0
- */
 var KnightsTourNodeRenderer = {
     /**
      * Rendert ein Knights-Tour Board mit wählbarem Style
