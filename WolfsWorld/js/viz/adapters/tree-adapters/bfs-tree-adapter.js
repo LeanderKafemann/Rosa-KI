@@ -2,7 +2,7 @@
  * Adapter für Breitensuche (BFS) mit Suchbaum-Visualisierung.
  * Konvertiert Spielzustände in TreeVizEngine-Kommandos via postMessage.
  * @class
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 2.3
  */
 class BFSTreeAdapter {

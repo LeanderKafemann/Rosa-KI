@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>viz/adapters/tree-adapters/bfs-tree-adapter.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a><ul class='methods'><li data-type='method'><a href="Agent.html#getAction">getAction</a></li></ul></li><li><a href="AlgorithmRunner.html">AlgorithmRunner</a><ul class='methods'><li data-type='method'><a href="AlgorithmRunner.html#setSpeed">setSpeed</a></li><li data-type='method'><a href="AlgorithmRunner.html#start">start</a></li><li data-type='method'><a href="AlgorithmRunner.html#stop">stop</a></li><li data-type='method'><a href="AlgorithmRunner.html#triggerStep">triggerStep</a></li></ul></li><li></li><li><a href="AlphaBetaTreeAdapter.html">AlphaBetaTreeAdapter</a><ul class='methods'><li data-type='method'><a href="AlphaBetaTreeAdapter.html#checkNodeStatus">checkNodeStatus</a></li><li data-type='method'><a href="AlphaBetaTreeAdapter.html#checkParentPruning">checkParentPruning</a></li><li data-type='method'><a href="AlphaBetaTreeAdapter.html#evaluateNode">evaluateNode</a></li><li data-type='method'><a href="AlphaBetaTreeAdapter.html#expandNodeChildren">expandNodeChildren</a></li></ul></li><li><a href="AtomicRule.html">AtomicRule</a></li><li><a href="BFSTreeAdapter.html">BFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="BFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="BFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="BFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="BFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="BFSTreeAdapter.html#startHandshake">startHandshake</a></li></ul></li><li><a href="BaseGameController.html">BaseGameController</a><ul class='methods'><li data-type='method'><a href="BaseGameController.html#checkTurn">checkTurn</a></li><li data-type='method'><a href="BaseGameController.html#coordsToMove">coordsToMove</a></li><li data-type='method'><a href="BaseGameController.html#createAIAgent">createAIAgent</a></li><li data-type='method'><a href="BaseGameController.html#createGame">createGame</a></li><li data-type='method'><a href="BaseGameController.html#drawGame">drawGame</a></li><li data-type='method'><a href="BaseGameController.html#getAISpeed">getAISpeed</a></li><li data-type='method'><a href="BaseGameController.html#handleCanvasClick">handleCanvasClick</a></li><li data-type='method'><a href="BaseGameController.html#init">init</a></li><li data-type='method'><a href="BaseGameController.html#reset">reset</a></li><li data-type='method'><a href="BaseGameController.html#updateUI">updateUI</a></li></ul></li><li><a href="BaseVisualizer.html">BaseVisualizer</a><ul class='methods'><li data-type='method'><a href="BaseVisualizer.html#canvasToWorld">canvasToWorld</a></li><li data-type='method'><a href="BaseVisualizer.html#drawOverlay">drawOverlay</a></li><li data-type='method'><a href="BaseVisualizer.html#executeCommand">executeCommand</a></li><li data-type='method'><a href="BaseVisualizer.html#render">render</a></li><li data-type='method'><a href="BaseVisualizer.html#resetView">resetView</a></li><li data-type='method'><a href="BaseVisualizer.html#sendToParent">sendToParent</a></li><li data-type='method'><a href="BaseVisualizer.html#worldToCanvas">worldToCanvas</a></li></ul></li><li><a href="Benchmark.html">Benchmark</a><ul class='methods'><li data-type='method'><a href="Benchmark.html#getAverage">getAverage</a></li><li data-type='method'><a href="Benchmark.html#getDuration">getDuration</a></li><li data-type='method'><a href="Benchmark.html#record">record</a></li><li data-type='method'><a href="Benchmark.html#reset">reset</a></li><li data-type='method'><a href="Benchmark.html#start">start</a></li><li data-type='method'><a href="Benchmark.html#stop">stop</a></li></ul></li><li><a href="ConditionNode.html">ConditionNode</a></li><li><a href="Connect43D.html">Connect43D</a></li><li><a href="Connect4Regular.html">Connect4Regular</a><ul class='methods'><li data-type='method'><a href="Connect4Regular.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="Connect4Regular.html#makeMove">makeMove</a></li></ul></li><li><a href="DFSTreeAdapter.html">DFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="DFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="DFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="DFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="DFSTreeAdapter.html#navigateInGame">navigateInGame</a></li><li data-type='method'><a href="DFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="DFSTreeAdapter.html#startHandshake">startHandshake</a></li><li data-type='method'><a href="DFSTreeAdapter.html#visualizeSearch">visualizeSearch</a></li></ul></li><li><a href="DecisionTree.html">DecisionTree</a></li><li><a href="FlowchartVisualizer.html">FlowchartVisualizer</a></li><li><a href="GameAdapter.html">GameAdapter</a><ul class='methods'><li data-type='method'><a href="GameAdapter.html#clone">clone</a></li><li data-type='method'><a href="GameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getBoard">getBoard</a></li><li data-type='method'><a href="GameAdapter.html#getCurrentPlayer">getCurrentPlayer</a></li><li data-type='method'><a href="GameAdapter.html#getRemainingMoves">getRemainingMoves</a></li><li data-type='method'><a href="GameAdapter.html#getState">getState</a></li><li data-type='method'><a href="GameAdapter.html#getValidMoves">getValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getWinner">getWinner</a></li><li data-type='method'><a href="GameAdapter.html#isGameOver">isGameOver</a></li><li data-type='method'><a href="GameAdapter.html#makeMove">makeMove</a></li></ul></li><li><a href="KnightBoard.html">KnightBoard</a><ul class='methods'><li data-type='method'><a href="KnightBoard.html#_getMovesFrom">_getMovesFrom</a></li><li data-type='method'><a href="KnightBoard.html#clone">clone</a></li><li data-type='method'><a href="KnightBoard.html#getDegree">getDegree</a></li><li data-type='method'><a href="KnightBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="KnightBoard.html#getPossibleMoves">getPossibleMoves</a></li><li data-type='method'><a href="KnightBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="KnightBoard.html#initGrid">initGrid</a></li><li data-type='method'><a href="KnightBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="KnightBoard.html#isInside">isInside</a></li><li data-type='method'><a href="KnightBoard.html#isUndoMove">isUndoMove</a></li><li data-type='method'><a href="KnightBoard.html#isValidMove">isValidMove</a></li><li data-type='method'><a href="KnightBoard.html#move">move</a></li><li data-type='method'><a href="KnightBoard.html#undo">undo</a></li></ul></li><li><a href="LearningPath.html">LearningPath</a><ul class='methods'><li data-type='method'><a href="LearningPath.html#enableNextButton">enableNextButton</a></li></ul></li><li><a href="MinimaxAgent.html">MinimaxAgent</a><ul class='methods'><li data-type='method'><a href="MinimaxAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="MinimaxEngine.html">MinimaxEngine</a><ul class='methods'><li data-type='method'><a href="MinimaxEngine.html#findBestMove">findBestMove</a></li></ul></li><li><a href="MinimaxTreeAdapter.html">MinimaxTreeAdapter</a><ul class='methods'><li data-type='method'><a href="MinimaxTreeAdapter.html#checkNodeStatus">checkNodeStatus</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#createNode">createNode</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#evaluateNode">evaluateNode</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#expandNodeChildren">expandNodeChildren</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#visualizeSearch">visualizeSearch</a></li></ul></li><li></li><li><a href="NIMGameLogic.html">NIMGameLogic</a><ul class='methods'><li data-type='method'><a href="NIMGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="NIMGameLogic.html#clone">clone</a></li><li data-type='method'><a href="NIMGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="NIMGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="NIMGameLogic.html#makeMove">makeMove</a></li><li data-type='method'><a href="NIMGameLogic.html#toString">toString</a></li></ul></li><li><a href="RandomAgent.html">RandomAgent</a><ul class='methods'><li data-type='method'><a href="RandomAgent.html#getAction">getAction</a></li></ul></li><li><a href="RotateBoard.html">RotateBoard</a><ul class='methods'><li data-type='method'><a href="RotateBoard.html#canFall">canFall</a></li><li data-type='method'><a href="RotateBoard.html#clone">clone</a></li><li data-type='method'><a href="RotateBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="RotateBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="RotateBoard.html#initFromId">initFromId</a></li><li data-type='method'><a href="RotateBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="RotateBoard.html#moveDown">moveDown</a></li><li data-type='method'><a href="RotateBoard.html#relaxBoardSync">relaxBoardSync</a></li><li data-type='method'><a href="RotateBoard.html#rotate">rotate</a></li></ul></li><li><a href="RuleBasedAgent.html">RuleBasedAgent</a><ul class='methods'><li data-type='method'><a href="RuleBasedAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="RuleGroup.html">RuleGroup</a></li><li><a href="RuleNode.html">RuleNode</a><ul class='methods'><li data-type='method'><a href="RuleNode.html#evaluate">evaluate</a></li></ul></li><li><a href="RuleVisualizer.html">RuleVisualizer</a></li><li><a href="SearchEngine.html">SearchEngine</a><ul class='methods'><li data-type='method'><a href="SearchEngine.html#solve">solve</a></li></ul></li><li></li><li><a href="TTT3DBoard.html">TTT3DBoard</a><ul class='methods'><li data-type='method'><a href="TTT3DBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTT3DBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTT3DBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTT3DBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTBase.html">TTTBase</a><ul class='methods'><li data-type='method'><a href="TTTBase.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTGameAdapter.html">TTTGameAdapter</a><ul class='methods'><li data-type='method'><a href="TTTGameAdapter.html#clone">clone</a></li><li data-type='method'><a href="TTTGameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTGameAdapter.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTGameAdapter.html#toJSON">toJSON</a></li></ul></li><li><a href="TTTRegularBoard.html">TTTRegularBoard</a><ul class='methods'><li data-type='method'><a href="TTTRegularBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTTRegularBoard.html#clone">clone</a></li><li data-type='method'><a href="TTTRegularBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTRegularBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TTTRegularBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTRegularBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TemplateGameLogic.html">TemplateGameLogic</a><ul class='methods'><li data-type='method'><a href="TemplateGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="TemplateGameLogic.html#_isMoveInList">_isMoveInList</a></li><li data-type='method'><a href="TemplateGameLogic.html#clone">clone</a></li><li data-type='method'><a href="TemplateGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TemplateGameLogic.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="TemplateGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TemplateGameLogic.html#isGoal">isGoal</a></li><li data-type='method'><a href="TemplateGameLogic.html#makeMove">makeMove</a></li></ul></li><li><a href="UltimateBoard.html">UltimateBoard</a><ul class='methods'><li data-type='method'><a href="UltimateBoard.html#_checkSmallWin">_checkSmallWin</a></li><li data-type='method'><a href="UltimateBoard.html#_isBoardFull">_isBoardFull</a></li><li data-type='method'><a href="UltimateBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="UltimateBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="UltimateBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="ai_minimax.js.html">ai/minimax.js</a></li></ul><h3>Namespaces</h3><ul><li><a href="MinimaxNodeRenderer.html">MinimaxNodeRenderer</a><ul class='methods'><li data-type='method'><a href="MinimaxNodeRenderer.html#.drawMetadata">drawMetadata</a></li><li data-type='method'><a href="MinimaxNodeRenderer.html#.render">render</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="GameState.html">GameState</a><ul class='methods'><li data-type='method'><a href="GameState.html#clone">clone</a></li><li data-type='method'><a href="GameState.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameState.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="GameState.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="GameState.html#isGoal">isGoal</a></li><li data-type='method'><a href="GameState.html#makeMove">makeMove</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#DEFAULT_STATUS_CONFIG">DEFAULT_STATUS_CONFIG</a></li><li><a href="global.html#GameFactories">GameFactories</a></li><li><a href="global.html#KnightsTourNodeRenderer">KnightsTourNodeRenderer</a></li><li><a href="global.html#NodeStatusManager">NodeStatusManager</a></li><li><a href="global.html#RotateBoxNodeRenderer">RotateBoxNodeRenderer</a></li><li><a href="global.html#StatusConfig">StatusConfig</a></li><li><a href="global.html#TTTGameFactory">TTTGameFactory</a></li><li><a href="global.html#TreeInteractionEngine">TreeInteractionEngine</a></li><li><a href="global.html#TreeLayoutEngine">TreeLayoutEngine</a></li><li><a href="global.html#VisualizationUtils">VisualizationUtils</a></li><li><a href="global.html#_convertStyleToRenderFormat">_convertStyleToRenderFormat</a></li><li><a href="global.html#animateRelax">animateRelax</a></li><li><a href="global.html#checkAndMarkDeadEnd">checkAndMarkDeadEnd</a></li><li><a href="global.html#checkSmallWin">checkSmallWin</a></li><li><a href="global.html#createAgentFromProfile">createAgentFromProfile</a></li><li><a href="global.html#createGame">createGame</a></li><li><a href="global.html#createStrategyTree">createStrategyTree</a></li><li><a href="global.html#drawRotateBoard">drawRotateBoard</a></li><li><a href="global.html#evaluateDefault">evaluateDefault</a></li><li><a href="global.html#evaluateTicTacToe">evaluateTicTacToe</a></li><li><a href="global.html#findLowestCommonAncestor">findLowestCommonAncestor</a></li><li><a href="global.html#findPathToRoot">findPathToRoot</a></li><li><a href="global.html#getAvailableGames">getAvailableGames</a></li><li><a href="global.html#getAvailableProfiles">getAvailableProfiles</a></li><li><a href="global.html#getNodeStyle">getNodeStyle</a></li><li><a href="global.html#getProfilesByType">getProfilesByType</a></li><li><a href="global.html#reconstructTreePath">reconstructTreePath</a></li><li><a href="global.html#setActiveNode">setActiveNode</a></li><li><a href="global.html#solveBFS">solveBFS</a></li><li><a href="global.html#updateActiveNodePosition">updateActiveNodePosition</a></li><li><a href="global.html#updateNodeStatus">updateNodeStatus</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">viz/adapters/tree-adapters/bfs-tree-adapter.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * Adapter für Breitensuche (BFS) mit Suchbaum-Visualisierung.
+ * Konvertiert Spielzustände in TreeVizEngine-Kommandos via postMessage.
+ * @class
+ * @author Alexander Wolf
+ * @version 2.3
+ */
+class BFSTreeAdapter {
+    /**
+     * Erstellt einen neuen BFS Tree Adapter.
+     * @param {HTMLIFrameElement} iframeElement
+     * Das iframe-Element mit der TreeVizEngine.
+     */
+    constructor(iframeElement) {
+        /**
+         * Das iframe-Element mit der TreeVizEngine.
+         * @type {HTMLIFrameElement}
+         */
+        this.iframe = iframeElement;
+        
+        /**
+         * Zähler für eindeutige Node-IDs.
+         * @type {number}
+         */
+        this.nodeIdCounter = 0;
+        
+        /**
+         * Mapping von State-Keys zu Node-IDs.
+         * @type {Map&lt;string, number>}
+         */
+        this.nodeMap = new Map();
+        
+        /**
+         * Aktuelle Suchtiefe.
+         * @type {number}
+         */
+        this.currentDepth = 0;
+        
+        /**
+         * Status, ob TreeVizEngine bereit ist.
+         * @type {boolean}
+         */
+        this.ready = false;
+        window.addEventListener('message', (event) => {
+            if (event.data &amp;&amp; event.data.type === 'TREE_READY') {
+                this.ready = true;
+                console.log('BFSTreeAdapter: TreeVizEngine ready');
+                // Stop checking when ready
+                if (this.checkInterval) {
+                    clearInterval(this.checkInterval);
+                    this.checkInterval = null;
+                }
+            }
+        });
+        
+        // Start proactive handshake
+        this.startHandshake();
+    }
+
+    /**
+     * Initiiert den Handshake mit der TreeVizEngine.
+     * Sendet CHECK_READY Kommandos bis eine Antwort empfangen wird.
+     */
+    startHandshake() {
+        // Send CHECK_READY every 200ms until we get a response
+        if (this.checkInterval) clearInterval(this.checkInterval);
+        
+        const check = () => {
+            if (this.ready) return;
+            // console.log('BFSTreeAdapter: Checking if engine is ready...');
+            this.sendCommand({ action: 'CHECK_READY' });
+        };
+        
+        // Immediate check
+        check();
+        
+        // Periodic check
+        this.checkInterval = setInterval(check, 200);
+        
+        // Stop checking after 10 seconds to avoid infinite polling if something is broken
+        setTimeout(() => {
+            if (this.checkInterval) {
+                clearInterval(this.checkInterval);
+                this.checkInterval = null;
+                if (!this.ready) console.warn('BFSTreeAdapter: Giving up on handshake after 10s');
+            }
+        }, 10000);
+    }
+    
+    /**
+     * Baut einen BFS-Suchbaum bis zur angegebenen Tiefe auf.
+     * @param {Object} initialState
+     * Der initiale Spielzustand.
+     * @param {number} maxDepth
+     * Maximale Suchtiefe.
+     * @param {Object} options
+     * Zusätzliche Optionen (duplicates).
+     * @returns {Object}
+     * Statistiken über den generierten Baum.
+     */
+    async buildToDepth(initialState, maxDepth, options = {}) {
+        // Build BFS tree to specified depth
+        
+        if (!this.ready) {
+            console.warn('TreeVizEngine not ready yet. Attempting optimized send anyway...');
+            // Fallthrough - do not return! Try to send anyway if iframe exists.
+            if (!this.iframe || !this.iframe.contentWindow) {
+                console.error('BFSTreeAdapter: Iframe contentWindow missing!');
+                return;
+            }
+        }
+        
+        // Clear existing tree
+        this.sendCommand({ action: 'CLEAR' });
+        this.nodeIdCounter = 0;
+        this.nodeMap.clear();
+        
+        // Configuration
+        const markDuplicates = options.duplicates === true; // Wenn true, Duplikate MIT roter Kante zeigen
+        const commands = [];
+        
+        // BFS queue: {state, nodeId, parentId, depth, move}
+        const queue = [];
+        const visited = new Map(); // stateKey -> nodeId für Duplikats-Erkennung
+        
+        // Add root node
+        const rootId = this.nodeIdCounter++;
+        const rootKey = initialState.getStateKey();
+        this.nodeMap.set(rootKey, rootId);
+        visited.set(rootKey, rootId); // Merke Root-State
+        
+        commands.push({
+            action: 'ADD_NODE',
+            id: rootId,
+            parentId: null,
+            label: '',
+            color: '#4a90e2',
+            boardData: initialState // Pass board object for visualization
+        });
+        
+        queue.push({
+            state: initialState,
+            nodeId: rootId,
+            parentId: null,
+            depth: 0,
+            move: null
+        });
+        
+        // BFS expansion
+        while (queue.length > 0) {
+            const current = queue.shift();
+            
+            // Stop if max depth reached
+            if (current.depth >= maxDepth) {
+                continue;
+            }
+            
+            // Get child states
+            const nextStates = current.state.getNextStates();
+            
+            nextStates.forEach(({ state: childState, move }) => {
+                const childKey = childState.getStateKey();
+                
+                // Duplicate detection
+                let isDuplicate = false;
+                if (visited.has(childKey)) {
+                    isDuplicate = true;
+                    // If we are NOT marking duplicates (meaning we want a full tree visualization),
+                    // we pretend it's not a duplicate so it gets expanded normally.
+                    if (!markDuplicates) {
+                        isDuplicate = false;
+                    }
+                }
+                
+                // Determine node settings
+                let status = [];
+                let shouldExpand = true;
+
+                if (childState.isGoal &amp;&amp; childState.isGoal()) {
+                    status.push('WIN');
+                    // Optional: Don't expand if goal reached? Depends on requirement.
+                    // Usually we stop at goal in search, but for viz maybe show all?
+                    // Let's keep expanding until maxDepth
+                } else if (isDuplicate) {
+                    status.push('DUPLICATE');
+                    shouldExpand = false; // Stop at duplicate
+                }
+                
+                // Create child node
+                const childId = this.nodeIdCounter++;
+                this.nodeMap.set(childKey, childId);
+                
+                // Only mark as visited if we are tracking duplicates
+                // (or always track first visit to identify future duplicates)
+                if (!visited.has(childKey)) {
+                    visited.set(childKey, childId);
+                }
+                
+                // Add node command
+                commands.push({
+                    action: 'ADD_NODE',
+                    id: childId,
+                    parentId: current.nodeId,
+                    label: '',
+                    edgeLabel: move || '',
+                    status: status,
+                    boardData: childState
+                });
+
+                // Add to queue if expanion is allowed
+                if (shouldExpand) {
+                    queue.push({
+                        state: childState,
+                        nodeId: childId,
+                        parentId: current.nodeId,
+                        depth: current.depth + 1,
+                        move: move
+                    });
+                }
+            });
+        }
+        
+        // Send all commands as batch
+        this.sendCommand({ action: 'BATCH', commands: commands });
+        
+        // Store stats
+        this.currentDepth = maxDepth;
+        this.stats = {
+            totalNodes: this.nodeIdCounter,
+            depth: maxDepth,
+            duplicatesMarked: markDuplicates
+        };
+        
+        return this.stats;
+    }
+    
+    /**
+     * Hebt einen Pfad durch den Baum farblich hervor.
+     * @param {Array&lt;string>} statePath
+     * Array von State-Keys die den Pfad bilden.
+     */
+    highlightPath(statePath) {
+        if (!this.ready) return;
+        
+        const commands = [];
+        
+        // Remove existing highlights
+        commands.push({
+            command: 'REMOVE_HIGHLIGHT',
+            data: {}
+        });
+        
+        // Highlight each edge in the path
+        for (let i = 0; i &lt; statePath.length - 1; i++) {
+            const fromKey = statePath[i];
+            const toKey = statePath[i + 1];
+            
+            const fromId = this.nodeMap.get(fromKey);
+            const toId = this.nodeMap.get(toKey);
+            
+            if (fromId !== undefined &amp;&amp; toId !== undefined) {
+                commands.push({
+                    command: 'HIGHLIGHT_EDGE',
+                    data: {
+                        from: fromId,
+                        to: toId,
+                        color: '#ff9800',
+                        width: 4
+                    }
+                });
+                
+                commands.push({
+                    command: 'HIGHLIGHT_NODE',
+                    data: {
+                        id: toId,
+                        color: '#ff9800',
+                        style: 'glow'
+                    }
+                });
+            }
+        }
+        
+        this.sendCommand('BATCH', { commands });
+    }
+    
+    /**
+     * Fokussiert die Ansicht auf einen bestimmten Knoten.
+     * @param {string} stateKey
+     * State-Key des zu fokussierenden Knotens.
+     */
+    focusNode(stateKey) {
+        const nodeId = this.nodeMap.get(stateKey);
+        if (nodeId !== undefined) {
+            this.sendCommand('SET_FOCUS', { id: nodeId });
+        }
+    }
+    
+    /**
+     * Setzt die Ansicht auf die Standard-Position zurück.
+     */
+    resetView() {
+        this.sendCommand('RESET_VIEW');
+    }
+    
+    /**
+     * Gibt aktuelle Statistiken über den Suchbaum zurück.
+     * @returns {Object}
+     * Statistiken (totalNodes, depth, duplicatesMarked).
+     */
+    getStats() {
+        return this.stats || {
+            totalNodes: 0,
+            depth: 0,
+            duplicatesAllowed: true
+        };
+    }
+    
+    /**
+     * Send command to TreeVizEngine via postMessage
+     * @private
+     */
+    sendCommand(commandObj) {
+        if (!this.iframe || !this.iframe.contentWindow) {
+            console.error('Iframe not available');
+            return;
+        }
+        
+        this.iframe.contentWindow.postMessage({
+            type: 'TREE_COMMAND',
+            command: commandObj
+        }, '*');
+    }
+    
+    /**
+     * Get node count
+     */
+    getNodeCount() {
+        return this.nodeIdCounter;
+    }
+}
+
+// Export for use in other scripts
+if (typeof module !== 'undefined' &amp;&amp; module.exports) {
+    module.exports = BFSTreeAdapter;
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Feb 07 2026 23:25:54 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>viz/tree-viz/config/status-config.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a><ul class='methods'><li data-type='method'><a href="Agent.html#getAction">getAction</a></li></ul></li><li><a href="AlgorithmRunner.html">AlgorithmRunner</a><ul class='methods'><li data-type='method'><a href="AlgorithmRunner.html#setSpeed">setSpeed</a></li><li data-type='method'><a href="AlgorithmRunner.html#start">start</a></li><li data-type='method'><a href="AlgorithmRunner.html#stop">stop</a></li><li data-type='method'><a href="AlgorithmRunner.html#triggerStep">triggerStep</a></li></ul></li><li></li><li><a href="AlphaBetaTreeAdapter.html">AlphaBetaTreeAdapter</a><ul class='methods'><li data-type='method'><a href="AlphaBetaTreeAdapter.html#checkNodeStatus">checkNodeStatus</a></li><li data-type='method'><a href="AlphaBetaTreeAdapter.html#checkParentPruning">checkParentPruning</a></li><li data-type='method'><a href="AlphaBetaTreeAdapter.html#evaluateNode">evaluateNode</a></li><li data-type='method'><a href="AlphaBetaTreeAdapter.html#expandNodeChildren">expandNodeChildren</a></li></ul></li><li><a href="AtomicRule.html">AtomicRule</a></li><li><a href="BFSTreeAdapter.html">BFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="BFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="BFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="BFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="BFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="BFSTreeAdapter.html#startHandshake">startHandshake</a></li></ul></li><li><a href="BaseGameController.html">BaseGameController</a><ul class='methods'><li data-type='method'><a href="BaseGameController.html#checkTurn">checkTurn</a></li><li data-type='method'><a href="BaseGameController.html#coordsToMove">coordsToMove</a></li><li data-type='method'><a href="BaseGameController.html#createAIAgent">createAIAgent</a></li><li data-type='method'><a href="BaseGameController.html#createGame">createGame</a></li><li data-type='method'><a href="BaseGameController.html#drawGame">drawGame</a></li><li data-type='method'><a href="BaseGameController.html#getAISpeed">getAISpeed</a></li><li data-type='method'><a href="BaseGameController.html#handleCanvasClick">handleCanvasClick</a></li><li data-type='method'><a href="BaseGameController.html#init">init</a></li><li data-type='method'><a href="BaseGameController.html#reset">reset</a></li><li data-type='method'><a href="BaseGameController.html#updateUI">updateUI</a></li></ul></li><li><a href="BaseVisualizer.html">BaseVisualizer</a><ul class='methods'><li data-type='method'><a href="BaseVisualizer.html#canvasToWorld">canvasToWorld</a></li><li data-type='method'><a href="BaseVisualizer.html#drawOverlay">drawOverlay</a></li><li data-type='method'><a href="BaseVisualizer.html#executeCommand">executeCommand</a></li><li data-type='method'><a href="BaseVisualizer.html#render">render</a></li><li data-type='method'><a href="BaseVisualizer.html#resetView">resetView</a></li><li data-type='method'><a href="BaseVisualizer.html#sendToParent">sendToParent</a></li><li data-type='method'><a href="BaseVisualizer.html#worldToCanvas">worldToCanvas</a></li></ul></li><li><a href="Benchmark.html">Benchmark</a><ul class='methods'><li data-type='method'><a href="Benchmark.html#getAverage">getAverage</a></li><li data-type='method'><a href="Benchmark.html#getDuration">getDuration</a></li><li data-type='method'><a href="Benchmark.html#record">record</a></li><li data-type='method'><a href="Benchmark.html#reset">reset</a></li><li data-type='method'><a href="Benchmark.html#start">start</a></li><li data-type='method'><a href="Benchmark.html#stop">stop</a></li></ul></li><li><a href="ConditionNode.html">ConditionNode</a></li><li><a href="Connect43D.html">Connect43D</a></li><li><a href="Connect4Regular.html">Connect4Regular</a><ul class='methods'><li data-type='method'><a href="Connect4Regular.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="Connect4Regular.html#makeMove">makeMove</a></li></ul></li><li><a href="DFSTreeAdapter.html">DFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="DFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="DFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="DFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="DFSTreeAdapter.html#navigateInGame">navigateInGame</a></li><li data-type='method'><a href="DFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="DFSTreeAdapter.html#startHandshake">startHandshake</a></li><li data-type='method'><a href="DFSTreeAdapter.html#visualizeSearch">visualizeSearch</a></li></ul></li><li><a href="DecisionTree.html">DecisionTree</a></li><li><a href="FlowchartVisualizer.html">FlowchartVisualizer</a></li><li><a href="GameAdapter.html">GameAdapter</a><ul class='methods'><li data-type='method'><a href="GameAdapter.html#clone">clone</a></li><li data-type='method'><a href="GameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getBoard">getBoard</a></li><li data-type='method'><a href="GameAdapter.html#getCurrentPlayer">getCurrentPlayer</a></li><li data-type='method'><a href="GameAdapter.html#getRemainingMoves">getRemainingMoves</a></li><li data-type='method'><a href="GameAdapter.html#getState">getState</a></li><li data-type='method'><a href="GameAdapter.html#getValidMoves">getValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getWinner">getWinner</a></li><li data-type='method'><a href="GameAdapter.html#isGameOver">isGameOver</a></li><li data-type='method'><a href="GameAdapter.html#makeMove">makeMove</a></li></ul></li><li><a href="KnightBoard.html">KnightBoard</a><ul class='methods'><li data-type='method'><a href="KnightBoard.html#_getMovesFrom">_getMovesFrom</a></li><li data-type='method'><a href="KnightBoard.html#clone">clone</a></li><li data-type='method'><a href="KnightBoard.html#getDegree">getDegree</a></li><li data-type='method'><a href="KnightBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="KnightBoard.html#getPossibleMoves">getPossibleMoves</a></li><li data-type='method'><a href="KnightBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="KnightBoard.html#initGrid">initGrid</a></li><li data-type='method'><a href="KnightBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="KnightBoard.html#isInside">isInside</a></li><li data-type='method'><a href="KnightBoard.html#isUndoMove">isUndoMove</a></li><li data-type='method'><a href="KnightBoard.html#isValidMove">isValidMove</a></li><li data-type='method'><a href="KnightBoard.html#move">move</a></li><li data-type='method'><a href="KnightBoard.html#undo">undo</a></li></ul></li><li><a href="LearningPath.html">LearningPath</a><ul class='methods'><li data-type='method'><a href="LearningPath.html#enableNextButton">enableNextButton</a></li></ul></li><li><a href="MinimaxAgent.html">MinimaxAgent</a><ul class='methods'><li data-type='method'><a href="MinimaxAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="MinimaxEngine.html">MinimaxEngine</a><ul class='methods'><li data-type='method'><a href="MinimaxEngine.html#findBestMove">findBestMove</a></li></ul></li><li><a href="MinimaxTreeAdapter.html">MinimaxTreeAdapter</a><ul class='methods'><li data-type='method'><a href="MinimaxTreeAdapter.html#checkNodeStatus">checkNodeStatus</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#createNode">createNode</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#evaluateNode">evaluateNode</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#expandNodeChildren">expandNodeChildren</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#visualizeSearch">visualizeSearch</a></li></ul></li><li></li><li><a href="NIMGameLogic.html">NIMGameLogic</a><ul class='methods'><li data-type='method'><a href="NIMGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="NIMGameLogic.html#clone">clone</a></li><li data-type='method'><a href="NIMGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="NIMGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="NIMGameLogic.html#makeMove">makeMove</a></li><li data-type='method'><a href="NIMGameLogic.html#toString">toString</a></li></ul></li><li><a href="RandomAgent.html">RandomAgent</a><ul class='methods'><li data-type='method'><a href="RandomAgent.html#getAction">getAction</a></li></ul></li><li><a href="RotateBoard.html">RotateBoard</a><ul class='methods'><li data-type='method'><a href="RotateBoard.html#canFall">canFall</a></li><li data-type='method'><a href="RotateBoard.html#clone">clone</a></li><li data-type='method'><a href="RotateBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="RotateBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="RotateBoard.html#initFromId">initFromId</a></li><li data-type='method'><a href="RotateBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="RotateBoard.html#moveDown">moveDown</a></li><li data-type='method'><a href="RotateBoard.html#relaxBoardSync">relaxBoardSync</a></li><li data-type='method'><a href="RotateBoard.html#rotate">rotate</a></li></ul></li><li><a href="RuleBasedAgent.html">RuleBasedAgent</a><ul class='methods'><li data-type='method'><a href="RuleBasedAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="RuleGroup.html">RuleGroup</a></li><li><a href="RuleNode.html">RuleNode</a><ul class='methods'><li data-type='method'><a href="RuleNode.html#evaluate">evaluate</a></li></ul></li><li><a href="RuleVisualizer.html">RuleVisualizer</a></li><li><a href="SearchEngine.html">SearchEngine</a><ul class='methods'><li data-type='method'><a href="SearchEngine.html#solve">solve</a></li></ul></li><li></li><li><a href="TTT3DBoard.html">TTT3DBoard</a><ul class='methods'><li data-type='method'><a href="TTT3DBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTT3DBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTT3DBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTT3DBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTBase.html">TTTBase</a><ul class='methods'><li data-type='method'><a href="TTTBase.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTGameAdapter.html">TTTGameAdapter</a><ul class='methods'><li data-type='method'><a href="TTTGameAdapter.html#clone">clone</a></li><li data-type='method'><a href="TTTGameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTGameAdapter.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTGameAdapter.html#toJSON">toJSON</a></li></ul></li><li><a href="TTTRegularBoard.html">TTTRegularBoard</a><ul class='methods'><li data-type='method'><a href="TTTRegularBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTTRegularBoard.html#clone">clone</a></li><li data-type='method'><a href="TTTRegularBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTRegularBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TTTRegularBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTRegularBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TemplateGameLogic.html">TemplateGameLogic</a><ul class='methods'><li data-type='method'><a href="TemplateGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="TemplateGameLogic.html#_isMoveInList">_isMoveInList</a></li><li data-type='method'><a href="TemplateGameLogic.html#clone">clone</a></li><li data-type='method'><a href="TemplateGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TemplateGameLogic.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="TemplateGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TemplateGameLogic.html#isGoal">isGoal</a></li><li data-type='method'><a href="TemplateGameLogic.html#makeMove">makeMove</a></li></ul></li><li><a href="UltimateBoard.html">UltimateBoard</a><ul class='methods'><li data-type='method'><a href="UltimateBoard.html#_checkSmallWin">_checkSmallWin</a></li><li data-type='method'><a href="UltimateBoard.html#_isBoardFull">_isBoardFull</a></li><li data-type='method'><a href="UltimateBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="UltimateBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="UltimateBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="ai_minimax.js.html">ai/minimax.js</a></li></ul><h3>Namespaces</h3><ul><li><a href="MinimaxNodeRenderer.html">MinimaxNodeRenderer</a><ul class='methods'><li data-type='method'><a href="MinimaxNodeRenderer.html#.drawMetadata">drawMetadata</a></li><li data-type='method'><a href="MinimaxNodeRenderer.html#.render">render</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="GameState.html">GameState</a><ul class='methods'><li data-type='method'><a href="GameState.html#clone">clone</a></li><li data-type='method'><a href="GameState.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameState.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="GameState.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="GameState.html#isGoal">isGoal</a></li><li data-type='method'><a href="GameState.html#makeMove">makeMove</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#DEFAULT_STATUS_CONFIG">DEFAULT_STATUS_CONFIG</a></li><li><a href="global.html#GameFactories">GameFactories</a></li><li><a href="global.html#KnightsTourNodeRenderer">KnightsTourNodeRenderer</a></li><li><a href="global.html#NodeStatusManager">NodeStatusManager</a></li><li><a href="global.html#RotateBoxNodeRenderer">RotateBoxNodeRenderer</a></li><li><a href="global.html#StatusConfig">StatusConfig</a></li><li><a href="global.html#TTTGameFactory">TTTGameFactory</a></li><li><a href="global.html#TreeInteractionEngine">TreeInteractionEngine</a></li><li><a href="global.html#TreeLayoutEngine">TreeLayoutEngine</a></li><li><a href="global.html#VisualizationUtils">VisualizationUtils</a></li><li><a href="global.html#_convertStyleToRenderFormat">_convertStyleToRenderFormat</a></li><li><a href="global.html#animateRelax">animateRelax</a></li><li><a href="global.html#checkAndMarkDeadEnd">checkAndMarkDeadEnd</a></li><li><a href="global.html#checkSmallWin">checkSmallWin</a></li><li><a href="global.html#createAgentFromProfile">createAgentFromProfile</a></li><li><a href="global.html#createGame">createGame</a></li><li><a href="global.html#createStrategyTree">createStrategyTree</a></li><li><a href="global.html#drawRotateBoard">drawRotateBoard</a></li><li><a href="global.html#evaluateDefault">evaluateDefault</a></li><li><a href="global.html#evaluateTicTacToe">evaluateTicTacToe</a></li><li><a href="global.html#findLowestCommonAncestor">findLowestCommonAncestor</a></li><li><a href="global.html#findPathToRoot">findPathToRoot</a></li><li><a href="global.html#getAvailableGames">getAvailableGames</a></li><li><a href="global.html#getAvailableProfiles">getAvailableProfiles</a></li><li><a href="global.html#getNodeStyle">getNodeStyle</a></li><li><a href="global.html#getProfilesByType">getProfilesByType</a></li><li><a href="global.html#reconstructTreePath">reconstructTreePath</a></li><li><a href="global.html#setActiveNode">setActiveNode</a></li><li><a href="global.html#solveBFS">solveBFS</a></li><li><a href="global.html#updateActiveNodePosition">updateActiveNodePosition</a></li><li><a href="global.html#updateNodeStatus">updateNodeStatus</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">viz/tree-viz/config/status-config.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * StatusConfig - Centralized Status &amp; Style Configuration Manager
+ * 
+ * CONSOLIDATED VERSION - Single unified configuration for all status types
+ * Provides centralized management of all status types, their visual properties,
+ * and global rendering effects. Applications can override defaults for game-specific customization.
+ * 
+ * IMPORTANT: This file must be loaded BEFORE tree-engine.js
+ * 
+ * Features:
+ * - Single consolidated configuration with all properties (11 base types + 5 special types)
+ * - Priority system for node rendering order
+ * - Complete style configurations (colors, borders, glows, dashes)
+ * - Global rendering effect toggles
+ * - Runtime override API for game-specific customization
+ * - Lazy initialization and deep-clone safety
+ * - Backward-compatible API (getStatusTypes(), getStyleConfig())
+ * - New unified override API (setConfigDefaults())
+ */
+
+// Global effect configuration - controls all rendering effects
+const STYLE_CONFIG_GLOBAL = {
+  enableGlowEffects: false,
+  enableDashEffects: true,
+  enableShadowEffects: true,
+  shadowBlur: 15,
+  glowBlur: 20
+};
+
+/**
+ * CONSOLIDATED DEFAULT CONFIGURATION
+ * Combines priority, visual styling, and rendering flags in one place.
+ * 
+ * Base Status Types (11):
+ *   ACTIVE, SOLUTION, WIN, LOSS, DEAD_END, DRAW, DUPLICATE, PRUNED, NONE,
+ *   ACTIVE_DEAD_END, ACTIVE_WIN
+ * 
+ * Special Status Types (5):
+ *   BEST, PREVIEW_NODE, BOARD_WON, BOARD_NORMAL, DEFAULT
+ */
+const DEFAULT_STATUS_CONFIG = {
+  // ========== BASE STATUS TYPES (11) ==========
+  
+  ACTIVE: {
+    priority: 100,
+    color: '#f1c40f', border: '#f1c40f', width: 4,
+    glow: '#ffed4e', enableGlow: true, dash: [], enableDash: false
+  },
+  
+  SOLUTION: {
+    priority: 90,
+    color: '#2ecc71', border: '#27ae60', width: 4,
+    glow: '#27ae60', enableGlow: true, dash: [], enableDash: false
+  },
+  
+  WIN: {
+    priority: 80,
+    color: '#2ecc71', border: '#27ae60', width: 4,
+    glow: '#27ae60', enableGlow: true, dash: [], enableDash: false
+  },
+  
+  LOSS: {
+    priority: 80,
+    color: '#e74c3c', border: '#c0392b', width: 4,
+    glow: '#c0392b', enableGlow: true, dash: [], enableDash: false
+  },
+  
+  DEAD_END: {
+    priority: 70,
+    color: '#ffcccc', border: '#e74c3c', width: 3,
+    glow: '#e74c3c', enableGlow: true, dash: [], enableDash: false
+  },
+  
+  DRAW: {
+    priority: 60,
+    color: '#d1d119', border: '#c3dd19', width: 3,
+    glow: null, enableGlow: false, dash: [], enableDash: false
+  },
+  
+  DUPLICATE: {
+    priority: 50,
+    color: '#ecf0f1', border: '#ff8c00', width: 3,
+    glow: null, enableGlow: false, dash: [], enableDash: false
+  },
+  
+  PRUNED: {
+    priority: 40,
+    color: '#95a5a6', border: '#7f8c8d', width: 2,
+    glow: null, enableGlow: false, dash: [5, 5], enableDash: true
+  },
+  
+  NONE: {
+    priority: 0,
+    color: '#bdc3c7', border: '#7f8c8d', width: 1,
+    glow: null, enableGlow: false, dash: [], enableDash: false
+  },
+  
+  ACTIVE_DEAD_END: {
+    priority: 110,
+    color: '#ffd6d6', border: '#e7b73c', width: 4,
+    glow: '#e74c3c', enableGlow: true, dash: [], enableDash: false
+  },
+  
+  ACTIVE_WIN: {
+    priority: 110,
+    color: '#d6ffd6', border: '#27ae60', width: 4,
+    glow: '#27ae60', enableGlow: true, dash: [], enableDash: false
+  },
+  
+  // ========== SPECIAL STATUS TYPES (5) ==========
+  
+  BEST: {
+    priority: 95,
+    color: '#d4edda', border: '#28a745', width: 4,
+    glow: '#28a745', enableGlow: true, dash: [], enableDash: false
+  },
+  
+  PREVIEW_NODE: {
+    priority: 5,
+    color: null, border: '#333', width: 2,
+    glow: null, enableGlow: false, dash: [4, 4], enableDash: false
+  },
+  
+  BOARD_WON: {
+    priority: 85,
+    color: '#ffffff', border: '#4caf50', width: 4,
+    glow: '#4caf50', enableGlow: true, dash: [], enableDash: false
+  },
+  
+  BOARD_NORMAL: {
+    priority: 10,
+    color: '#ffffff', border: '#333', width: 2,
+    glow: null, enableGlow: false, dash: [], enableDash: false
+  },
+  
+  // ========== INTERACTIVE EVALUATION STATUSES ==========
+  
+  // Custom Minimax Winners (Blue/Red perspective)
+  WIN_BLUE: {
+    priority: 92,
+    color: '#3498db', border: '#2980b9', width: 4,
+    glow: '#3498db', enableGlow: true, dash: [], enableDash: false
+  },
+
+  WIN_RED: {
+    priority: 92,
+    color: '#e74c3c', border: '#c0392b', width: 4,
+    glow: '#e74c3c', enableGlow: true, dash: [], enableDash: false
+  },
+
+  WAIT: {
+    priority: 30,
+    color: '#ecf0f1', border: 'transparent', width: 0,
+    glow: null, enableGlow: false, dash: [], enableDash: false
+  },
+
+  READY: {
+    priority: 30,
+    color: '#ffffff', border: '#20ca42', width: 3,
+    glow: '#e67e22', enableGlow: true, dash: [], enableDash: false
+  },
+
+  EVALUATED: {
+    priority: 40,
+    color: '#ffffff', border: '#2c3e50', width: 3,
+    glow: null, enableGlow: false, dash: [], enableDash: false
+  },
+  
+  DEFAULT: {
+    priority: 1,
+    color: '#bdc3c7', border: '#333', width: 2,
+    glow: null, enableGlow: false, dash: [], enableDash: false
+  }
+};
+
+/**
+ * StatusConfig Manager Object
+ * 
+ * API Methods:
+ * - getStatusTypes() : object - Get current status types with only priority + visual properties
+ * - getStyleConfig() : object - Get current style config with all properties including rendering flags
+ * - setConfigDefaults(overrides) : void - NEW: Unified override method (replaces setStatusDefaults + setStyleDefaults)
+ * - setStatusDefaults(overrides) : void - DEPRECATED: Use setConfigDefaults() instead
+ * - setStyleDefaults(overrides) : void - DEPRECATED: Use setConfigDefaults() instead
+ * - setStatusProperty(statusName, property, value) : void - Set single status property
+ * - setStyleProperty(statusName, property, value) : void - Set single style property
+ * - resetToDefaults() : void - Clear all overrides and reset to defaults
+ * - getConfigSummary() : string - Get JSON summary of current configuration
+ */
+const StatusConfig = {
+  _config: null,
+  STYLE_CONFIG_GLOBAL,
+
+  /**
+   * Initialize configuration (lazy initialization)
+   * Creates deep clone to prevent mutation of defaults
+   */
+  _init() {
+    if (this._config === null) {
+      this._config = JSON.parse(JSON.stringify(DEFAULT_STATUS_CONFIG));
+    }
+  },
+
+  /**
+   * NEW UNIFIED API: Override configuration
+   * Merge overrides into the consolidated configuration
+   * @param {Object} overrides - Config overrides (e.g., {WIN: {priority: 95, color: '#ff0000'}})
+   */
+  setConfigDefaults(overrides = {}) {
+    this._init();
+    for (const [statusName, configProps] of Object.entries(overrides)) {
+      if (this._config[statusName]) {
+        Object.assign(this._config[statusName], configProps);
+      } else {
+        this._config[statusName] = configProps;
+      }
+    }
+  },
+
+  /**
+   * DEPRECATED: Override status type definitions
+   * Use setConfigDefaults() instead
+   * @param {Object} overrides - Status type overrides
+   */
+  setStatusDefaults(overrides = {}) {
+    console.warn('StatusConfig.setStatusDefaults() is deprecated. Use setConfigDefaults() instead.');
+    this.setConfigDefaults(overrides);
+  },
+
+  /**
+   * DEPRECATED: Override style configurations
+   * Use setConfigDefaults() instead
+   * @param {Object} overrides - Style configuration overrides
+   */
+  setStyleDefaults(overrides = {}) {
+    console.warn('StatusConfig.setStyleDefaults() is deprecated. Use setConfigDefaults() instead.');
+    this.setConfigDefaults(overrides);
+  },
+
+  /**
+   * Get current status types (with any overrides applied)
+   * Returns only: {priority, color, glow, border, width} for each status
+   * @returns {Object} Status types object filtered for priority-based rendering
+   */
+  getStatusTypes() {
+    this._init();
+    const filtered = {};
+    for (const [statusName, config] of Object.entries(this._config)) {
+      filtered[statusName] = {
+        priority: config.priority,
+        color: config.color,
+        glow: config.glow,
+        border: config.border,
+        width: config.width
+      };
+    }
+    return filtered;
+  },
+
+  /**
+   * Get current style configuration (with any overrides applied)
+   * Returns full configuration including rendering flags
+   * @returns {Object} Complete style configuration object
+   */
+  getStyleConfig() {
+    this._init();
+    return JSON.parse(JSON.stringify(this._config));
+  },
+
+  /**
+   * Set a single status property
+   * @param {string} statusName - Name of the status (e.g., 'WIN', 'LOSS')
+   * @param {string} property - Property name (e.g., 'color', 'priority', 'enableGlow')
+   * @param {*} value - New value
+   */
+  setStatusProperty(statusName, property, value) {
+    this._init();
+    if (this._config[statusName]) {
+      this._config[statusName][property] = value;
+    }
+  },
+
+  /**
+   * Set a single style property
+   * @param {string} statusName - Name of the status
+   * @param {string} property - Property name (e.g., 'color', 'border', 'glow', 'enableGlow')
+   * @param {*} value - New value
+   */
+  setStyleProperty(statusName, property, value) {
+    this._init();
+    if (this._config[statusName]) {
+      this._config[statusName][property] = value;
+    } else {
+      this._config[statusName] = { [property]: value };
+    }
+  },
+
+  /**
+   * Reset all configurations to defaults
+   */
+  resetToDefaults() {
+    this._config = JSON.parse(JSON.stringify(DEFAULT_STATUS_CONFIG));
+  },
+
+  /**
+   * Get JSON summary of current configuration
+   * @returns {string} JSON formatted summary
+   */
+  getConfigSummary() {
+    this._init();
+    return JSON.stringify({
+      statusTypes: Object.keys(this._config),
+      properties: Object.keys(this._config.ACTIVE || {}),
+      globalEffects: STYLE_CONFIG_GLOBAL
+    }, null, 2);
+  }
+};
+
+// Initialize config immediately
+StatusConfig._init();
+
+// Make globally available
+if (typeof window !== 'undefined') {
+  window.StatusConfig = StatusConfig;
+  window.STYLE_CONFIG_GLOBAL = STYLE_CONFIG_GLOBAL;
+  window.DEFAULT_STATUS_CONFIG = DEFAULT_STATUS_CONFIG;
+}
+
+// Export for Node.js/CommonJS environments
+if (typeof module !== 'undefined' &amp;&amp; module.exports) {
+  module.exports = {
+    StatusConfig,
+    STYLE_CONFIG_GLOBAL,
+    DEFAULT_STATUS_CONFIG
+  };
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Feb 07 2026 23:25:54 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

@@ -7,32 +7,12 @@
  * - TreeInteractionEngine: Zoom, Pan, Click-Detection
  * - TreeFeaturesEngine: Dead-End Detection, Active Node Tracking, Status Management
  * 
- * @author GitHub Copilot
+ * Status-Konfiguration wird zentral in status-config.js definiert.
+ * Diese Datei nutzt StatusConfig.getStatusTypes() zur Runtime.
+ * 
+ * @author Alexander Wolf
  * @version 3.0
  */
-
-/**
- * TreeVizEngine v3.0 - REFACTORED VERSION
- * 
- * Generisches Suchbaum-Visualisierungs-System mit modularer Architektur.
- * 
- * Module:
- * - TreeRenderer: Canvas-Rendering (Kanten, Knoten, Labels)
- * - TreeLayoutEngine: Knoten-Positionierung und Auto-Layout
- * - TreeInteractionEngine: Zoom, Pan, Click-Detection
- * - TreeFeaturesEngine: Dead-End Detection, Active Node Tracking, Status Management
- * 
- * Orchestrierungs-Klasse: TreeVizEngine (diese Datei)
- * 
- * @author GitHub Copilot
- * @version 3.0 - MODULARISIERT
- */
-
-// ============================================================================
-// WICHTIG: Status-Konfiguration wird zentral in status-config.js definiert
-// Diese Datei nutzt StatusConfig.getStatusTypes() zur Runtime
-// Anwendungen können Defaults via StatusConfig.setStatusDefaults() überschreiben
-// ============================================================================
 
 class TreeVizEngine {
     constructor(canvas, options = {}) {
@@ -64,12 +44,10 @@ class TreeVizEngine {
             activeNodeTargetY: options.activeNodeTargetY !== undefined ? options.activeNodeTargetY : 0.5,
             activeNodeTrackingSmooth: options.activeNodeTrackingSmooth !== undefined ? options.activeNodeTrackingSmooth : true,
             activeNodeTrackingDuration: options.activeNodeTrackingDuration || 300,
-            // HINWEIS: enableStatusGlow ist veraltet - nutze stattdessen STYLE_CONFIG_GLOBAL.enableGlowEffects
-            enableStatusGlow: options.enableStatusGlow !== undefined ? options.enableStatusGlow : false,
             ...options
         };
 
-        // Viewport (Zoom & Pan)
+        // Viewport viewport and zoom/pan transformation
         this.viewport = {
             scale: 1.0,
             offsetX: 0,

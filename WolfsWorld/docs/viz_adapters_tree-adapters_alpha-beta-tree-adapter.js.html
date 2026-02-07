@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>viz/adapters/tree-adapters/alpha-beta-tree-adapter.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a><ul class='methods'><li data-type='method'><a href="Agent.html#getAction">getAction</a></li></ul></li><li><a href="AlgorithmRunner.html">AlgorithmRunner</a><ul class='methods'><li data-type='method'><a href="AlgorithmRunner.html#setSpeed">setSpeed</a></li><li data-type='method'><a href="AlgorithmRunner.html#start">start</a></li><li data-type='method'><a href="AlgorithmRunner.html#stop">stop</a></li><li data-type='method'><a href="AlgorithmRunner.html#triggerStep">triggerStep</a></li></ul></li><li></li><li><a href="AlphaBetaTreeAdapter.html">AlphaBetaTreeAdapter</a><ul class='methods'><li data-type='method'><a href="AlphaBetaTreeAdapter.html#checkNodeStatus">checkNodeStatus</a></li><li data-type='method'><a href="AlphaBetaTreeAdapter.html#checkParentPruning">checkParentPruning</a></li><li data-type='method'><a href="AlphaBetaTreeAdapter.html#evaluateNode">evaluateNode</a></li><li data-type='method'><a href="AlphaBetaTreeAdapter.html#expandNodeChildren">expandNodeChildren</a></li></ul></li><li><a href="AtomicRule.html">AtomicRule</a></li><li><a href="BFSTreeAdapter.html">BFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="BFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="BFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="BFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="BFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="BFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="BFSTreeAdapter.html#startHandshake">startHandshake</a></li></ul></li><li><a href="BaseGameController.html">BaseGameController</a><ul class='methods'><li data-type='method'><a href="BaseGameController.html#checkTurn">checkTurn</a></li><li data-type='method'><a href="BaseGameController.html#coordsToMove">coordsToMove</a></li><li data-type='method'><a href="BaseGameController.html#createAIAgent">createAIAgent</a></li><li data-type='method'><a href="BaseGameController.html#createGame">createGame</a></li><li data-type='method'><a href="BaseGameController.html#drawGame">drawGame</a></li><li data-type='method'><a href="BaseGameController.html#getAISpeed">getAISpeed</a></li><li data-type='method'><a href="BaseGameController.html#handleCanvasClick">handleCanvasClick</a></li><li data-type='method'><a href="BaseGameController.html#init">init</a></li><li data-type='method'><a href="BaseGameController.html#reset">reset</a></li><li data-type='method'><a href="BaseGameController.html#updateUI">updateUI</a></li></ul></li><li><a href="BaseVisualizer.html">BaseVisualizer</a><ul class='methods'><li data-type='method'><a href="BaseVisualizer.html#canvasToWorld">canvasToWorld</a></li><li data-type='method'><a href="BaseVisualizer.html#drawOverlay">drawOverlay</a></li><li data-type='method'><a href="BaseVisualizer.html#executeCommand">executeCommand</a></li><li data-type='method'><a href="BaseVisualizer.html#render">render</a></li><li data-type='method'><a href="BaseVisualizer.html#resetView">resetView</a></li><li data-type='method'><a href="BaseVisualizer.html#sendToParent">sendToParent</a></li><li data-type='method'><a href="BaseVisualizer.html#worldToCanvas">worldToCanvas</a></li></ul></li><li><a href="Benchmark.html">Benchmark</a><ul class='methods'><li data-type='method'><a href="Benchmark.html#getAverage">getAverage</a></li><li data-type='method'><a href="Benchmark.html#getDuration">getDuration</a></li><li data-type='method'><a href="Benchmark.html#record">record</a></li><li data-type='method'><a href="Benchmark.html#reset">reset</a></li><li data-type='method'><a href="Benchmark.html#start">start</a></li><li data-type='method'><a href="Benchmark.html#stop">stop</a></li></ul></li><li><a href="ConditionNode.html">ConditionNode</a></li><li><a href="Connect43D.html">Connect43D</a></li><li><a href="Connect4Regular.html">Connect4Regular</a><ul class='methods'><li data-type='method'><a href="Connect4Regular.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="Connect4Regular.html#makeMove">makeMove</a></li></ul></li><li><a href="DFSTreeAdapter.html">DFSTreeAdapter</a><ul class='methods'><li data-type='method'><a href="DFSTreeAdapter.html#buildToDepth">buildToDepth</a></li><li data-type='method'><a href="DFSTreeAdapter.html#focusNode">focusNode</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getNodeCount">getNodeCount</a></li><li data-type='method'><a href="DFSTreeAdapter.html#getStats">getStats</a></li><li data-type='method'><a href="DFSTreeAdapter.html#highlightPath">highlightPath</a></li><li data-type='method'><a href="DFSTreeAdapter.html#navigateInGame">navigateInGame</a></li><li data-type='method'><a href="DFSTreeAdapter.html#resetView">resetView</a></li><li data-type='method'><a href="DFSTreeAdapter.html#startHandshake">startHandshake</a></li><li data-type='method'><a href="DFSTreeAdapter.html#visualizeSearch">visualizeSearch</a></li></ul></li><li><a href="DecisionTree.html">DecisionTree</a></li><li><a href="FlowchartVisualizer.html">FlowchartVisualizer</a></li><li><a href="GameAdapter.html">GameAdapter</a><ul class='methods'><li data-type='method'><a href="GameAdapter.html#clone">clone</a></li><li data-type='method'><a href="GameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getBoard">getBoard</a></li><li data-type='method'><a href="GameAdapter.html#getCurrentPlayer">getCurrentPlayer</a></li><li data-type='method'><a href="GameAdapter.html#getRemainingMoves">getRemainingMoves</a></li><li data-type='method'><a href="GameAdapter.html#getState">getState</a></li><li data-type='method'><a href="GameAdapter.html#getValidMoves">getValidMoves</a></li><li data-type='method'><a href="GameAdapter.html#getWinner">getWinner</a></li><li data-type='method'><a href="GameAdapter.html#isGameOver">isGameOver</a></li><li data-type='method'><a href="GameAdapter.html#makeMove">makeMove</a></li></ul></li><li><a href="KnightBoard.html">KnightBoard</a><ul class='methods'><li data-type='method'><a href="KnightBoard.html#_getMovesFrom">_getMovesFrom</a></li><li data-type='method'><a href="KnightBoard.html#clone">clone</a></li><li data-type='method'><a href="KnightBoard.html#getDegree">getDegree</a></li><li data-type='method'><a href="KnightBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="KnightBoard.html#getPossibleMoves">getPossibleMoves</a></li><li data-type='method'><a href="KnightBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="KnightBoard.html#initGrid">initGrid</a></li><li data-type='method'><a href="KnightBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="KnightBoard.html#isInside">isInside</a></li><li data-type='method'><a href="KnightBoard.html#isUndoMove">isUndoMove</a></li><li data-type='method'><a href="KnightBoard.html#isValidMove">isValidMove</a></li><li data-type='method'><a href="KnightBoard.html#move">move</a></li><li data-type='method'><a href="KnightBoard.html#undo">undo</a></li></ul></li><li><a href="LearningPath.html">LearningPath</a><ul class='methods'><li data-type='method'><a href="LearningPath.html#enableNextButton">enableNextButton</a></li></ul></li><li><a href="MinimaxAgent.html">MinimaxAgent</a><ul class='methods'><li data-type='method'><a href="MinimaxAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="MinimaxEngine.html">MinimaxEngine</a><ul class='methods'><li data-type='method'><a href="MinimaxEngine.html#findBestMove">findBestMove</a></li></ul></li><li><a href="MinimaxTreeAdapter.html">MinimaxTreeAdapter</a><ul class='methods'><li data-type='method'><a href="MinimaxTreeAdapter.html#checkNodeStatus">checkNodeStatus</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#createNode">createNode</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#evaluateNode">evaluateNode</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#expandNodeChildren">expandNodeChildren</a></li><li data-type='method'><a href="MinimaxTreeAdapter.html#visualizeSearch">visualizeSearch</a></li></ul></li><li></li><li><a href="NIMGameLogic.html">NIMGameLogic</a><ul class='methods'><li data-type='method'><a href="NIMGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="NIMGameLogic.html#clone">clone</a></li><li data-type='method'><a href="NIMGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="NIMGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="NIMGameLogic.html#makeMove">makeMove</a></li><li data-type='method'><a href="NIMGameLogic.html#toString">toString</a></li></ul></li><li><a href="RandomAgent.html">RandomAgent</a><ul class='methods'><li data-type='method'><a href="RandomAgent.html#getAction">getAction</a></li></ul></li><li><a href="RotateBoard.html">RotateBoard</a><ul class='methods'><li data-type='method'><a href="RotateBoard.html#canFall">canFall</a></li><li data-type='method'><a href="RotateBoard.html#clone">clone</a></li><li data-type='method'><a href="RotateBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="RotateBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="RotateBoard.html#initFromId">initFromId</a></li><li data-type='method'><a href="RotateBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="RotateBoard.html#moveDown">moveDown</a></li><li data-type='method'><a href="RotateBoard.html#relaxBoardSync">relaxBoardSync</a></li><li data-type='method'><a href="RotateBoard.html#rotate">rotate</a></li></ul></li><li><a href="RuleBasedAgent.html">RuleBasedAgent</a><ul class='methods'><li data-type='method'><a href="RuleBasedAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="RuleGroup.html">RuleGroup</a></li><li><a href="RuleNode.html">RuleNode</a><ul class='methods'><li data-type='method'><a href="RuleNode.html#evaluate">evaluate</a></li></ul></li><li><a href="RuleVisualizer.html">RuleVisualizer</a></li><li><a href="SearchEngine.html">SearchEngine</a><ul class='methods'><li data-type='method'><a href="SearchEngine.html#solve">solve</a></li></ul></li><li></li><li><a href="TTT3DBoard.html">TTT3DBoard</a><ul class='methods'><li data-type='method'><a href="TTT3DBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTT3DBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTT3DBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTT3DBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTBase.html">TTTBase</a><ul class='methods'><li data-type='method'><a href="TTTBase.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTGameAdapter.html">TTTGameAdapter</a><ul class='methods'><li data-type='method'><a href="TTTGameAdapter.html#clone">clone</a></li><li data-type='method'><a href="TTTGameAdapter.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTGameAdapter.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTGameAdapter.html#toJSON">toJSON</a></li></ul></li><li><a href="TTTRegularBoard.html">TTTRegularBoard</a><ul class='methods'><li data-type='method'><a href="TTTRegularBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTTRegularBoard.html#clone">clone</a></li><li data-type='method'><a href="TTTRegularBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTRegularBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TTTRegularBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTRegularBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TemplateGameLogic.html">TemplateGameLogic</a><ul class='methods'><li data-type='method'><a href="TemplateGameLogic.html#_checkGameEnd">_checkGameEnd</a></li><li data-type='method'><a href="TemplateGameLogic.html#_isMoveInList">_isMoveInList</a></li><li data-type='method'><a href="TemplateGameLogic.html#clone">clone</a></li><li data-type='method'><a href="TemplateGameLogic.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TemplateGameLogic.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="TemplateGameLogic.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TemplateGameLogic.html#isGoal">isGoal</a></li><li data-type='method'><a href="TemplateGameLogic.html#makeMove">makeMove</a></li></ul></li><li><a href="UltimateBoard.html">UltimateBoard</a><ul class='methods'><li data-type='method'><a href="UltimateBoard.html#_checkSmallWin">_checkSmallWin</a></li><li data-type='method'><a href="UltimateBoard.html#_isBoardFull">_isBoardFull</a></li><li data-type='method'><a href="UltimateBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="UltimateBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="UltimateBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="ai_minimax.js.html">ai/minimax.js</a></li></ul><h3>Namespaces</h3><ul><li><a href="MinimaxNodeRenderer.html">MinimaxNodeRenderer</a><ul class='methods'><li data-type='method'><a href="MinimaxNodeRenderer.html#.drawMetadata">drawMetadata</a></li><li data-type='method'><a href="MinimaxNodeRenderer.html#.render">render</a></li></ul></li></ul><h3>Interfaces</h3><ul><li><a href="GameState.html">GameState</a><ul class='methods'><li data-type='method'><a href="GameState.html#clone">clone</a></li><li data-type='method'><a href="GameState.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameState.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="GameState.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="GameState.html#isGoal">isGoal</a></li><li data-type='method'><a href="GameState.html#makeMove">makeMove</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#DEFAULT_STATUS_CONFIG">DEFAULT_STATUS_CONFIG</a></li><li><a href="global.html#GameFactories">GameFactories</a></li><li><a href="global.html#KnightsTourNodeRenderer">KnightsTourNodeRenderer</a></li><li><a href="global.html#NodeStatusManager">NodeStatusManager</a></li><li><a href="global.html#RotateBoxNodeRenderer">RotateBoxNodeRenderer</a></li><li><a href="global.html#StatusConfig">StatusConfig</a></li><li><a href="global.html#TTTGameFactory">TTTGameFactory</a></li><li><a href="global.html#TreeInteractionEngine">TreeInteractionEngine</a></li><li><a href="global.html#TreeLayoutEngine">TreeLayoutEngine</a></li><li><a href="global.html#VisualizationUtils">VisualizationUtils</a></li><li><a href="global.html#_convertStyleToRenderFormat">_convertStyleToRenderFormat</a></li><li><a href="global.html#animateRelax">animateRelax</a></li><li><a href="global.html#checkAndMarkDeadEnd">checkAndMarkDeadEnd</a></li><li><a href="global.html#checkSmallWin">checkSmallWin</a></li><li><a href="global.html#createAgentFromProfile">createAgentFromProfile</a></li><li><a href="global.html#createGame">createGame</a></li><li><a href="global.html#createStrategyTree">createStrategyTree</a></li><li><a href="global.html#drawRotateBoard">drawRotateBoard</a></li><li><a href="global.html#evaluateDefault">evaluateDefault</a></li><li><a href="global.html#evaluateTicTacToe">evaluateTicTacToe</a></li><li><a href="global.html#findLowestCommonAncestor">findLowestCommonAncestor</a></li><li><a href="global.html#findPathToRoot">findPathToRoot</a></li><li><a href="global.html#getAvailableGames">getAvailableGames</a></li><li><a href="global.html#getAvailableProfiles">getAvailableProfiles</a></li><li><a href="global.html#getNodeStyle">getNodeStyle</a></li><li><a href="global.html#getProfilesByType">getProfilesByType</a></li><li><a href="global.html#reconstructTreePath">reconstructTreePath</a></li><li><a href="global.html#setActiveNode">setActiveNode</a></li><li><a href="global.html#solveBFS">solveBFS</a></li><li><a href="global.html#updateActiveNodePosition">updateActiveNodePosition</a></li><li><a href="global.html#updateNodeStatus">updateNodeStatus</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">viz/adapters/tree-adapters/alpha-beta-tree-adapter.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview Alpha-Beta Tree Adapter - Visualisierung mit Pruning
+ * 
+ * Basiert auf MinimaxTreeAdapter, fügt Alpha-Beta Pruning hinzu.
+ * - Interactive Pruning: Wenn ein Knoten bewertet wird, der einen Cutoff verursacht,
+ *   werden verleibende Geschwister automatisch PRUNED.
+ * 
+ * @class AlphaBetaTreeAdapter
+ * @version 1.0
+ */
+class AlphaBetaTreeAdapter {
+    constructor(iframeElement) {
+        this.iframe = iframeElement;
+        this.nodeIdCounter = 0;
+        this.nodeMap = new Map();
+        this.ready = false;
+        this.commands = [];
+        
+        // State management
+        this.currentGameState = null;
+        this.currentConfig = null;
+        this.nodeStates = new Map(); 
+        
+        // Structure: id -> { parentId, childrenIds[], status, value, alpha, beta, depth, isMaximizing }
+        this.treeStructure = new Map(); 
+        
+        window.addEventListener('message', (event) => {
+            if (!event.data) return;
+            if (event.data.type === 'TREE_READY') {
+                this.ready = true;
+            }
+            else if (event.data.type === 'NODE_EXPANSION_REQUEST') {
+                this.handleExpansionRequest(event.data.nodeId);
+            }
+            else if (event.data.type === 'NODE_CLICKED') {
+                this.handleNodeClick(event.data.nodeId);
+            }
+        });
+        
+        this.startHandshake();
+    }
+
+    startHandshake() {
+        setTimeout(() => { this.ready = true; }, 500);
+    }
+    
+    sendCommand(command) {
+        if (!this.iframe || !this.iframe.contentWindow) return;
+        this.iframe.contentWindow.postMessage({ type: 'TREE_COMMAND', command }, '*');
+    }
+
+    getBoardKey(board) {
+        return board.getStateKey ? board.getStateKey() : JSON.stringify(board.grid || board);
+    }
+
+    async visualizeSearch(gameState, config) {
+        console.log('AlphaBetaAdapter: Start', config);
+        this.currentGameState = gameState;
+        this.currentConfig = config;
+        this.reset();
+        
+        // Root Node: Alpha = -Inf, Beta = +Inf
+        const rootId = this.createNode(gameState, null, {
+            depth: 0,
+            isMaximizing: true,
+            inheritedAlpha: -Infinity,
+            inheritedBeta: Infinity
+        });
+        
+        this.nodeStates.set(rootId, gameState);
+        this.treeStructure.set(rootId, { 
+            parentId: null, 
+            children: [], 
+            status: 'WAIT',
+            value: null, 
+            depth: 0,
+            isMaximizing: true,
+            alpha: -Infinity,
+            beta: Infinity
+        });
+        
+        this.expandNodeChildren(rootId, gameState);
+        this.checkNodeStatus(rootId);
+        this.flushCommands();
+        
+        return { bestMove: null };
+    }
+    
+    flushCommands() {
+        if (this.commands.length > 0) {
+            this.sendCommand({ action: 'BATCH', commands: this.commands });
+            this.commands = [];
+        }
+    }
+
+
+
+    createNode(board, parentId, metadata) {
+        const nodeId = this.nodeIdCounter++;
+        const stateKey = this.getBoardKey(board);
+        this.nodeMap.set(stateKey, nodeId);
+        
+        const command = {
+            action: 'ADD_NODE',
+            id: nodeId,
+            label: "", // Initially empty
+            boardData: {
+                grid: [...board.grid],
+                currentPlayer: board.currentPlayer,
+                size: board.size || 3,
+                winner: board.winner
+            },
+            boardType: 'minimax',
+            metadata: { ...metadata },
+            status: 'WAIT'
+        };
+        
+        if (parentId !== null) command.parentId = parentId;
+        
+        this.commands.push(command);
+        return nodeId;
+    }
+
+    /**
+     * Expandiert Node und gibt Kindern aktuelle Alpha/Beta Fenster.
+     */
+    expandNodeChildren(nodeId, state) {
+        if (state.winner !== 0) return; 
+
+        const parentData = this.treeStructure.get(nodeId);
+        // Calculate current effective alpha/beta for NEW children
+        // (Though in Expand-Then-Evaluate, this is just the inherited values)
+        const currentAlpha = parentData ? parentData.alpha : -Infinity;
+        const currentBeta = parentData ? parentData.beta : Infinity;
+
+        const validMoves = state.getAllValidMoves();
+        const currentDepth = parentData ? parentData.depth : 0;
+        const isMaximizing = (currentDepth % 2 === 0);
+        const childIsMax = !isMaximizing;
+        
+        for (const move of validMoves) {
+            const childState = state.clone();
+            childState.makeMove(move);
+            
+            const childId = this.createNode(childState, nodeId, {
+                depth: currentDepth + 1,
+                isMaximizing: childIsMax,
+                inheritedAlpha: currentAlpha,
+                inheritedBeta: currentBeta
+            });
+            
+            this.nodeStates.set(childId, childState);
+            
+            const childStruct = {
+                parentId: nodeId,
+                children: [],
+                status: 'WAIT',
+                value: null,
+                depth: currentDepth + 1,
+                isMaximizing: childIsMax,
+                isTerminal: (childState.winner !== 0 || childState.getAllValidMoves().length === 0),
+                alpha: currentAlpha, 
+                beta: currentBeta
+            };
+            this.treeStructure.set(childId, childStruct);
+            
+            if (parentData) parentData.children.push(childId);
+            
+            if (!childStruct.isTerminal) {
+                this.commands.push({ action: 'MARK_EXPANDABLE', id: childId });
+            }
+            
+            this.checkNodeStatus(childId);
+        }
+        
+        this.checkNodeStatus(nodeId);
+    }
+
+    /**
+     * Ready logic: Leaf (Terminal) or All Children Evaluated/Pruned
+     */
+    checkNodeStatus(nodeId) {
+        const data = this.treeStructure.get(nodeId);
+        if (!data) return;
+        if (data.status === 'EVALUATED' || data.status === 'PRUNED') return;
+        
+        let newStatus = 'WAIT';
+        const state = this.nodeStates.get(nodeId);
+        const isTerminal = state &amp;&amp; (state.winner !== 0 || state.getAllValidMoves().length === 0);
+        
+        // 1. Leaf
+        if (data.children.length === 0) {
+            if (isTerminal) newStatus = 'READY';
+            else newStatus = 'WAIT';
+        } 
+        // 2. Inner Node
+        else {
+            // Include PRUNED in "done" check
+            const allChildrenDone = data.children.every(childId => {
+                const child = this.treeStructure.get(childId);
+                return child &amp;&amp; (child.status === 'EVALUATED' || child.status === 'PRUNED');
+            });
+            
+            if (allChildrenDone) newStatus = 'READY';
+            else newStatus = 'WAIT';
+        }
+        
+        if (newStatus !== data.status) {
+            NodeStatusManager.setNodeStatus(nodeId, newStatus, [], this.treeStructure, this.commands);
+        }
+    }
+
+    handleNodeClick(nodeId) {
+        const data = this.treeStructure.get(nodeId);
+        if (data &amp;&amp; data.status === 'READY') {
+            this.evaluateNode(nodeId);
+        }
+    }
+
+    /**
+     * Evaluation + Pruning Logic
+     */
+    evaluateNode(nodeId) {
+        const data = this.treeStructure.get(nodeId);
+        const state = this.nodeStates.get(nodeId);
+        this.commands = [];
+        
+        let value = 0;
+        let labelText = "";
+        let statusesToAdd = ['EVALUATED'];
+        
+        // --- CALCULATION ---
+        if (data.children.length === 0) {
+            // Leaf Evaluation
+            if (state.winner === 1) { value = 1; labelText = "Win (+1)"; statusesToAdd.push('WIN_BLUE'); }
+            else if (state.winner === 2) { value = -1; labelText = "Lose (-1)"; statusesToAdd.push('WIN_RED'); }
+            else if (state.winner === 3) { value = 0; labelText = "Remis (0)"; statusesToAdd.push('DRAW'); }
+            else { value = 0; labelText = "0"; }
+        } else {
+            // Inner Node Evaluation
+            // We only look at EVALUATED children (ignore pruned/wait)
+            const evaluatedChildren = data.children
+                .map(cid => this.treeStructure.get(cid))
+                .filter(c => c.status === 'EVALUATED'); // Only real values
+            
+            if (evaluatedChildren.length === 0) {
+                 // Should not happen if logic is correct
+                 console.error("Evaluate called on inner node with no evaluated children");
+                 return;
+            }
+
+            const values = evaluatedChildren.map(c => c.value);
+            
+            if (data.isMaximizing) {
+                value = Math.max(...values);
+                labelText = `Max = ${value}`;
+            } else {
+                value = Math.min(...values);
+                labelText = `Min = ${value}`;
+            }
+            
+            // Highlight Best Edge
+            data.children.forEach(childId => {
+                const child = this.treeStructure.get(childId);
+                if (child &amp;&amp; child.status === 'EVALUATED' &amp;&amp; child.value === value) {
+                    let c = value > 0 ? '#27ae60' : value &lt; 0 ? '#c0392b' : '#95a5a6';
+                    this.commands.push({ action: 'HIGHLIGHT_EDGE', from: nodeId, to: childId, color: c, width: 4 });
+                }
+            });
+
+            if (value === 1) statusesToAdd.push('WIN_BLUE');
+            else if (value === -1) statusesToAdd.push('WIN_RED');
+        }
+        
+        // Update data
+        data.value = value;
+        
+        // Set status and add additional statuses
+        NodeStatusManager.setNodeStatus(nodeId, 'EVALUATED', statusesToAdd, this.treeStructure, this.commands);
+        
+        // Update label and metadata
+        this.commands.push({
+            action: 'UPDATE_NODE',
+            id: nodeId,
+            data: {
+                label: labelText,
+                metadata: { value: value }
+            }
+        });
+        
+        // --- PRUNING CHECK (Check Parent) ---
+        if (data.parentId !== null) {
+            this.checkParentPruning(data.parentId);
+            this.checkNodeStatus(data.parentId); // Might become READY
+        }
+        
+        this.flushCommands();
+    }
+
+    /**
+     * Checks if the parent can prune its remaining children based on the new value.
+     */
+    checkParentPruning(parentId) {
+        const parent = this.treeStructure.get(parentId);
+        if (!parent) return;
+        if (parent.status === 'EVALUATED') return; // Already done
+        
+        // Re-calculate effective Alpha/Beta for parent based on Evaluated Siblings
+        // AND inherited bounds from Grandparent
+        
+        let currentAlpha = parent.alpha; // Inherited alpha
+        let currentBeta = parent.beta;   // Inherited beta
+        
+        // Look at all EVALUATED children of parent to tighten bounds
+        const siblings = parent.children.map(cid => this.treeStructure.get(cid));
+        const evaluatedSiblings = siblings.filter(s => s.status === 'EVALUATED');
+        
+        if (parent.isMaximizing) {
+            // Parent is MAX. It wants to Maximize value.
+            // It updates Alpha with max(children).
+            // It also respects Inherited Alpha.
+            if (evaluatedSiblings.length > 0) {
+                const maxChild = Math.max(...evaluatedSiblings.map(s => s.value));
+                currentAlpha = Math.max(currentAlpha, maxChild);
+            }
+        } else {
+            // Parent is MIN. Matches Min(children).
+            // Updates Beta.
+            if (evaluatedSiblings.length > 0) {
+                const minChild = Math.min(...evaluatedSiblings.map(s => s.value));
+                currentBeta = Math.min(currentBeta, minChild);
+            }
+        }
+        
+        // CHECK CUTOFF
+        if (currentAlpha >= currentBeta) {
+            console.log(`[Pruning] Node ${parentId}: Alpha (${currentAlpha}) >= Beta (${currentBeta}). Pruning remaining children.`);
+            
+            // Mark all WAIT/READY siblings as PRUNED
+            parent.children.forEach(childId => {
+                const sib = this.treeStructure.get(childId);
+                if (sib &amp;&amp; sib.status !== 'EVALUATED' &amp;&amp; sib.status !== 'PRUNED') {
+                     sib.value = null; 
+                     NodeStatusManager.setNodeStatus(childId, 'PRUNED', [], this.treeStructure, this.commands);
+                }
+            });
+        }
+    }
+
+    handleExpansionRequest(nodeId) {
+        if (this.nodeStates.has(nodeId)) {
+             this.expandNodeChildren(nodeId, this.nodeStates.get(nodeId));
+        }
+        this.flushCommands();
+    }
+    
+    reset() {
+        this.nodeIdCounter = 0;
+        this.nodeMap.clear();
+        this.treeStructure.clear();
+        this.nodeStates.clear();
+        this.commands = [];
+        this.sendCommand({ action: 'CLEAR' });
+        this.sendCommand({ 
+            action: 'UPDATE_CONFIG', 
+            config: { 
+                showLevelIndicators: true,
+                levelIndicatorType: 'minimax',
+                rootPlayerColor: '#e74c3c', opponentColor: '#3498db'
+            } 
+        });
+    }
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Sat Feb 07 2026 23:25:54 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

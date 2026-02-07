@@ -7,7 +7,7 @@
  * - balanceSubtree(): Auto-Balance-Algorithmus für gleichmäßige Breite
  * - applyLayout(): Wendet Layout-Algorithmus auf alle Knoten an
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 
@@ -15,7 +15,7 @@
  * TreeLayoutEngine - Modul für Positionierung von Knoten im Baum
  * Implementiert verschiedene Layout-Algorithmen (Standard, Auto-Balance)
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 var TreeLayoutEngine = {

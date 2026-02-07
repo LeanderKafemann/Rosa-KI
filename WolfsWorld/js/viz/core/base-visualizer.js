@@ -4,7 +4,7 @@
  * 
  * Alle Visualizer (TreeViz, Flowchart, RuleViz, NeuralNet, RL, MonteCarlo) erben von dieser Klasse.
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 class BaseVisualizer {

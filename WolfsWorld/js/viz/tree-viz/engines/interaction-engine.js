@@ -8,7 +8,7 @@
  * - setupTouchSupport(): Touch-Gesten (Pinch-to-Zoom, Drag)
  * - getViewportTransform(): Berechnung der Viewport-Transformationen
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 
@@ -16,7 +16,7 @@
  * TreeInteractionEngine - Modul für Benutzerinteraktion (Zoom, Pan, Click, Touch)
  * Extrahiert aus tree-engine.js für bessere Wartbarkeit
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 var TreeInteractionEngine = {

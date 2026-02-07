@@ -1,27 +1,18 @@
 /**
- * @fileoverview TreeRenderer - Modul für Canvas-Rendering von Bäumen
+ * @fileoverview TreeRenderer - Canvas-Rendering Modul für Bäume
  * 
  * Zentrale Rendering-Engine für alle visuellen Baum-Elemente:
- * - renderEdges(): Zeichnet Verbindungslinien zwischen Knoten
- * - renderNode(): Zeichnet einzelne Knoten mit Status-Styling
- * - renderLabel(): Zeichnet Node-Labels mit Fontmetrics
- * - renderOverlay(): Zeichnet Debug-Overlay und Viewport-Informationen
- * - Unterstützt spezialisierte Board-Renderer (Knights-Tour, RotateBox)
- * 
- * @author GitHub Copilot
- * @version 1.0
- */
-
-/**
- * TreeRenderer - Modul für Canvas-Rendering (Knoten, Kanten, Overlays)
- * Extrahiert aus tree-engine.js für bessere Wartbarkeit
+ * - renderEdges(): Verbindungslinien zwischen Knoten
+ * - renderNode(): Einzelne Knoten mit Status-Styling
+ * - renderLabel(): Node-Labels mit Font-Metriken
+ * - renderOverlay(): Debug-Overlay mit Viewport-Informationen
  * 
  * Unterstützt spezialisierte Board-Renderer:
  * - KnightsTourNodeRenderer (für Knights-Tour Boards)
  * - RotateBoxNodeRenderer (für RotateBox Boards)
  * 
- * @author GitHub Copilot
- * @version 1.0
+ * @author Alexander Wolf
+ * @version 2.0
  */
 var TreeRenderer = {
     /**

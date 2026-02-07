@@ -7,7 +7,7 @@
  * 
  * Wird von TreeRenderer.renderNode() aufgerufen, wenn boardData vorhanden ist.
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 
@@ -17,7 +17,7 @@
  * - "grid": Vollflächig eingefärbte Quadrate
  * - "compact": Nur Zahlen/Labels
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 var RotateBoxNodeRenderer = {

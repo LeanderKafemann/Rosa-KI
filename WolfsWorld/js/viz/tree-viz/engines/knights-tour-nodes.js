@@ -7,7 +7,7 @@
  * 
  * Wird von TreeRenderer.renderNode() aufgerufen, wenn boardData vorhanden ist.
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 
@@ -17,7 +17,7 @@
  * - "classic": Echtes Schachbrett mit schwarzen Zahlen + rote Umrandung (original)
  * - "modern": Grüne besuchte Felder (aktuell)
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 var KnightsTourNodeRenderer = {

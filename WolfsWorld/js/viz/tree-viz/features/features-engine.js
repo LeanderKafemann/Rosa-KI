@@ -12,7 +12,7 @@
  * - getNodeStyle(): Konsistentes Styling basierend auf Node-Status
  * - updateActiveNodeTracking(): Fokus-Management für aktive Knoten
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 
@@ -40,7 +40,7 @@
  * - Active Node Tracking & Centering
  * - Node Status Management
  * 
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 1.0
  */
 // Make TreeFeaturesEngine global (not const, so it's accessible without window.)

@@ -3,7 +3,7 @@
  * Konvertiert Spielzustände in TreeVizEngine-Kommandos via postMessage.
  * Unterstützt Backtracking-Visualisierung.
  * @class
- * @author GitHub Copilot
+ * @author Alexander Wolf
  * @version 2.3
  */
 class DFSTreeAdapter {
