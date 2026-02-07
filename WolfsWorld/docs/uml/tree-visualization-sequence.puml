@@ -1,0 +1,122 @@
+@startuml Tree Visualization - Sequenzdiagramm
+!theme plain
+skinparam sequenceMessageAlign center
+skinparam defaultFontName Arial
+
+title Tree Visualization System - Ablauf der Visualisierung
+
+actor User
+participant "Playground\n(HTML)" as Playground
+participant "Adapter\n(DFS/BFS)" as Adapter
+participant "TreeVizEngine\n(iframe)" as Engine
+participant "GameState\n(Board)" as GameState
+
+== Initialisierung ==
+User -> Playground: Seite öffnen
+activate Playground
+Playground -> Engine: new TreeVizEngine('viz-iframe')
+activate Engine
+Engine -> Engine: setupCanvas()
+Engine -> Engine: setupPostMessage()
+Engine -> Engine: setupInteraction()
+Engine --> Playground: ready
+deactivate Engine
+
+== Algorithmus starten ==
+User -> Playground: Button "BFS" oder "DFS" klicken
+Playground -> Playground: Adapter auswählen\n(BFSTreeAdapter / DFSTreeAdapter)
+Playground -> GameState: new KnightBoard(5, 5)
+activate GameState
+GameState --> Playground: initialState
+deactivate GameState
+
+Playground -> Adapter: buildTree(initialState)
+activate Adapter
+
+== Baumaufbau (Adapter) ==
+Adapter -> GameState: getStateKey()
+activate GameState
+GameState --> Adapter: "0,0|1"
+deactivate GameState
+
+Adapter -> Adapter: visitedStates.add(stateKey)
+
+Adapter -> GameState: getNextStates()
+activate GameState
+GameState -> GameState: getPossibleMoves()
+loop für jeden Zug
+    GameState -> GameState: clone()
+    GameState -> GameState: makeMove(move)
+end
+GameState --> Adapter: [nextState1, nextState2, ...]
+deactivate GameState
+
+loop für jeden Nachfolgezustand
+    Adapter -> GameState: getStateKey()
+    activate GameState
+    GameState --> Adapter: stateKey
+    deactivate GameState
+    
+    alt Zustand bereits besucht (Duplikat)
+        Adapter -> Adapter: markiere als Duplikat\n(rote Umrandung)
+    else Neuer Zustand
+        Adapter -> Adapter: rekursiv buildTreeStep()
+    end
+end
+
+Adapter --> Playground: treeData\n{root, nodes, edges}
+deactivate Adapter
+
+== Visualisierung (Engine) ==
+Playground -> Engine: postMessage('clear')
+activate Engine
+Engine -> Engine: nodes.clear()
+Engine -> Engine: edges.clear()
+Engine --> Playground: ack
+deactivate Engine
+
+loop für jeden Knoten in treeData
+    Playground -> Engine: postMessage('addNode', nodeData)
+    activate Engine
+    Engine -> Engine: nodes.set(id, data)
+    Engine --> Playground: ack
+    deactivate Engine
+end
+
+Playground -> Engine: postMessage('render')
+activate Engine
+Engine -> Engine: layoutTree()
+note right: Berechnet x,y-Positionen\nmit Reingold-Tilford
+
+Engine -> Engine: render()
+Engine -> Engine: drawEdges()
+Engine -> Engine: drawNodes()
+loop für Board-Knoten
+    Engine -> Engine: drawBoardNode(x, y, node)
+    alt Knight's Tour
+        Engine -> Engine: drawKnightBoard(board)
+    else RotateBox
+        Engine -> Engine: drawGridBoard(board)
+    end
+end
+Engine -> Engine: drawLabels()
+Engine --> Playground: rendered
+deactivate Engine
+
+== Interaktion ==
+User -> Engine: Klick auf Knoten
+activate Engine
+Engine -> Engine: setFocus(nodeId)
+Engine -> Engine: highlightNode(id, 'yellow')
+Engine -> Engine: render()
+Engine --> User: Knoten hervorgehoben
+deactivate Engine
+
+User -> Engine: Mausrad (Zoom)
+activate Engine
+Engine -> Engine: scale *= factor
+Engine -> Engine: render()
+Engine --> User: Baum gezoomt
+deactivate Engine
+
+@enduml

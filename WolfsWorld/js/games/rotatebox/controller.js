@@ -10,9 +10,74 @@ const RotateController = {
     canvas: null,
     ctx: null,
 
+    checkUrlParams() {
+        const params = new URLSearchParams(window.location.search);
+        
+        // Level parameter
+        const level = params.get('level');
+        if (level !== null) {
+            const selectInfo = document.getElementById('boardSelect');
+            if (selectInfo && selectInfo.querySelector(`option[value="${level}"]`)) {
+                selectInfo.value = level;
+            }
+        }
+
+        // hide_ai: Versteckt KI-Lösen Button
+        if (params.has('hide_ai') || params.get('hide_ai') === 'true') {
+            const solveBtn = document.getElementById('solveBtn');
+            if (solveBtn) solveBtn.style.display = 'none';
+            const hr = document.querySelector('.stats-panel hr');
+            if (hr) hr.style.display = 'none';
+        }
+        
+        // hideControls: Versteckt gesamtes Menü
+        if (params.has('hideControls') || params.get('hideControls') === 'true') {
+            const menu = document.getElementById('menu');
+            if (menu) menu.style.display = 'none';
+        }
+        
+        // hideLevelSelect: Versteckt nur die Level-Auswahl
+        if (params.has('hideLevelSelect') || params.get('hideLevelSelect') === 'true') {
+            const boardSelect = document.getElementById('boardSelect');
+            if (boardSelect) {
+                const group = boardSelect.closest('.control-group');
+                if (group) group.style.display = 'none';
+            }
+        }
+        
+        // hideReset: Versteckt Reset Button
+        if (params.has('hideReset') || params.get('hideReset') === 'true') {
+            const resetBtn = document.getElementById('resetBtn');
+            if (resetBtn) resetBtn.style.display = 'none';
+        }
+        
+        // hideAnimation: Versteckt Animation Checkbox
+        if (params.has('hideAnimation') || params.get('hideAnimation') === 'true') {
+            const animToggle = document.getElementById('animateToggle');
+            if (animToggle) {
+                const group = animToggle.closest('.control-group');
+                if (group) group.style.display = 'none';
+            }
+        }
+        
+        // hideInstructions: Versteckt die Spielbeschreibung
+        if (params.has('hideInstructions') || params.get('hideInstructions') === 'true') {
+            const instructions = document.querySelector('.instructions');
+            if (instructions) instructions.style.display = 'none';
+        }
+
+        // hideBackBtn: Versteckt den Zurück Button
+        if (params.has('hideBackBtn') || params.get('hideBackBtn') === 'true') {
+            const backBtn = document.getElementById('backToMenu');
+            if (backBtn) backBtn.style.display = 'none';
+        }
+    },
+
     init() {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
+
+        this.checkUrlParams();
 
         document.getElementById('boardSelect').onchange = () => this.reset();
         document.getElementById('resetBtn').onclick = () => this.reset();

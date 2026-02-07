@@ -160,8 +160,22 @@
         </div>
     </div>
     
+    <!-- Load Status Configuration FIRST (muss zuerst geladen werden!) -->
+    <script src="../js/viz/tree-viz/config/status-config.js"></script>
+    
+    <!-- Load Shared Tree Utilities -->
+    <script src="../js/viz/tree-viz/utils/node-status-manager.js"></script>
+    
+    <!-- Load TreeVizEngine Modules (muss VOR tree-engine.js geladen werden) -->
+    <script src="../js/viz/tree-viz/engines/renderer.js"></script>
+    <script src="../js/viz/tree-viz/engines/knights-tour-nodes.js"></script>
+    <script src="../js/viz/tree-viz/engines/rotatebox-nodes.js"></script>
+    <script src="../js/viz/tree-viz/engines/minimax-nodes.js"></script>
+    <script src="../js/viz/tree-viz/engines/layout-engine.js"></script>
+    <script src="../js/viz/tree-viz/engines/interaction-engine.js"></script>
+    <script src="../js/viz/tree-viz/features/features-engine.js"></script>    <script src="../js/viz/tree-viz/features/node-expansion.js"></script>    
     <!-- Load TreeVizEngine -->
-    <script src="../js/viz/tree-engine-v2.js?v=2.3"></script>
+    <script src="../js/viz/tree-viz/tree-engine.js?v=2.8"></script>
     
     <script>
         // URL Parameters
@@ -175,18 +189,84 @@
             document.getElementById('controls').classList.add('visible');
         }
         
-        // Initialize Engine
-        const canvas = document.getElementById('treeCanvas');
-        const engine = new TreeVizEngine(canvas, {
-            nodeRadius: 40,
-            levelHeight: 120,
-            horizontalSpacing: 100,
-            fontSize: 12,
-            autoFitZoom: autoFitZoom,
-            showOverlay: showOverlay
-        });
+        // Initialize Engine with error handling
+        let engine = null;
         
-        // Loading overlay wird von executeBatch() versteckt
+        // Timeout check - if init takes too long, show error
+        const initTimeout = setTimeout(() => {
+            const loading = document.getElementById('loading');
+            if (loading && loading.style.display !== 'none') {
+                loading.innerHTML = '<div style="color:red; text-align:center; padding:10px;">' +
+                    '<strong>Initialization Timeout!</strong><br>' +
+                    'TreeVizEngine did not initialize within 5 seconds.<br>' +
+                    'Check console for errors.';
+                console.error('TreeVizEngine initialization timeout after 5 seconds');
+            }
+        }, 5000);
+        
+        try {
+            console.log('Starting TreeVizEngine initialization...');
+            const canvas = document.getElementById('treeCanvas');
+            
+            if (!canvas) {
+                throw new Error('Canvas element #treeCanvas not found!');
+            }
+            
+            console.log('Canvas found:', canvas);
+            
+            engine = new TreeVizEngine(canvas, {
+                nodeRadius: 40,
+                levelHeight: 120,
+                horizontalSpacing: 100,
+                fontSize: 12,
+                autoFitZoom: autoFitZoom,
+                showOverlay: showOverlay,
+                // Active Node Tracking Configuration
+                enableActiveNodeTracking: true,          // Aktiviert Active Node Tracking
+                activeNodeTargetX: 0.5,                  // 0.5 = horizontale Mitte
+                activeNodeTargetY: 0.5,                  // 0.5 = vertikale Mitte
+                activeNodeTrackingSmooth: true,          // Smooth Animation
+                activeNodeTrackingDuration: 300,         // Animation-Dauer in ms
+                // Board Rendering Styles for RotateBox
+                rotateBoxRenderStyle: 'grid'             // 'grid' or 'compact' for RotateBox
+            });
+            
+            // Clear timeout on success
+            clearTimeout(initTimeout);
+            
+            console.log('TreeVizEngine created successfully');
+            
+            // Hide loading overlay after successful initialization
+            const loadingOverlay = document.getElementById('loading');
+            if (loadingOverlay) {
+                loadingOverlay.classList.add('hidden');
+                // Force display:none (backup to CSS hidden class)
+                loadingOverlay.style.display = 'none';
+                console.log('Loading overlay hidden (class + inline style)');
+            } else {
+                console.warn('Loading overlay element not found');
+            }
+            
+            // Verify canvas is visible
+            const canvas2 = document.getElementById('treeCanvas');
+            if (canvas2 && canvas2.offsetHeight > 0) {
+                console.log('Canvas visible and has dimensions:', canvas2.offsetWidth, 'x', canvas2.offsetHeight);
+            } else {
+                console.warn('Canvas not visible or has zero dimensions');
+            }
+            
+        } catch (error) {
+            console.error('ERROR during TreeVizEngine initialization:', error);
+            const loading = document.getElementById('loading');
+            if (loading) {
+                loading.innerHTML = '<div style="color:red; text-align:left; padding:10px; max-width:400px;">' + 
+                    '<strong>Initialization Error:</strong><br>' + 
+                    error.message + '<br><br>' +
+                    '<small>' + error.stack + '</small>' +
+                    '</div>';
+            }
+            throw error;
+        }
         
         // Test controls (for development)
         if (showControls) {

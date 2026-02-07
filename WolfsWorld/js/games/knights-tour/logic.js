@@ -60,6 +60,18 @@ class KnightBoard {
     }
 
     /**
+     * Prüft, ob ein Zug den vorherigen rückgängig machen würde.
+     * @param {number} r 
+     * @param {number} c 
+     * @returns {boolean}
+     */
+    isUndoMove(r, c) {
+        if (this.history.length < 2) return false;
+        const prev = this.history[this.history.length - 2];
+        return prev.r === r && prev.c === c;
+    }
+
+    /**
      * Führt einen Zug aus (oder setzt Startfigur).
      * @param {number} r 
      * @param {number} c 

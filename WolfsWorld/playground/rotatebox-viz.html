@@ -79,8 +79,8 @@
     <script src="../js/games/rotatebox/logic.js"></script>
     
     <!-- Tree Adapters -->
-    <script src="../js/adapters/bfs-tree-adapter.js"></script>
-    <script src="../js/adapters/dfs-tree-adapter.js"></script>
+    <script src="../js/viz/adapters/tree-adapters/bfs-tree-adapter.js"></script>
+    <script src="../js/viz/adapters/tree-adapters/dfs-tree-adapter.js"></script>
 
     <script>
         // URL-Parameter auslesen
@@ -160,15 +160,21 @@
             const checkDuplicates = document.getElementById('chkDuplicates').checked;
             const algo = document.getElementById('algoSelect').value;
             
+            updateTreeInner(algo, maxDepth, checkDuplicates);
+        }
+        
+        function updateTreeInner(algo, maxDepth, checkDuplicates) {
             // Choose provider
             const adapter = (algo === 'DFS') ? dfsAdapter : bfsAdapter;
 
             if (!adapter || !adapter.ready) {
                 console.warn('Playground: Adapter noch nicht bereit');
+                setTimeout(() => updateTreeInner(algo, maxDepth, checkDuplicates), 100);
                 return;
             }
             
             // 2. Startzustand laden
+            const levelId = document.getElementById('levelSelect').value;
             const startBoard = new RotateBoard(levelId);
             
             // 3. Adapter zurücksetzen (wichtig für Duplikate-Erkennung)
@@ -228,15 +234,12 @@
             if (urlParams.has('duplicates')) {
                 document.getElementById('chkDuplicates').checked = urlParams.get('duplicates') === 'true';
             }
-            if (urlParams.has('algorithm')) {
-                document.getElementById('algoSelect').value = urlParams.get('algorithm');
-            }
             
-            // Event Listener für automatische Updates bei ALLEN Änderungen
+            // Event Listeners für automatische Updates bei ALLEN Änderungen
             document.getElementById('levelSelect').addEventListener('change', updateTree);
             document.getElementById('depthInput').addEventListener('change', updateTree);
-            document.getElementById('chkDuplicates').addEventListener('change', updateTree);
             document.getElementById('algoSelect').addEventListener('change', updateTree);
+            document.getElementById('chkDuplicates').addEventListener('change', updateTree);
         });
     </script>
 </body>

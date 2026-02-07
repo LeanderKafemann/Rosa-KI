@@ -99,12 +99,7 @@ class BFSTreeAdapter {
      * Statistiken über den generierten Baum.
      */
     async buildToDepth(initialState, maxDepth, options = {}) {
-        console.log('BFSTreeAdapter.buildToDepth called:', {
-            initialState,
-            maxDepth,
-            options,
-            ready: this.ready
-        });
+        // Build BFS tree to specified depth
         
         if (!this.ready) {
             console.warn('TreeVizEngine not ready yet. Attempting optimized send anyway...');
@@ -178,16 +173,16 @@ class BFSTreeAdapter {
                 }
                 
                 // Determine node settings
-                let color = '#4a90e2'; // default blue
+                let status = [];
                 let shouldExpand = true;
 
                 if (childState.isGoal && childState.isGoal()) {
-                    color = '#4caf50'; // green for goal
+                    status.push('WIN');
                     // Optional: Don't expand if goal reached? Depends on requirement.
                     // Usually we stop at goal in search, but for viz maybe show all?
                     // Let's keep expanding until maxDepth
                 } else if (isDuplicate) {
-                    color = '#e74c3c'; // red for duplicate
+                    status.push('DUPLICATE');
                     shouldExpand = false; // Stop at duplicate
                 }
                 
@@ -206,21 +201,12 @@ class BFSTreeAdapter {
                     action: 'ADD_NODE',
                     id: childId,
                     parentId: current.nodeId,
-                    label: move || '',
-                    color: color,
+                    label: '',
+                    edgeLabel: move || '',
+                    status: status,
                     boardData: childState
                 });
 
-                // Highlight Effect for Duplicate (Ring)
-                if (isDuplicate) {
-                     commands.push({
-                       action: 'HIGHLIGHT_NODE',
-                       id: childId,
-                       color: '#c0392b',
-                       style: 'border'
-                    });
-                }
-                
                 // Add to queue if expanion is allowed
                 if (shouldExpand) {
                     queue.push({
@@ -235,7 +221,6 @@ class BFSTreeAdapter {
         }
         
         // Send all commands as batch
-        console.log(`BFSTreeAdapter: Sending ${commands.length} commands to engine`);
         this.sendCommand({ action: 'BATCH', commands: commands });
         
         // Store stats

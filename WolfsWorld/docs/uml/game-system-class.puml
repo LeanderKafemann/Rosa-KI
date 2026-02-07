@@ -1,0 +1,184 @@
+@startuml Game System - Klassendiagramm
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+
+title Game System - Spiellogik und Adapter
+
+package "Core Interfaces" {
+    interface GameState {
+        + clone(): GameState
+        + getAllValidMoves(): Array
+        + makeMove(move): boolean
+        + getStateKey(): string
+        + isGoal(): boolean
+        + getNextStates(): Array<Object>
+    }
+    
+    interface GameAdapter {
+        + clone(): GameAdapter
+        + getAllValidMoves(): Array
+        + makeMove(move): boolean
+        + isGameOver(): boolean
+        + getWinner(): number
+        + getCurrentPlayer(): number
+        + getBoard(): Object
+        + getState(): GameState
+    }
+}
+
+package "Board Games" {
+    class KnightBoard {
+        - size: number
+        - grid: Array<Array<number>>
+        - x: number
+        - y: number
+        - moveCount: number
+        - history: Array<Move>
+        --
+        + constructor(rows, cols, startX, startY)
+        + move(dx, dy): boolean
+        + undo(): void
+        + getPossibleMoves(): Array
+        + getDegree(x, y): number
+        + isValidMove(x, y): boolean
+        + isInside(x, y): boolean
+        + initGrid(): void
+    }
+    
+    class RotateBoard {
+        - rows: number
+        - cols: number
+        - grid: Array<Array<number>>
+        - targetId: number
+        --
+        + constructor(rows, cols)
+        + initFromId(levelId): void
+        + rotate(row, col): boolean
+        + canFall(): boolean
+        + moveDown(row, col): boolean
+        + relaxBoardSync(): void
+        + getNextStates(): Array
+    }
+    
+    class TTTRegularBoard {
+        - board: Array<number>
+        - currentPlayer: number
+        - winner: number
+        - isGameOver: boolean
+        --
+        + constructor()
+        + makeMove(position): boolean
+        + checkWin(): boolean
+        + switchPlayer(): void
+    }
+}
+
+package "Two-Player Games" {
+    class TTTGameAdapter {
+        - gameLogic: TTTBase
+        --
+        + constructor(gameLogic)
+        + clone(): TTTGameAdapter
+        + getAllValidMoves(): Array
+        + makeMove(move): boolean
+        + isGameOver(): boolean
+        + getWinner(): number
+        + getCurrentPlayer(): number
+        + toJSON(): Object
+    }
+    
+    abstract class TTTBase {
+        # board: Array
+        # currentPlayer: number
+        # winner: number
+        # isGameOver: boolean
+        --
+        {abstract} + checkWin(): boolean
+        {abstract} + getAllValidMoves(): Array
+        + switchPlayer(): void
+    }
+    
+    class Connect4Regular {
+        - rows: number
+        - cols: number
+        - board: Array<Array<number>>
+        --
+        + constructor()
+        + makeMove(column): boolean
+        + checkWin(): boolean
+        + getAllValidMoves(): Array
+    }
+    
+    class NIMGameLogic {
+        - piles: Array<number>
+        - currentPlayer: number
+        - winner: number
+        - isGameOver: boolean
+        --
+        + constructor(piles)
+        + getAllValidMoves(): Array
+        + makeMove(move): boolean
+        + _checkGameEnd(): void
+        + toString(): string
+    }
+    
+    TTTBase <|-- TTTRegularBoard
+    TTTBase <|-- TTT3DBoard
+    TTTBase <|-- UltimateBoard
+}
+
+package "Template" {
+    class TemplateGameLogic {
+        - currentPlayer: number
+        - winner: number
+        - isGameOver: boolean
+        --
+        + constructor()
+        + getAllValidMoves(): Array
+        + makeMove(move): boolean
+        + clone(): TemplateGameLogic
+        + getStateKey(): string
+        + isGoal(): boolean
+        + getNextStates(): Array
+        - _checkGameEnd(): void
+        - _isMoveInList(move, validMoves): boolean
+    }
+}
+
+' Interface implementations
+GameState <|.. KnightBoard
+GameState <|.. RotateBoard
+GameState <|.. NIMGameLogic
+GameState <|.. TemplateGameLogic
+
+GameAdapter <|.. TTTGameAdapter
+TTTGameAdapter o-- TTTBase
+
+note top of GameState
+  **GameState Interface**
+  Wird von Puzzle-Spielen implementiert
+  (Knight's Tour, RotateBox, NIM)
+  
+  Ermöglicht Verwendung mit SearchEngine
+  und Tree-Visualisierung
+end note
+
+note top of GameAdapter
+  **GameAdapter Interface**
+  Wrapper für Zwei-Spieler-Spiele
+  
+  Ermöglicht Verwendung mit:
+  - MinimaxEngine
+  - Arena (Turniere)
+  - RuleBasedAgent
+end note
+
+note right of TemplateGameLogic
+  **Template für Schüler**
+  Vollständig dokumentiertes Beispiel
+  zeigt, wie man ein neues Spiel
+  implementiert
+end note
+
+@enduml

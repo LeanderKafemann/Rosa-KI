@@ -3,12 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Springerproblem - Suchbaum Visualisierung</title>
+    <title>Springerproblem & Backtracking</title>
     
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/tree-viz.css">
     
     <style>
+        /* General Layout */
         body { margin: 0; font-family: 'Segoe UI', sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #f0f3f4; }
         
         .nav-header { background: #2c3e50; color: white; padding: 0 20px; display: flex; align-items: center; gap: 20px; height: 50px; flex-shrink: 0; }
@@ -16,431 +17,936 @@
         .btn-back { text-decoration: none; color: white; border: 1px solid rgba(255,255,255,0.3); padding: 5px 10px; border-radius: 4px; font-size: 0.9rem; }
         .btn-back:hover { background: rgba(255,255,255,0.1); }
 
-        .main-layout { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-        
-        .viz-toolbar { background: white; padding: 10px 20px; border-bottom: 1px solid #ddd; display: flex; gap: 15px; align-items: center; flex-wrap: wrap; flex-shrink: 0; }
-        .viz-control-group { display: flex; align-items: center; gap: 5px; font-size: 0.9rem; }
-        .viz-select, .viz-input { padding: 4px; border: 1px solid #ccc; border-radius: 3px; }
-        
+        .viz-toolbar { background: white; padding: 10px 20px; border-bottom: 1px solid #ddd; display: flex; gap: 20px; align-items: center; flex-wrap: wrap; flex-shrink: 0; justify-content: space-between; }
+        .toolbar-group { display: flex; align-items: center; gap: 10px; }
+
+        .viz-select, .viz-input { padding: 6px; border: 1px solid #bdc3c7; border-radius: 4px; font-size: 0.95rem; }
+        .viz-label { font-size: 0.9rem; font-weight: 600; color: #34495e; }
+
+        /* Split View */
         .split-container { flex: 1; display: flex; min-height: 0; }
-        .tree-pane { flex: 1; border-right: 1px solid #ccc; background: #fff; position: relative; }
-        .board-pane { width: 350px; background: #f8f9fa; display: flex; flex-direction: column; border-left: 1px solid #ccc; flex-shrink: 0; overflow-y: auto; }
+        .tree-pane { flex: 1; border-right: 1px solid #bdc3c7; background: #fff; position: relative; }
+        .board-pane { width: 450px; background: #ecf0f1; display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; align-items: center; padding: 20px; }
         
         #vizFrame { width: 100%; height: 100%; border: none; }
         
         /* Board Area */
-        .board-container { padding: 20px; display: flex; justify-content: center; }
-        canvas { background: white; box-shadow: 0 2px 10px rgba(0,0,0,0.1); border-radius: 4px; max-width: 100%; }
-        
-        /* Playback Controls */
-        .controls-area { padding: 0 20px 20px; }
-        .playback-card { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-        
-        .slider-row { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
-        #stepSlider { flex: 1; }
-        #stepDisplay { font-family: monospace; font-size: 0.9rem; width: 60px; text-align: right; }
-        
-        .btn-row { display: flex; justify-content: center; gap: 8px; margin-bottom: 15px; }
-        .viz-btn { padding: 6px 12px; border: 1px solid #ddd; background: #fff; border-radius: 4px; cursor: pointer; font-size: 1rem; }
-        .viz-btn:hover:not(:disabled) { background: #f0f0f0; }
-        .viz-btn:disabled { opacity: 0.5; cursor: default; }
-        .btn-primary { background: #3498db; color: white; border-color: #2980b9; }
-        .btn-primary:hover:not(:disabled) { background: #2980b9; }
+        .board-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            width: 100%; /* Ensure full width in pane */
+            max-width: 400px;
+            box-sizing: border-box;
+        }
 
-        .speed-row { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #666; justify-content: center; border-top: 1px solid #eee; padding-top: 10px; }
-        #speedSlider { width: 100px; }
+        .board-container {
+            width: 100%;
+            aspect-ratio: 1;
+            position: relative;
+        }
+
+        canvas { 
+            width: 100%;
+            height: 100%;
+            display: block;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Controls */
+        .game-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 10px;
+        }
+
+        .viz-btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.2s;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .btn-primary { background: #3498db; color: white; }
+        .btn-primary:hover { background: #2980b9; }
         
-        .stats-display { font-size: 0.9rem; color: #666; margin-left: auto; }
+        .btn-secondary { background: #95a5a6; color: white; }
+        .btn-secondary:hover { background: #7f8c8d; }
+
+        .btn-danger { background: #e74c3c; color: white; }
+        .btn-danger:hover { background: #c0392b; }
+        
+        .btn-action { background: #2ecc71; color: white; }
+        .btn-action:hover { background: #27ae60; }
+
+        .stats-panel {
+            margin-top: 10px;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+            text-align: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+
+        /* Toggle Switches */
+        .toggle-row { display: flex; align-items: center; gap: 8px; font-size: 0.9rem; margin-bottom: 5px; cursor: pointer; color: #2c3e50; }
+        
     </style>
 </head>
 <body>
 
     <div class="nav-header">
         <a href="../index.html" class="btn-back">⬅ Menü</a>
-        <h1>Springerproblem Explorer</h1>
+        <h1>Springerproblem & Backtracking Explorer</h1>
     </div>
 
-    <div class="main-layout generic-layout">
-        
-        <!-- Top Toolbar -->
-        <div class="viz-toolbar">
-            <div class="viz-control-group">
-                <label>Größe</label>
+    <!-- Configuration Toolbar -->
+    <div class="viz-toolbar">
+        <div class="toolbar-group">
+            <div>
+                <span class="viz-label">Brettgröße:</span>
                 <select id="sizeSelect" class="viz-select">
-                    <option value="3">3 x 3</option>
                     <option value="4">4 x 4</option>
-                    <option value="5" selected>5 x 5</option>
+                    <option value="5">5 x 5</option>
+                    <option value="6" selected>6 x 6</option>
+                    <option value="8">8 x 8</option>
                 </select>
             </div>
             
-            <div class="viz-control-group">
-                <label>Start</label>
-                <input type="text" id="startPos" value="0,0" class="viz-input" style="width: 50px;">
+            <div style="margin-left: 15px;">
+                <span class="viz-label">Start (Z,S):</span>
+                <input type="text" id="startPosInput" value="5,0" class="viz-input" style="width: 50px;" title="Format: Zeile,Spalte (0-basiert)">
             </div>
-
-            <div class="viz-control-group">
-                <label>Tiefe</label>
-                <input type="number" id="depthInput" value="3" max="10" class="viz-input" style="width: 50px;">
-            </div>
-
-            <div class="viz-control-group">
-                <label>Strategie</label>
-                <select id="algoSelect" class="viz-select">
-                    <option value="DFS">Tiefensuche (DFS)</option>
-                    <option value="DFS-Warnsdorf">Warnsdorf (Heuristik)</option>
-                </select>
-            </div>
-
-            <button id="generateBtn" class="viz-btn btn-primary">▶ Generieren</button>
-            <div id="stats" class="stats-display">Bereit.</div>
+            
+            <button id="restartBtn" class="viz-btn btn-danger">⟲ Neustart</button>
         </div>
 
-        <!-- Split Content -->
-        <div class="split-container">
-            <!-- Left: Tree Visualization -->
-            <div class="tree-pane">
-                <iframe id="vizFrame" src="tree-viz-v2.html?v=2.3"></iframe>
-            </div>
+        <div class="toolbar-group">
+            <button id="dfsBtn" class="viz-btn btn-action" title="Füllt den Pfad automatisch auf">⚡ Tiefensuche</button>
+            <div style="border-left: 1px solid #bdc3c7; height: 24px; margin: 0 10px;"></div>
+             <label class="toggle-row">
+                <input type="checkbox" id="chkShowMoves" checked> Mögliche Züge
+            </label>
+            <label class="toggle-row">
+                <input type="checkbox" id="chkShowWarnsdorf"> Warnsdorf
+            </label>
+        </div>
+    </div>
 
-            <!-- Right: Board & Controls -->
-            <div class="board-pane">
+    <div class="main-layout generic-layout split-container">
+        
+        <!-- Left: Tree Visualization -->
+        <div class="tree-pane">
+            <iframe id="vizFrame" src="tree-viz-v2.html?v=4.0"></iframe>
+        </div>
+
+        <!-- Right: Board & Controls -->
+        <div class="board-pane">
+            <div class="board-card">
                 <div class="board-container">
                     <canvas id="boardCanvas"></canvas>
                 </div>
+
+                <div class="game-controls">
+                    <button id="btnBack" class="viz-btn btn-secondary">
+                        ↺ Schritt Zurück (Backtrack)
+                    </button>
+                </div>
                 
-                <div class="controls-area">
-                    <div class="playback-card">
-                        <div class="slider-row">
-                            <input type="range" id="stepSlider" min="0" value="0" disabled>
-                            <span id="stepDisplay">0 / 0</span>
-                        </div>
-                        
-                        <div class="btn-row">
-                            <button id="btnPrev" class="viz-btn" disabled>⏮</button>
-                            <button id="btnPlay" class="viz-btn" disabled>▶</button>
-                            <button id="btnPause" class="viz-btn" style="display:none;">⏸</button>
-                            <button id="btnNext" class="viz-btn" disabled>⏭</button>
-                        </div>
-                        
-                        <div class="speed-row">
-                            <label>Tempo:</label>
-                            <input type="range" id="speedSlider" min="10" max="1000" value="500">
-                        </div>
-                    </div>
+                <div class="stats-panel">
+                    <div id="moveStatus">Klicke auf ein Feld, um zu starten.</div>
+                    <div id="treeStatus" style="margin-top: 5px; font-size: 0.8rem;">Baum Tiefe: 0</div>
                 </div>
             </div>
+            
         </div>
-    </div> <!-- End main-layout -->
+    </div> 
 
-    <!-- Knights Tour Logic -->
+    <!-- Libraries -->
+    <!-- Logik & Renderer aus dem Game-Ordner wiederverwenden -->
     <script src="../js/games/knights-tour/logic.js"></script>
+    <script src="../js/games/knights-tour/renderer.js"></script>
     
-    <!-- DFS Tree Adapter v2.0 -->
-    <script src="../js/adapters/dfs-tree-adapter.js"></script>
+    <!-- Load Status Configuration FIRST (muss zuerst geladen werden!) -->
+    <script src="../js/viz/tree-viz/config/status-config.js"></script>
+    
+    <!-- TreeVizEngine Modules (muss VOR tree-engine.js geladen werden) -->
+    <script src="../js/viz/tree-viz/engines/renderer.js"></script>
+    <script src="../js/viz/tree-viz/engines/knights-tour-nodes.js"></script>
+    <script src="../js/viz/tree-viz/engines/rotatebox-nodes.js"></script>
+    <script src="../js/viz/tree-viz/engines/layout-engine.js"></script>
+    <script src="../js/viz/tree-viz/engines/interaction-engine.js"></script>
+    <script src="../js/viz/tree-viz/features/features-engine.js"></script>
+    
+    <!-- TreeVizEngine und Adapter -->
+    <script src="../js/viz/tree-viz/tree-engine.js"></script>
+    <script src="../js/viz/adapters/tree-adapters/dfs-tree-adapter.js"></script>
 
     <script>
-        // --- Game Board Visualization ---
-        const boardCanvas = document.getElementById('boardCanvas');
-        const boardCtx = boardCanvas.getContext('2d');
+        /**
+         * Springer Viz App
+         * Verbindet das Spiel (logic.js/renderer.js) mit der Tree-Visualisierung.
+         */
         
-        function drawBoard(state) {
-            const size = state.size;
-            // Get actual display size to fix blurriness
-            const rect = boardCanvas.getBoundingClientRect();
-            // Fix high DPI screens
-            const dpr = window.devicePixelRatio || 1;
-            boardCanvas.width = rect.width * dpr;
-            boardCanvas.height = rect.height * dpr;
+        // State
+        let board = null;
+        let adapter = null;
+        
+        // Tree Tracking
+        let nodeIdCounter = 0;
+        let currentNodeId = null;
+        
+        // Map: childId -> parentId
+        let nodeParentMap = new Map(); 
+        
+        // Map: nodeId -> { r: number, c: number, children: Map<string, number>, isDeadEnd: boolean }
+        // children keys are "r,c" strings.
+        let treeStructure = new Map();
+        
+        // Track maximum tree depth (for display, not affected by backtracking)
+        let maxTreeDepth = 0; 
+
+        // DOM Elements
+        const canvas = document.getElementById('boardCanvas');
+        const sizeSelect = document.getElementById('sizeSelect');
+        const startPosInput = document.getElementById('startPosInput');
+        
+        const chkShowMoves = document.getElementById('chkShowMoves');
+        const chkShowWarnsdorf = document.getElementById('chkShowWarnsdorf');
+        
+        const btnBack = document.getElementById('btnBack');
+        const restartBtn = document.getElementById('restartBtn');
+        const dfsBtn = document.getElementById('dfsBtn');
+
+        const statusDiv = document.getElementById('moveStatus');
+        const treeStatusDiv = document.getElementById('treeStatus');
+
+        function init() {
+            // Setup Canvas DPI
+            fitCanvas();
+            window.addEventListener('resize', () => { fitCanvas(); draw(); });
+
+            // Initialize Adapter
+            const iframe = document.getElementById('vizFrame');
+            adapter = new DFSTreeAdapter(iframe);
+
+            // Listeners
+            canvas.addEventListener('mousedown', handleInput);
+            btnBack.addEventListener('click', handleBack);
+            restartBtn.addEventListener('click', resetGame);
+            dfsBtn.addEventListener('click', runDFS);
             
-            const w = boardCanvas.width;
-            const h = boardCanvas.height;
-            const cellSize = w / size;
-            
-            // Background
-            boardCtx.clearRect(0, 0, w, h);
-            
-            for (let r = 0; r < size; r++) {
-                for (let c = 0; c < size; c++) {
-                    const x = c * cellSize;
-                    const y = r * cellSize;
+            sizeSelect.addEventListener('change', resetGame);
+            chkShowMoves.addEventListener('change', draw);
+            chkShowWarnsdorf.addEventListener('change', () => {
+                draw();
+            });
+
+            // Node click from tree visualization
+            window.addEventListener('message', (event) => {
+                if (event.data && event.data.type === 'NODE_CLICKED') {
+                    const targetNodeId = event.data.nodeId;  // Tree-Viz sends nodeId, not id!
                     
-                    // Checkerboard
-                    const isLight = (r + c) % 2 === 0;
-                    boardCtx.fillStyle = isLight ? '#f0d9b5' : '#b58863';
-                    boardCtx.fillRect(x, y, cellSize, cellSize);
-                    
-                    // Visited number
-                    const moveNum = state.grid[r][c];
-                    if (moveNum > 0) {
-                        boardCtx.fillStyle = 'rgba(0,0,0,0.7)';
-                        boardCtx.font = `bold ${cellSize * 0.4}px Arial`;
-                        boardCtx.textAlign = 'center';
-                        boardCtx.textBaseline = 'middle';
-                        boardCtx.fillText(moveNum, x + cellSize/2, y + cellSize/2);
+                    // DISABLE node navigation in Warnsdorf mode (too complex)
+                    const isWarnsdorf = chkShowWarnsdorf && chkShowWarnsdorf.checked;
+                    if (isWarnsdorf) {
+                        console.log(`[Main] Node click disabled in Warnsdorf mode`);
+                        return;
                     }
                     
-                    // Highlight current position (Knight)
-                    if (state.currentPos && r === state.currentPos.r && c === state.currentPos.c) {
-                        boardCtx.font = `${cellSize * 0.7}px Arial`;
-                        boardCtx.textAlign = 'center';
-                        boardCtx.textBaseline = 'middle';
-                        boardCtx.fillStyle = '#2c3e50';
-                        boardCtx.fillText('♞', x + cellSize/2, y + cellSize/2 + 4);
-                    }
-                }
-            }
-        }
-
-        // --- Controller Logic ---
-        const iframe = document.getElementById('vizFrame');
-        let adapter = new DFSTreeAdapter(iframe);
-
-        // History storage for time-travel
-        let history = []; 
-        let currentStep = 0;
-        let isPlaying = false;
-        let playInterval = null;
-        
-        // UI Elements
-        const slider = document.getElementById('stepSlider');
-        const stepDisplay = document.getElementById('stepDisplay');
-        const speedSlider = document.getElementById('speedSlider');
-        const btnPrev = document.getElementById('btnPrev');
-        const btnNext = document.getElementById('btnNext');
-        const btnPlay = document.getElementById('btnPlay');
-        const btnPause = document.getElementById('btnPause');
-
-        // Forward declaration
-        let updateControls = function() {};
-
-        function play() {
-            if (currentStep >= history.length - 1) return;
-            isPlaying = true;
-            btnPlay.style.display = 'none';
-            btnPause.style.display = 'inline-block';
-            slider.disabled = true;
-            
-            // Speed logic (linear mapping for now)
-            const delay = 1010 - parseInt(speedSlider.value); 
-            
-            playInterval = setInterval(() => {
-                if (currentStep < history.length - 1) {
-                    currentStep++;
-                    updateControls(true); // true = auto-playing
-                } else {
-                    pause();
-                }
-            }, delay);
-        }
-        
-        function pause() {
-            isPlaying = false;
-            clearInterval(playInterval);
-            btnPlay.style.display = 'inline-block';
-            btnPause.style.display = 'none';
-            slider.disabled = false;
-        }
-        
-        // --- Event Listeners ---
-        btnPlay.addEventListener('click', play);
-        btnPause.addEventListener('click', pause);
-        btnNext.addEventListener('click', () => { pause(); if(currentStep < history.length-1) { currentStep++; updateControls(); } });
-        btnPrev.addEventListener('click', () => { pause(); if(currentStep > 0) { currentStep--; updateControls(); } });
-        
-        slider.addEventListener('input', (e) => {
-            if (isPlaying) pause();
-            currentStep = parseInt(e.target.value);
-            updateControls();
-        });
-        
-        speedSlider.addEventListener('change', () => {
-            if (isPlaying) {
-                pause();
-                play();
-            }
-        });
-
-        async function generateTree() {
-            if (!adapter || !adapter.ready) return;
-            
-            // Reset UI
-            pause();
-            currentStep = 0;
-            history = [];
-            adapter.sendCommand({ action: 'CLEAR' });
-            document.getElementById('stats').innerText = "Generiere...";
-            
-            // Read Params
-            const size = parseInt(document.getElementById('sizeSelect').value);
-            const posStr = document.getElementById('startPos').value.split(',');
-            const startR = parseInt(posStr[0]);
-            const startC = parseInt(posStr[1]);
-            const maxDepth = parseInt(document.getElementById('depthInput').value);
-            const algo = document.getElementById('algoSelect').value;
-            
-            // Initial Board
-            const startBoard = new KnightBoard(size);
-            startBoard.move(startR, startC);
-            drawBoard(startBoard);
-            
-            console.log('Generating tree logic...');
-            
-            // 1. Hijack adapter.sendCommand to record instead of send
-            const realSendCommand = adapter.sendCommand.bind(adapter);
-            let recordedCommands = [];
-            
-            adapter.sendCommand = (cmd) => {
-                if (cmd.action === 'BATCH') {
-                    // Flatten batch for granular playback
-                    cmd.commands.forEach(c => recordedCommands.push(c));
-                } else {
-                    recordedCommands.push(cmd);
-                }
-            };
-            
-            // 2. Setup Heuristic if needed
-            if (algo === 'DFS-Warnsdorf') {
-                const originalGetNextStates = startBoard.getNextStates.bind(startBoard);
-                startBoard.getNextStates = function() {
-                    const states = originalGetNextStates();
-                    states.sort((a, b) => {
-                        const da = a.state.getDegree(a.state.currentPos.r, a.state.currentPos.c);
-                        const db = b.state.getDegree(b.state.currentPos.r, b.state.currentPos.c);
-                        return da - db;
-                    });
-                    return states;
-                };
-            }
-            
-            // 3. Run Algorithm (Logic only)
-            await adapter.buildToDepth(startBoard, maxDepth, {
-                duplicates: false, // Normal DFS doesn't mark duplicates in this viz usually
-                backtracking: true
-            });
-            
-            // 4. Restore Adapter
-            adapter.sendCommand = realSendCommand;
-            
-            console.log(`Recorded ${recordedCommands.length} commands.`);
-            
-            // 5. Build History Array
-            // We need to associate each step with the *Board State* it represents.
-            // The adapter logic sends 'ADD_NODE' with 'boardData'. We can use that.
-            
-            // Start with initial state
-            history.push({
-                type: 'init',
-                boardData: startBoard, // Initial empty board
-                command: { action: 'CLEAR' }
-            });
-            
-            recordedCommands.forEach(cmd => {
-                let step = {
-                    command: cmd,
-                    boardData: null
-                };
-                
-                if (cmd.action === 'ADD_NODE') {
-                    // This command contains the board state
-                    step.boardData = cmd.boardData;
-                } else if (cmd.action === 'HIGHLIGHT_NODE') {
-                    // If we highlight, we want to see the board of that node?
-                    // Actually, ADD_NODE is creation. HIGHLIGHT is visit.
-                    // For playback, we might want to carry over the previous boardData if null.
-                }
-                
-                history.push(step);
-            });
-            
-            // Post-process: Fill missing boardData
-            let lastBoard = startBoard;
-            // Map node IDs to board states for referencing
-            const nodeBoardMap = new Map();
-            
-            history.forEach(step => {
-                if (step.command.action === 'ADD_NODE') {
-                    nodeBoardMap.set(step.command.id, step.command.boardData);
-                }
-                
-                if (step.boardData) {
-                    lastBoard = step.boardData;
-                } else if (step.command.action === 'HIGHLIGHT_NODE' || step.command.action === 'SET_FOCUS') {
-                    // Try to retrieve board state for this node
-                    const id = step.command.id;
-                    if (nodeBoardMap.has(id)) {
-                        step.boardData = nodeBoardMap.get(id);
+                    console.log(`[Main] Received NODE_CLICKED message for nodeId=${targetNodeId}, currentNodeId=${currentNodeId}`);
+                    if (targetNodeId !== undefined && targetNodeId !== currentNodeId) {
+                        console.log(`[Main] Calling navigateToNode(${targetNodeId})`);
+                        navigateToNode(targetNodeId);
                     } else {
-                         step.boardData = lastBoard;
+                        console.log(`[Main] Ignoring click: targetNodeId=${targetNodeId}, currentNodeId=${currentNodeId}`);
                     }
-                } else {
-                     step.boardData = lastBoard;
                 }
             });
+
+            // Start delay
+            setTimeout(resetGame, 500);
+        }
+
+        function fitCanvas() {
+            const container = canvas.parentElement;
+            const rect = container.getBoundingClientRect();
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+        }
+
+        function resetGame() {
+            // 1. Reset Board via Game Controller
+            const size = parseInt(sizeSelect.value);
+            Game.board = new KnightBoard(size);
             
-            // 6. Enable UI
-            slider.max = Math.max(0, history.length - 1);
-            slider.disabled = false;
-            btnPlay.disabled = false;
-            btnNext.disabled = false;
-            btnPrev.disabled = false;
+            // Update canvas size
+            fitCanvas();
             
-            // Update Control Function
-            let lastRenderedStep = -1;
+            // 2. Clear Tree
+            if (adapter && adapter.ready) {
+                adapter.sendCommand({ action: 'CLEAR' });
+            }
+            nodeIdCounter = 0;
+            currentNodeId = null;
+            nodeParentMap.clear();
+            treeStructure.clear();
+            maxTreeDepth = 0;
+
+            // 3. Parse Start Pos
+            const posStr = startPosInput.value.split(',');
+            let startR = parseInt(posStr[0]);
+            let startC = parseInt(posStr[1]);
             
-            updateControls = function(isAuto = false) {
-                // UI
-                if (!isAuto) slider.value = currentStep;
-                stepDisplay.textContent = `${currentStep} / ${history.length - 1}`;
-                
-                // Diff-Update Tree
-                // If jumping (slider), clear and rebuild batch
-                if (Math.abs(currentStep - lastRenderedStep) > 1) {
-                    adapter.sendCommand({ action: 'CLEAR' });
-                    const batch = history.slice(1, currentStep + 1).map(h => h.command);
-                    // Split batch if too large? Adapter handles it?
-                    // Send in chunks of 50 to avoid freezing
-                    const chunkSize = 50;
-                    for (let i = 0; i < batch.length; i += chunkSize) {
-                        adapter.sendCommand({ action: 'BATCH', commands: batch.slice(i, i + chunkSize) });
-                    }
-                } else if (currentStep > lastRenderedStep) {
-                    // Forward 1 step
-                    adapter.sendCommand(history[currentStep].command);
-                } else if (currentStep < lastRenderedStep) {
-                     // Backwards 1 step? Not easy in TreeViz without Undo.
-                     // Easier to Rebuild
-                    adapter.sendCommand({ action: 'CLEAR' });
-                    const batch = history.slice(1, currentStep + 1).map(h => h.command);
-                    adapter.sendCommand({ action: 'BATCH', commands: batch });
-                }
-                
-                lastRenderedStep = currentStep;
-                
-                // Draw Board
-                const step = history[currentStep];
-                if (step && step.boardData) {
-                    drawBoard(step.boardData);
-                }
-            };
+            // Validate
+            if (isNaN(startR) || startR >= size) startR = size - 1;
+            if (isNaN(startC) || startC >= size) startC = 0;
+            startPosInput.value = `${startR},${startC}`;
+
+            // 4. Set Initial State
+            Game.board.move(startR, startC);
             
-            // Render first frame
-            updateControls();
-             document.getElementById('stats').innerText = `${history.length} Schritte aufgezeichnet.`;
+            // 5. Create Root Node
+            createNode(Game.board, null, `Start (${coord(startR, startC)})`);
+            
+            updateUI();
+        }
+
+        function followFocus() {
+            if (currentNodeId !== null && adapter && adapter.ready) {
+                adapter.sendCommand({ 
+                    action: 'SET_FOCUS', 
+                    id: currentNodeId
+                });
+            }
+        }
+
+        function coord(r, c) {
+            const size = (board ? board.size : 8);
+            const letter = String.fromCharCode(65 + c); 
+            const num = size - r; 
+            return `${letter}${num}`;
         }
         
-        // Listener
-        document.getElementById('generateBtn').addEventListener('click', generateTree);
-        
-        // Initializer
-        iframe.addEventListener('load', () => {
-             const check = setInterval(() => {
-                 if (adapter.ready) {
-                     clearInterval(check);
-                     // Auto-Generate a small one for demo
-                     setTimeout(generateTree, 500);
+        function registerNodeInStructure(id, r, c) {
+            treeStructure.set(id, {
+                r: r,
+                c: c,
+                children: new Map(), // "r,c" -> childId
+                isDeadEnd: false,
+                isPreview: false
+            });
+        }
+
+        /**
+         * Ensures preview nodes exist for a given node if Warnsdorf is enabled.
+         * This fixes the asymmetry between createNode() and restoreGameState().
+         */
+        function ensurePreviewsForNode(nodeId, boardState) {
+            const isWarnsdorf = chkShowWarnsdorf && chkShowWarnsdorf.checked;
+            if (isWarnsdorf && boardState && !boardState.won) {
+                const nodeStruct = treeStructure.get(nodeId);
+                if (nodeStruct && nodeStruct.children.size === 0) {
+                    // No previews exist yet - generate them
+                    generatePreviews(nodeId, boardState);
+                }
+            }
+        }
+
+        function resetGame() {
+            // 1. Reset Board
+            const size = parseInt(sizeSelect.value);
+            board = new KnightBoard(size);
+            
+            // 2. Clear Tree
+            if (adapter && adapter.ready) {
+                adapter.sendCommand({ action: 'CLEAR' });
+            }
+            nodeIdCounter = 0;
+            currentNodeId = null;
+            nodeParentMap.clear();
+            treeStructure.clear();
+
+            // 3. Parse Start Pos
+            const posStr = startPosInput.value.split(',');
+            let startR = parseInt(posStr[0]);
+            let startC = parseInt(posStr[1]);
+            
+            // Validate
+            if (isNaN(startR) || startR >= size) startR = size - 1;
+            if (isNaN(startC) || startC >= size) startC = 0;
+            startPosInput.value = `${startR},${startC}`;
+
+            // 4. Set Initial State
+            board.move(startR, startC);
+            
+            // 5. Create Root Node
+            createNode(board, null, `Start (${coord(startR, startC)})`);
+
+            updateUI();
+        }
+
+        function coord(r, c) {
+            const size = (board ? board.size : 8);
+            const letter = String.fromCharCode(65 + c); 
+            const num = size - r; 
+            return `${letter}${num}`;
+        }
+
+        /**
+         * Creates or Updates a node in the tree.
+         */
+        function createNode(boardState, parentId, labelOverride = null, edgeLabel = null) {
+            if (!adapter || !adapter.ready) return;
+
+            const isWarnsdorf = chkShowWarnsdorf.checked;
+            const currentR = boardState.currentPos.r;
+            const currentC = boardState.currentPos.c;
+            const moveKey = `${currentR},${currentC}`;
+            
+            // 1. Check for existing child in Tree Structure
+            let id = null;
+            let reused = false;
+            
+            if (parentId !== null) {
+                const parentNode = treeStructure.get(parentId);
+                if (parentNode && parentNode.children.has(moveKey)) {
+                    id = parentNode.children.get(moveKey);
+                    reused = true;
+                }
+            }
+
+            if (id === null) {
+                id = nodeIdCounter++;
+            }
+
+            // Labels
+            let label = labelOverride;
+            if (!label) {
+                if (isWarnsdorf) {
+                     const degree = boardState.getPossibleMoves().length;
+                     label = `${degree}`;
+                } else {
+                     label = `${boardState.moveCount}`;
+                }
+            }
+
+            const color = boardState.won ? '#2ecc71' : '#3498db';
+            const cmds = [];
+            
+            // Track maximum tree depth
+            maxTreeDepth = Math.max(maxTreeDepth, boardState.moveCount);
+            
+            if (reused) {
+                 // Check if it was a preview (generic circle) that needs to become a real node
+                 const nodeStruct = treeStructure.get(id);
+                 if (nodeStruct && nodeStruct.isPreview) {
+                     cmds.push({
+                         action: 'UPDATE_NODE',
+                         id: id,
+                         data: {
+                             label: label,
+                             color: color,
+                             style: 'solid',
+                             boardData: boardState // Attach image!
+                         }
+                     });
+                     nodeStruct.isPreview = false; // Now visited
                  }
-             }, 200);
-        });
+            } else {
+                cmds.push({
+                    action: 'ADD_NODE',
+                    id: id,
+                    parentId: parentId,
+                    label: label,
+                    edgeLabel: edgeLabel, // Move coordinate label
+                    color: color,
+                    boardData: boardState // Board image
+                });
+                
+                // Register in structure
+                registerNodeInStructure(id, currentR, currentC);
+                if (parentId !== null) {
+                    nodeParentMap.set(id, parentId);
+                    const p = treeStructure.get(parentId);
+                    if (p) p.children.set(moveKey, id);
+                }
+            }
+
+            // Remove old highlight if exists
+            if (currentNodeId !== null && currentNodeId !== id) {
+                cmds.push({
+                    action: 'UPDATE_NODE',
+                    id: currentNodeId,
+                    data: { removeStatus: 'ACTIVE' }
+                });
+            }
+
+            // Highlight current node (yellow glow)
+            cmds.push({
+                action: 'UPDATE_NODE',
+                id: id,
+                data: { addStatus: 'ACTIVE' }
+            });
+
+            // Set focus to center viewport on this node
+            cmds.push({
+                action: 'SET_FOCUS',
+                id: id
+            });
+
+            // Check for Dead End immediately upon visit
+            const possibleMoves = boardState.getPossibleMoves();
+            if (possibleMoves.length === 0 && !boardState.won) {
+                cmds.push({
+                    action: 'UPDATE_NODE',
+                    id: id,
+                    data: { addStatus: 'DEAD_END' } // Set DEAD_END status using consistent syntax
+                });
+                const n = treeStructure.get(id);
+                if(n) n.isDeadEnd = true;
+            }
+
+            adapter.sendCommand({
+                action: 'BATCH',
+                commands: cmds
+            });
+
+            // Track
+            currentNodeId = id;
+            
+            // Generate Previews (Warnsdorf)
+            if (isWarnsdorf && !boardState.won) {
+                generatePreviews(id, boardState);
+            }
+        }
+
+        function generatePreviews(parentId, parentBoard) {
+            const moves = parentBoard.getPossibleMoves();
+            if (moves.length === 0) return;
+            
+            // 1. Calculate degrees for all moves
+            const movesWithDegree = moves.map(m => {
+                const childBoard = parentBoard.clone();
+                childBoard.move(m.r, m.c);
+                return {
+                    move: m,
+                    degree: childBoard.getPossibleMoves().length
+                };
+            });
+            
+            // 2. Sort by degree (Warnsdorf: ascending = best moves first)
+            movesWithDegree.sort((a, b) => a.degree - b.degree);
+            
+            // 3. Create preview nodes with color coding
+            const cmds = [];
+            const parentStruct = treeStructure.get(parentId);
+            
+            movesWithDegree.forEach((item, index) => {
+                const m = item.move;
+                const degree = item.degree;
+                const moveKey = `${m.r},${m.c}`;
+                
+                // Skip if already exists
+                if (parentStruct && parentStruct.children.has(moveKey)) return;
+                
+                const pId = nodeIdCounter++;
+                const edgeTxt = coord(m.r, m.c);
+                
+                // Color coding by Warnsdorf heuristic
+                // Lower degree = BETTER = GREEN
+                // Higher degree = WORSE = ORANGE
+                let color = '#95a5a6';  // Default gray
+                if (degree === 0) {
+                    color = '#e74c3c';  // Red: Dead-end (0 continuations)
+                } else if (degree === 1) {
+                    color = '#27ae60';  // Green: Excellent (1 continuation - super safe!)
+                } else if (degree === 2 || degree === 3) {
+                    color = '#f1c40f';  // Yellow: Medium
+                } else if (degree <= 7) {
+                    color = '#f39c12';  // Orange: Many options (not ideal)
+                } else {
+                    color = '#e67e22';  // Dark Orange: 8 continuations (too many)
+                }
+                
+                cmds.push({
+                    action: 'ADD_NODE',
+                    id: pId,
+                    parentId: parentId,
+                    label: `${degree}`,  // Show branching degree
+                    edgeLabel: edgeTxt,
+                    color: color,  // Color-coded visualization
+                    style: 'dashed',
+                    boardData: null // Generic preview
+                });
+                
+                // Register preview
+                registerNodeInStructure(pId, m.r, m.c);
+                const n = treeStructure.get(pId);
+                if(n) n.isPreview = true;
+                
+                if (parentStruct) parentStruct.children.set(moveKey, pId);
+            });
+            
+            if (cmds.length > 0) {
+                adapter.sendCommand({ action: 'BATCH', commands: cmds });
+            }
+        }
+
+        function handleInput(e) {
+            if (!board || board.won) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+            
+            const paddingLeft = 30;
+            const availWidth = canvas.width - paddingLeft;
+            const cellSize = availWidth / board.size; 
+
+            if (x < paddingLeft) return; 
+
+            const col = Math.floor((x - paddingLeft) / cellSize);
+            const row = Math.floor(y / cellSize);
+            
+            if (board.isInside(row, col)) {
+                // Check if user clicked the previous square (undo move)
+                if (board.isUndoMove(row, col)) {
+                    handleBack();
+                    return;
+                }
+                
+                const edgeTxt = coord(row, col);
+                const moveSuccess = board.move(row, col);
+                
+                if (moveSuccess) {
+                    createNode(board, currentNodeId, null, edgeTxt);
+                    updateUI();
+                }
+            }
+        }
+
+        function handleBack() {
+            if (!board || board.moveCount <= 1) return; 
+            
+            // 1. Board undo
+            board.undo();
+            
+            // 2. Tree Undo (Backtrack) 
+            if (currentNodeId !== null) {
+                const parentId = nodeParentMap.get(currentNodeId);
+                
+                if (parentId !== undefined) {
+                    // Store old node ID FIRST (before changing currentNodeId)
+                    const oldNodeId = currentNodeId;
+                    
+                    const isWarnsdorf = chkShowWarnsdorf && chkShowWarnsdorf.checked;
+                    const cmds = [];
+                    
+                    // Remove ACTIVE status from old node FIRST
+                    cmds.push({
+                        action: 'UPDATE_NODE',
+                        id: oldNodeId,
+                        data: { removeStatus: 'ACTIVE' }
+                    });
+                    
+                    // Prüfe: DEAD_END nur wenn alle möglichen Züge im Baum sind UND alle Kinder DEAD_END
+                    const oldNodeStruct = treeStructure.get(oldNodeId);
+                    if (oldNodeStruct) {
+                        // 1. Wieviele mögliche Züge gibt es von dieser Position?
+                        const tempBoard = board.clone();
+                        tempBoard.moveCount++;
+                        tempBoard.currentPos = { r: oldNodeStruct.r, c: oldNodeStruct.c };
+                        const possibleMovesCount = tempBoard.getPossibleMoves().length;
+                        
+                        // 2. Wieviele Kinder hat diese Node im Baum?
+                        const childrenInTree = oldNodeStruct.children.size;
+                        
+                        // 3. Nur wenn alle möglichen Züge im Baum sind: Prüfe ob alle Kinder DEAD_END sind
+                        if (childrenInTree === possibleMovesCount && childrenInTree > 0) {
+                            let allChildrenAreDead = true;
+                            for (const childId of oldNodeStruct.children.values()) {
+                                const childStruct = treeStructure.get(childId);
+                                if (!childStruct) {
+                                    allChildrenAreDead = false;
+                                    break;
+                                }
+                                
+                                // Prüfe ob Kind DEAD_END ist
+                                let isChildDead = false;
+                                
+                                // Variante 1: Kind ist bereits als DEAD_END markiert
+                                if (childStruct.isDeadEnd === true) {
+                                    isChildDead = true;
+                                } else if (childStruct.isPreview) {
+                                    // Variante 2: Preview mit Degree 0 = keine Fortsetzung möglich
+                                    const childBoard = board.clone();
+                                    childBoard.moveCount++;
+                                    childBoard.currentPos = { r: childStruct.r, c: childStruct.c };
+                                    const childMovesCount = childBoard.getPossibleMoves().length;
+                                    isChildDead = (childMovesCount === 0);
+                                }
+                                
+                                if (!isChildDead) {
+                                    allChildrenAreDead = false;
+                                    break;
+                                }
+                            }
+                            
+                            if (allChildrenAreDead) {
+                                cmds.push({
+                                    action: 'UPDATE_NODE',
+                                    id: oldNodeId,
+                                    data: { addStatus: ['DEAD_END', 'ACTIVE'] }
+                                });
+                                oldNodeStruct.isDeadEnd = true;
+                            }
+                        }
+                    }
+                    
+                    // Add ACTIVE to parent node
+                    cmds.push({
+                        action: 'UPDATE_NODE',
+                        id: parentId,
+                        data: { addStatus: 'ACTIVE' }
+                    });
+                    
+                    // IF Warnsdorf active: Delete preview nodes and regenerate
+                    if (isWarnsdorf) {
+                        const parentStruct = treeStructure.get(parentId);
+                        if (parentStruct && parentStruct.children) {
+                            // Collect all preview-node IDs for deletion
+                            const previewIds = Array.from(parentStruct.children.values())
+                                .filter(cid => {
+                                    const child = treeStructure.get(cid);
+                                    return child && child.isPreview;
+                                });
+                            
+                            // Delete all preview nodes
+                            previewIds.forEach(id => {
+                                cmds.push({ action: 'DELETE_NODE', id: id });
+                                treeStructure.delete(id);
+                            });
+                            
+                            // Clear children map
+                            parentStruct.children.clear();
+                        }
+                    }
+                    
+                    // Center viewport on parent node
+                    cmds.push({
+                        action: 'SET_FOCUS',
+                        id: parentId
+                    });
+                    
+                    // Prüfe: Parent als DEAD_END markieren mit gleicher Logik
+                    const parentStruct = treeStructure.get(parentId);
+                    if (parentStruct) {
+                        const tempParentBoard = board.clone();
+                        tempParentBoard.moveCount++;
+                        tempParentBoard.currentPos = { r: parentStruct.r, c: parentStruct.c };
+                        const possibleParentMovesCount = tempParentBoard.getPossibleMoves().length;
+                        
+                        const childrenInParentTree = parentStruct.children.size;
+                        
+                        if (childrenInParentTree === possibleParentMovesCount && childrenInParentTree > 0) {
+                            let allParentChildrenAreDead = true;
+                            for (const childId of parentStruct.children.values()) {
+                                const childStruct = treeStructure.get(childId);
+                                if (!childStruct || childStruct.isDeadEnd !== true) {
+                                    allParentChildrenAreDead = false;
+                                    break;
+                                }
+                            }
+                            
+                            if (allParentChildrenAreDead) {
+                                cmds.push({
+                                    action: 'UPDATE_NODE',
+                                    id: parentId,
+                                    data: { addStatus: ['DEAD_END', 'ACTIVE'] }
+                                });
+                                parentStruct.isDeadEnd = true;
+                            }
+                        }
+                    }
+                    
+                    // SEND ALL COMMANDS
+                    adapter.sendCommand({
+                        action: 'BATCH',
+                        commands: cmds
+                    });
+                    
+                    // NOW update currentNodeId (AFTER sending commands with old node ID)
+                    currentNodeId = parentId;
+                    
+                    console.log(`[MANUAL BACKTRACK] oldNodeId=${oldNodeId} marked DEAD_END, currentNodeId=${currentNodeId}, Warnsdorf=${isWarnsdorf}`);
+                    
+                    // Regenerate preview nodes if Warnsdorf is active
+                    if (isWarnsdorf) {
+                        generatePreviews(currentNodeId, board);
+                    }
+                }
+            }
+            
+            updateUI();
+        }
+
+        /**
+         * Navigiert vom aktuellen Node zum Ziel-Node durch Backtracking und Vorwärts-Züge.
+         * SIMPLE VERSION: Direkt ohne Adapter, wie runDFS() auch funktioniert
+         * 
+         * @param {number} targetNodeId - ID des Ziel-Knotens
+         */
+        async function navigateToNode(targetNodeId) {
+            if (!targetNodeId || targetNodeId === currentNodeId) {
+                console.warn('[Navigate] Invalid target or already at target');
+                return;
+            }
+            
+            console.log(`[Navigate] Navigating from ${currentNodeId} to ${targetNodeId}`);
+            
+            // Step 1: Berechne Pfad mit reconstructTreePath (aus tree-engine.js)
+            const pathInfo = reconstructTreePath(currentNodeId, targetNodeId, nodeParentMap, treeStructure);
+            
+            if (!pathInfo.isValid) {
+                console.error('[Navigate] Invalid path!', pathInfo);
+                return;
+            }
+            
+            const { backwardSteps, forwardMoves, lca, isValid } = pathInfo;
+            console.log(`[Navigate] Path: ${backwardSteps} back, ${forwardMoves.length} forward, LCA=${lca}`);
+            
+            // Step 2: BACKWARD Phase - gehe zurück bis LCA
+            console.log(`[Navigate] ---- BACKWARD PHASE (${backwardSteps} steps) ----`);
+            for (let i = 0; i < backwardSteps; i++) {
+                console.log(`[Navigate] Backward step ${i+1}/${backwardSteps}`);
+                handleBack();  // Das ändert board, tree, und currentNodeId
+                updateUI();    // Zeichne neu
+                await new Promise(r => setTimeout(r, 150));
+            }
+            
+            console.log(`[Navigate] ---- WARNSDORF SPECIAL ----`);
+            if (chkShowWarnsdorf && chkShowWarnsdorf.checked && forwardMoves.length > 0) {
+                console.log(`[Navigate] Regenerating previews for LCA=${lca}`);
+                generatePreviews(lca, board);
+                await new Promise(r => setTimeout(r, 150));
+            }
+            
+            // Step 3: FORWARD Phase - gehe vorwärts zum Target
+            console.log(`[Navigate] ---- FORWARD PHASE (${forwardMoves.length} moves) ----`);
+            for (let i = 0; i < forwardMoves.length; i++) {
+                const { r, c, moveKey } = forwardMoves[i];
+                console.log(`[Navigate] Forward step ${i+1}/${forwardMoves.length}: move to (${r},${c})`);
+                console.log(`[Navigate]   Before: board at (${board.currentPos.r},${board.currentPos.c}), currentNodeId=${currentNodeId}`);
+                
+                // Mache den Move
+                const moveSuccess = board.move(r, c);
+                if (!moveSuccess) {
+                    console.error(`[Navigate] board.move(${r},${c}) FAILED!`);
+                    return;
+                }
+                
+                console.log(`[Navigate]   After move: board at (${board.currentPos.r},${board.currentPos.c})`);
+                
+                // Erstelle Tree-Knoten
+                const edgeLabel = coord(r, c);  // Format wie A8
+                createNode(board, currentNodeId, null, edgeLabel);
+                console.log(`[Navigate]   After createNode: currentNodeId=${currentNodeId}`);
+                
+                // Rendern
+                updateUI();
+                
+                await new Promise(r => setTimeout(r, 150));
+            }
+            
+            console.log(`[Navigate] ======== NAVIGATION COMPLETE ========`);
+            console.log(`[Navigate] Final: board at (${board.currentPos.r},${board.currentPos.c}), currentNodeId=${currentNodeId}`);
+            updateUI();
+        }
+        
+        async function runDFS() {
+             if (!board || board.won) return;
+             dfsBtn.disabled = true;
+             
+             const maxSteps = 100; 
+             let steps = 0;
+             
+             while (!board.won && steps < maxSteps) {
+                 const moves = board.getPossibleMoves();
+                 if (moves.length === 0) break;
+                 
+                 // Sort by Warnsdorf Logic (Ascending Degree)
+                 if (chkShowWarnsdorf.checked) {
+                     const candidates = moves.map(m => {
+                         const copy = board.clone();
+                         copy.move(m.r, m.c);
+                         const deg = copy.getPossibleMoves().length;
+                         return { m, deg };
+                     });
+                     
+                     candidates.sort((a, b) => a.deg - b.deg);
+                     const best = candidates[0].m;
+                     const edgeTxt = coord(best.r, best.c);
+                     
+                     board.move(best.r, best.c);
+                     createNode(board, currentNodeId, null, edgeTxt);
+                 } else {
+                     // Simple DFS (first move)
+                     const bestMove = moves[0];
+                     const edgeTxt = coord(bestMove.r, bestMove.c);
+                     board.move(bestMove.r, bestMove.c);
+                     createNode(board, currentNodeId, null, edgeTxt);
+                 }
+                 
+                 updateUI();
+                 steps++;
+                 await new Promise(r => setTimeout(r, 150));
+             }
+             
+             dfsBtn.disabled = false;
+        }
+
+        /**
+         * Animiert die Sortierung der Preview-Knoten nach Warnsdorf-Heuristik
+         */
+        // function showWarnsdorfViz() wird nicht mehr verwendet - Sortierung ist automatisch in generatePreviews()
+
+        function draw() {
+            if (!board) return;
+            KnightRenderer.draw(canvas, board, {
+                showPossibleMoves: chkShowMoves.checked,
+                showWarnsdorf: chkShowWarnsdorf.checked
+            });
+        }
+
+        function updateUI() {
+            draw();
+            statusDiv.innerText = board.won 
+                ? "GEWONNEN!" 
+                : `Zug: ${board.moveCount} / ${board.size*board.size}`;
+            treeStatusDiv.innerText = `Baum-Tiefe: ${maxTreeDepth}`;
+            btnBack.disabled = (board.moveCount <= 1);
+        }
+
+        window.addEventListener('load', init);
 
     </script>
 </body>

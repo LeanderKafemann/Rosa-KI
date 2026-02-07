@@ -1,0 +1,222 @@
+@startuml Minimax Algorithm - Sequenzdiagramm
+!theme plain
+skinparam sequenceMessageAlign center
+skinparam defaultFontName Arial
+
+title Minimax Algorithm - Detaillierter Ablauf
+
+actor User
+participant "Playground" as UI
+participant "MinimaxAgent" as Agent
+participant "MinimaxEngine" as Engine
+participant "GameAdapter" as Game
+participant "Heuristic" as Heur
+participant "Transposition\nTable" as TT
+
+== Initialisierung ==
+User -> UI: Spiel starten
+UI -> Game: new TTTGameAdapter()
+activate Game
+Game --> UI: gameAdapter
+deactivate Game
+
+UI -> Agent: new MinimaxAgent(config)
+activate Agent
+Agent -> Engine: new MinimaxEngine(config)
+activate Engine
+Engine --> Agent: engine
+deactivate Engine
+Agent --> UI: agent
+deactivate Agent
+
+== Zug berechnen ==
+User -> UI: AI-Zug anfordern
+UI -> Agent: getAction(gameAdapter)
+activate Agent
+
+Agent -> Engine: findBestMove(gameAdapter)
+activate Engine
+
+' Initialisierung
+Engine -> Engine: transpositionTable.clear()
+Engine -> Engine: stats = {nodes: 0, cutoffs: 0, ...}
+
+' Root-Ebene
+Engine -> Game: getAllValidMoves()
+activate Game
+Game --> Engine: [move1, move2, move3, ...]
+deactivate Game
+
+alt Move Ordering aktiv
+    Engine -> Engine: orderMoves(moves)
+    note right: Sortiert Züge nach\nHeuristik-Wert
+end
+
+loop für jeden möglichen Zug
+    Engine -> Game: clone()
+    activate Game
+    Game --> Engine: clonedGame
+    deactivate Game
+    
+    Engine -> Game: makeMove(move)
+    activate Game
+    Game --> Engine: true
+    deactivate Game
+    
+    ' Rekursiver Minimax-Aufruf
+    Engine -> Engine: minimax(clonedGame, depth-1,\n-∞, +∞, false)
+    
+    ref over Engine
+        Minimax Rekursion
+        (siehe nächster Frame)
+    end ref
+    
+    Engine --> Engine: value
+    
+    alt Besserer Zug gefunden
+        Engine -> Engine: bestMove = move
+        Engine -> Engine: bestValue = value
+    end
+end
+
+Engine --> Agent: {move: bestMove, value: bestValue, stats: stats}
+deactivate Engine
+
+Agent --> UI: bestMove
+deactivate Agent
+
+UI -> Game: makeMove(bestMove)
+activate Game
+Game --> UI: success
+deactivate Game
+
+== Minimax Rekursion (Detailansicht) ==
+
+ref over Engine, Game, Heur, TT
+    **Minimax(node, depth, α, β, isMaximizing)**
+end ref
+
+Engine -> Engine: stats.nodes++
+
+' Basis-Fälle
+alt depth == 0 oder Spiel vorbei
+    Engine -> Game: isGameOver()
+    activate Game
+    Game --> Engine: true/false
+    deactivate Game
+    
+    alt Spiel vorbei
+        Engine -> Game: getWinner()
+        activate Game
+        Game --> Engine: winner
+        deactivate Game
+        Engine --> Engine: return +1000/-1000/0
+    else Tiefe erreicht
+        Engine -> Heur: evaluate(gameAdapter)
+        activate Heur
+        Heur -> Game: getBoard()
+        activate Game
+        Game --> Heur: board
+        deactivate Game
+        Heur -> Heur: Bewertung berechnen\n(Linienbewertung, Positionen, ...)
+        Heur --> Engine: heuristicValue
+        deactivate Heur
+        Engine --> Engine: return heuristicValue
+    end
+end
+
+' Transposition Table Check
+alt Transposition Table aktiv
+    Engine -> Game: getStateKey()
+    activate Game
+    Game --> Engine: stateKey
+    deactivate Game
+    
+    Engine -> TT: get(stateKey)
+    activate TT
+    alt Eintrag gefunden
+        TT --> Engine: cachedValue
+        deactivate TT
+        Engine --> Engine: return cachedValue
+    else Kein Eintrag
+        TT --> Engine: null
+        deactivate TT
+    end
+end
+
+' Maximizing Player
+alt isMaximizing == true
+    Engine -> Engine: value = -∞
+    Engine -> Game: getAllValidMoves()
+    activate Game
+    Game --> Engine: moves
+    deactivate Game
+    
+    loop für jeden Zug
+        Engine -> Game: clone() & makeMove()
+        activate Game
+        Game --> Engine: nextState
+        deactivate Game
+        
+        Engine -> Engine: minimax(nextState, depth-1,\nα, β, false)
+        Engine --> Engine: childValue
+        
+        Engine -> Engine: value = max(value, childValue)
+        Engine -> Engine: α = max(α, value)
+        
+        alt α >= β (Alpha-Beta Cutoff)
+            Engine -> Engine: stats.cutoffs++
+            Engine --> Engine: break loop
+            note right: Beta-Cutoff:\nKein besserer Zug möglich
+        end
+    end
+    
+    ' Speichere in Transposition Table
+    alt Transposition Table aktiv
+        Engine -> TT: set(stateKey, value)
+        activate TT
+        TT --> Engine: stored
+        deactivate TT
+    end
+    
+    Engine --> Engine: return value
+
+' Minimizing Player
+else isMaximizing == false
+    Engine -> Engine: value = +∞
+    Engine -> Game: getAllValidMoves()
+    activate Game
+    Game --> Engine: moves
+    deactivate Game
+    
+    loop für jeden Zug
+        Engine -> Game: clone() & makeMove()
+        activate Game
+        Game --> Engine: nextState
+        deactivate Game
+        
+        Engine -> Engine: minimax(nextState, depth-1,\nα, β, true)
+        Engine --> Engine: childValue
+        
+        Engine -> Engine: value = min(value, childValue)
+        Engine -> Engine: β = min(β, value)
+        
+        alt β <= α (Alpha-Beta Cutoff)
+            Engine -> Engine: stats.cutoffs++
+            Engine --> Engine: break loop
+            note right: Alpha-Cutoff:\nKein schlechterer Zug möglich
+        end
+    end
+    
+    ' Speichere in Transposition Table
+    alt Transposition Table aktiv
+        Engine -> TT: set(stateKey, value)
+        activate TT
+        TT --> Engine: stored
+        deactivate TT
+    end
+    
+    Engine --> Engine: return value
+end
+
+@enduml

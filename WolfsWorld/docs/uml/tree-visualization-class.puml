@@ -1,0 +1,154 @@
+@startuml Tree Visualization System - Klassendiagramm
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+
+title Tree Visualization System - Klassenübersicht
+
+package "Tree Engine" {
+    class TreeVizEngine {
+        .. Properties ..
+        - iframe: HTMLIFrameElement
+        - iframeWindow: Window
+        - messageCallbacks: Map<string, Function>
+        - nodes: Map<string, NodeData>
+        - edges: Array<EdgeData>
+        - canvas: HTMLCanvasElement
+        - ctx: CanvasRenderingContext2D
+        - scale: number
+        - offsetX: number
+        - offsetY: number
+        .. Initialization ..
+        + constructor(iframeId: string)
+        + init(): void
+        - setupCanvas(): void
+        - setupPostMessage(): void
+        - setupInteraction(): void
+        .. Commands ..
+        + executeCommand(cmd: string, data: Object): void
+        + executeBatch(commands: Array): void
+        .. Tree Operations ..
+        + addNode(id: string, data: NodeData): void
+        + updateNode(id: string, updates: Object): void
+        + highlightNode(id: string, color: string): void
+        + highlightEdge(from: string, to: string, color: string): void
+        + setFocus(nodeId: string): void
+        + clear(): void
+        .. Layout & Rendering ..
+        - layoutTree(): void
+        - render(): void
+        - drawNodes(): void
+        - drawEdges(): void
+        - drawBoardNode(x, y, node): void
+        - drawKnightBoard(ctx, board, size): void
+        - drawGridBoard(ctx, board, size): void
+        - drawLabels(): void
+        - drawOverlay(): void
+        .. View Control ..
+        + resetView(): void
+        + fitTreeToView(): void
+    }
+}
+
+package "Adapters" {
+    abstract class TreeAdapter {
+        {abstract} + buildTree(initialState): TreeData
+    }
+    
+    class DFSTreeAdapter {
+        .. Configuration ..
+        - visitedStates: Set<string>
+        - nodeIdCounter: number
+        - markDuplicates: boolean
+        - maxDepth: number
+        .. Methods ..
+        + buildTree(initialState): TreeData
+        - buildTreeStep(state, parentId, depth): string
+        - isDuplicate(stateKey): boolean
+        - getNodeColor(state): string
+        - getBoardData(state): Object
+    }
+    
+    class BFSTreeAdapter {
+        .. Configuration ..
+        - visitedStates: Set<string>
+        - nodeIdCounter: number
+        - markDuplicates: boolean
+        - maxDepth: number
+        .. Methods ..
+        + buildTree(initialState): TreeData
+        - isDuplicate(stateKey): boolean
+        - getNodeColor(state): string
+        - getBoardData(state): Object
+    }
+    
+    TreeAdapter <|-- DFSTreeAdapter
+    TreeAdapter <|-- BFSTreeAdapter
+}
+
+package "Game State" {
+    interface GameState {
+        + clone(): GameState
+        + getAllValidMoves(): Array
+        + makeMove(move): boolean
+        + getStateKey(): string
+        + isGoal(): boolean
+        + getNextStates(): Array
+    }
+    
+    class KnightBoard {
+        - size: number
+        - grid: Array<Array<number>>
+        - x: number
+        - y: number
+        - moveCount: number
+        - history: Array
+        + move(dx, dy): boolean
+        + undo(): void
+        + getPossibleMoves(): Array
+        + getDegree(x, y): number
+        + isValidMove(x, y): boolean
+    }
+    
+    class RotateBoard {
+        - rows: number
+        - cols: number
+        - grid: Array<Array<number>>
+        - targetId: number
+        + rotate(row, col): boolean
+        + canFall(): boolean
+        + relaxBoardSync(): void
+        + getNextStates(): Array
+    }
+    
+    GameState <|.. KnightBoard
+    GameState <|.. RotateBoard
+}
+
+' Relationships
+TreeVizEngine ..> TreeAdapter : "verwendet"
+DFSTreeAdapter ..> GameState : "visualisiert"
+BFSTreeAdapter ..> GameState : "visualisiert"
+
+note right of TreeVizEngine
+  **Hauptklasse für Baumvisualisierung**
+  - Läuft in iframe mit postMessage
+  - Unterstützt Board-Rendering
+  - Dynamisches Zooming & Scrolling
+end note
+
+note right of DFSTreeAdapter
+  **Tiefensuche (Depth-First Search)**
+  - Zeigt Backtracking-Pfad
+  - Markiert Duplikate mit rotem Rahmen
+  - Für Puzzle-Spiele optimiert
+end note
+
+note right of BFSTreeAdapter
+  **Breitensuche (Breadth-First Search)**
+  - Ebenenweise Expansion
+  - Markiert Duplikate mit rotem Rahmen
+  - Zeigt kürzeste Pfade
+end note
+
+@enduml

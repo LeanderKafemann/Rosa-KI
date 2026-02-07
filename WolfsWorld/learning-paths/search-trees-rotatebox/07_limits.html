@@ -62,7 +62,7 @@
     </div>
 
     <div class="lp-main-content">
-        <iframe id="gameFrame" src="../../../apps/rotateBlock/index.html?level=3&hide_ai=true&hideLevelSelect=true&hideInstructions=true" class="lp-game-frame-full"></iframe>
+        <iframe id="gameFrame" src="../../games/rotatebox.html?level=3&hide_ai=true&hideLevelSelect=true&hideInstructions=true&hideBackBtn=true" class="lp-game-frame-full"></iframe>
     </div>
 
 </div>
@@ -79,7 +79,7 @@ window.COURSE_DATA = {"id":"search-trees-rotatebox","title":"Suchbäume mit Rota
     // Step 1: Activate AI
     document.getElementById('activateAiBtn').addEventListener('click', () => {
         aiActivated = true;
-        document.getElementById('gameFrame').src = "../../../apps/rotateBlock/index.html?level=3&hideLevelSelect=true&hideInstructions=true";
+        document.getElementById('gameFrame').src = "../../games/rotatebox.html?level=3&hideLevelSelect=true&hideInstructions=true&hideBackBtn=true";
         document.getElementById('step2').style.display = 'block';
         document.getElementById('activateAiBtn').style.display = 'none';
     });

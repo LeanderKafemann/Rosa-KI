@@ -21,6 +21,7 @@ const KnightRenderer = {
             cellEven: '#ecf0f1', // Helles Grau
             cellOdd:  '#bdc3c7', // Dunkleres Grau
             visited:  '#2ecc71', // Grün (angenehm)
+            visitedPrev: '#178a3a', // Dunkleres Grün für vorletzten Zug
             visitedText: '#ffffff',
             current:  '#e67e22', // Orange für den Springer
             possible: 'rgba(52, 152, 219, 0.6)', // Blau transparent
@@ -59,6 +60,11 @@ const KnightRenderer = {
         ctx.translate(paddingLeft, 0);
 
         // 2. Gitter & Zellen zeichnen
+        // Vorletztes Feld bestimmen
+        let prevPos = null;
+        if (board.history && board.history.length >= 2) {
+            prevPos = board.history[board.history.length - 2];
+        }
         for (let r = 0; r < size; r++) {
             for (let c = 0; c < size; c++) {
                 const x = c * cellSize;
@@ -70,15 +76,22 @@ const KnightRenderer = {
                 else ctx.fillStyle = COLORS.cellOdd;
                 ctx.fillRect(x, y, cellSize, cellSize);
 
-                // Besuchte Felder
-                if (val > 0) {
-                    // Verblassen alter Züge leicht, damit der Pfad sichtbar ist?
-                    // Nein, lieber klarer Kontrast.
-                    ctx.fillStyle = COLORS.visited;
-                    // Mache es etwas kleiner als die Zelle für schöneren Look
+                // Vorletztes Feld hervorheben (dunkelgrün, aber NICHT aktueller Springer)
+                if (prevPos && prevPos.r === r && prevPos.c === c) {
+                    ctx.fillStyle = COLORS.visitedPrev;
                     const pad = 2;
                     ctx.fillRect(x + pad, y + pad, cellSize - pad*2, cellSize - pad*2);
-                    
+                }
+
+                // Besuchte Felder
+                if (val > 0) {
+                    // Normale besuchte Felder (außer vorletztes und aktuelles)
+                    // Das aktuelle Feld wird später orange gemalt
+                    if (!(prevPos && prevPos.r === r && prevPos.c === c)) {
+                        ctx.fillStyle = COLORS.visited;
+                        const pad = 2;
+                        ctx.fillRect(x + pad, y + pad, cellSize - pad*2, cellSize - pad*2);
+                    }
                     // Zugnummer
                     ctx.fillStyle = COLORS.visitedText;
                     ctx.font = `bold ${cellSize * 0.4}px sans-serif`;

@@ -1,0 +1,195 @@
+@startuml AI System - Klassendiagramm
+!theme plain
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+
+title AI System - Agenten und Algorithmen
+
+package "Agent Interface" {
+    abstract class Agent {
+        # name: string
+        --
+        + constructor(name: string)
+        {abstract} + getAction(gameState): move
+    }
+}
+
+package "AI Agents" {
+    class RandomAgent {
+        --
+        + getAction(gameState): move
+    }
+    
+    class RuleBasedAgent {
+        - rules: DecisionTree
+        --
+        + constructor(rules: DecisionTree)
+        + getAction(gameState): move
+    }
+    
+    class MinimaxAgent {
+        - maxDepth: number
+        - heuristic: Function
+        - config: Object
+        --
+        + constructor(config)
+        + getAction(gameAdapter): move
+    }
+    
+    Agent <|-- RandomAgent
+    Agent <|-- RuleBasedAgent
+    Agent <|-- MinimaxAgent
+}
+
+package "Minimax Engine" {
+    class MinimaxEngine {
+        - transpositionTable: Map
+        - config: MinimaxConfig
+        - stats: Object
+        --
+        + constructor(config)
+        + findBestMove(gameAdapter): Object
+        - minimax(node, depth, alpha, beta, isMax): number
+        - evaluate(gameAdapter): number
+        - orderMoves(moves, gameAdapter): Array
+        - getTranspositionKey(gameAdapter): string
+    }
+    
+    class MinimaxConfig {
+        + maxDepth: number
+        + heuristic: Function
+        + useAlphaBeta: boolean
+        + useTranspositionTable: boolean
+        + useMoveOrdering: boolean
+        + timeLimit: number
+        + logging: boolean
+    }
+    
+    MinimaxEngine o-- MinimaxConfig
+}
+
+package "Heuristics" {
+    class BaseHeuristic {
+        {static} + evaluate(gameAdapter): number
+        {static} + normalize(value, min, max): number
+    }
+    
+    class TTTHeuristic {
+        {static} + evaluate(gameAdapter): number
+        {static} + countThreats(board, player): number
+        {static} + evaluatePosition(board, position): number
+    }
+    
+    class Connect4Heuristic {
+        {static} + evaluate(gameAdapter): number
+        {static} + countWindows(board, player, length): number
+        {static} + evaluateWindow(window, player): number
+        {static} + getCenterControl(board, player): number
+    }
+    
+    BaseHeuristic <|-- TTTHeuristic
+    BaseHeuristic <|-- Connect4Heuristic
+}
+
+package "Rule-Based System" {
+    class DecisionTree {
+        - rootRule: RuleNode
+        --
+        + constructor(rootRule)
+        + evaluate(gameState): move
+        + getActivePath(gameState): Array<string>
+    }
+    
+    abstract class RuleNode {
+        # name: string
+        --
+        + constructor(name)
+        {abstract} + evaluate(gameState): move
+        {abstract} + test(gameState): boolean
+    }
+    
+    class AtomicRule {
+        - action: Function
+        --
+        + constructor(name, action)
+        + evaluate(gameState): move
+    }
+    
+    class RuleGroup {
+        - rules: Array<RuleNode>
+        - mode: string
+        --
+        + constructor(name, rules, mode)
+        + evaluate(gameState): move
+    }
+    
+    class ConditionNode {
+        - condition: Function
+        - trueNode: RuleNode
+        - falseNode: RuleNode
+        --
+        + constructor(name, condition, trueNode, falseNode)
+        + evaluate(gameState): move
+        + test(gameState): boolean
+    }
+    
+    DecisionTree o-- RuleNode
+    RuleNode <|-- AtomicRule
+    RuleNode <|-- RuleGroup
+    RuleNode <|-- ConditionNode
+    RuleGroup o-- "many" RuleNode
+    ConditionNode o-- "2" RuleNode
+}
+
+package "Search Algorithms" {
+    class SearchEngine {
+        --
+        + {static} solve(initialState, algorithm): Object
+        - {static} solveBFS(initialState): Object
+        - {static} solveDFS(initialState, maxDepth): Object
+    }
+    
+    class AlgorithmRunner {
+        - speed: number
+        - isRunning: boolean
+        - stepCallback: Function
+        --
+        + constructor(speed)
+        + start(algorithm, stepCallback): void
+        + stop(): void
+        + setSpeed(speed): void
+        + triggerStep(): void
+    }
+}
+
+' Relationships
+MinimaxAgent ..> MinimaxEngine : "verwendet"
+MinimaxEngine ..> BaseHeuristic : "verwendet"
+RuleBasedAgent ..> DecisionTree : "verwendet"
+SearchEngine ..> GameState : "verarbeitet"
+
+note right of MinimaxEngine
+  **Minimax mit Optimierungen**
+  - Alpha-Beta-Pruning
+  - Transposition Tables
+  - Move Ordering
+  - Iterative Deepening
+  - Time Limiting
+end note
+
+note right of DecisionTree
+  **Regelbasiertes System**
+  - Hierarchische Regeln
+  - Bedingungsknoten
+  - OR/AND-Verknüpfung
+  - Visualisierbar mit RuleVisualizer
+end note
+
+note bottom of SearchEngine
+  **Suchstrategien**
+  - BFS: Breitensuche
+  - DFS: Tiefensuche
+  - A*: Heuristische Suche (geplant)
+end note
+
+@enduml
