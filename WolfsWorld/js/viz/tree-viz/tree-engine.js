@@ -136,7 +136,7 @@ class TreeVizEngine {
         // Node Click Detection
         TreeInteractionEngine.setupNodeClick(
             this.canvas,
-            (canvasX, canvasY) => TreeInteractionEngine.getNodeAtCanvasPoint(canvasX, canvasY, this.nodes, this.viewport),
+            (canvasX, canvasY) => TreeInteractionEngine.getNodeAtCanvasPoint(canvasX, canvasY, this.nodes, this.viewport, this.config),
             (node) => this.handleNodeClick(node)
         );
 

@@ -151,8 +151,8 @@ var TreeRenderer = {
                 ctx.fillText(node.label || node.id, node.x, node.y);
             }
             
-            // Draw expansion indicator if node is expandable
-            if (typeof NodeExpansionEngine !== 'undefined' && NodeExpansionEngine.isExpandable(node)) {
+            // Draw expansion indicator if node is expandable (only if feature enabled)
+            if (config && config.enableTreeExpansion && typeof NodeExpansionEngine !== 'undefined' && NodeExpansionEngine.isExpandable(node)) {
                 NodeExpansionEngine.drawExpansionIndicator(ctx, node, scale);
             }
         }

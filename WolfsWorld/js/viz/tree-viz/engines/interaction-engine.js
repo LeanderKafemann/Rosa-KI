@@ -181,9 +181,10 @@ var TreeInteractionEngine = {
      * @param {number} canvasY
      * @param {Map} nodes
      * @param {Object} viewport
+     * @param {Object} config - TreeVizEngine config (optional, for enableTreeExpansion check)
      * @returns {Object|null} Node oder null
      */
-    getNodeAtCanvasPoint(canvasX, canvasY, nodes, viewport) {
+    getNodeAtCanvasPoint(canvasX, canvasY, nodes, viewport, config) {
         // Transformiere zu World-Koordinaten
         const treeX = (canvasX - viewport.offsetX) / viewport.scale;
         const treeY = (canvasY - viewport.offsetY) / viewport.scale;
@@ -193,8 +194,8 @@ var TreeInteractionEngine = {
         for (let i = nodeArray.length - 1; i >= 0; i--) {
             const node = nodeArray[i];
             
-            // Prüfe zuerst Expansion-Symbol
-            if (NodeExpansionEngine && NodeExpansionEngine.isClickOnExpansionIndicator(node, treeX, treeY)) {
+            // Prüfe zuerst Expansion-Symbol (nur wenn Feature enabled)
+            if (config && config.enableTreeExpansion && NodeExpansionEngine && NodeExpansionEngine.isClickOnExpansionIndicator(node, treeX, treeY)) {
                 node._hitExpansionIndicator = true;
                 return node;
             }
