@@ -32,11 +32,9 @@ var KnightsTourNodeRenderer = {
     },
 
     /**
-     * CLASSIC STYLE: Echtes Schachbrett mit Zahlen + rote Umrandung
-     * Identisch mit der alten Version für beste Lesbarkeit
-     * - Schwarz/Weiße Felder (echtes Schachbrett-Muster)
+     * CLASSIC STYLE: Echtes Schachbrett mit schwarzen Zahlen
+     * - Schwarze/Braune Felder (authentisches Schachbrett-Muster)
      * - Schwarze Zahlen auf Feldern
-     * - ROTE Umrandung um das aktuelle Feld
      */
     renderClassic(ctx, board, centerX, centerY, size, scale) {
         if (!board || !board.grid || !board.size) return;

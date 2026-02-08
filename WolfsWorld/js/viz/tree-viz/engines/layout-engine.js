@@ -56,6 +56,9 @@ var TreeLayoutEngine = {
         const node = typeof nodeId === 'number' ? nodes.get(nodeId) : nodeId;
         if (!node) return;
 
+        // Stop layout recursion if node is collapsed
+        if (node.collapsed) return;
+
         const children = Array.from(nodes.values()).filter(n => n.parentId === node.id);
         if (children.length === 0) return;
 
@@ -84,6 +87,11 @@ var TreeLayoutEngine = {
     calculateSubtreeWidth(nodeId, nodes, config) {
         const node = nodes.get(nodeId);
         if (!node) return config.horizontalSpacing || 100;
+
+        // Leaf node OR collapsed node: Use horizontalSpacing
+        if (node.collapsed) {
+             return config.horizontalSpacing || 100;
+        }
 
         const children = Array.from(nodes.values()).filter(n => n.parentId === node.id);
         if (children.length === 0) {

@@ -430,14 +430,17 @@ class MinimaxTreeAdapter {
         this.commands = [];
         this.sendCommand({ action: 'CLEAR' });
         
-        // Config wieder senden
+        // Config mit dynamischen Farben basierend auf rootPlayer
+        // rootPlayer: 1 = Blue, 2 = Red
+        // MAX-Farbe = Farbe des Root-Spielers
+        const isRootPlayerRed = this.rootPlayer === 2;
         this.sendCommand({ 
             action: 'UPDATE_CONFIG', 
             config: { 
                 showLevelIndicators: true,
                 levelIndicatorType: 'minimax',
-                rootPlayerColor: '#e74c3c',    
-                opponentColor: '#3498db'       
+                rootPlayerColor: isRootPlayerRed ? '#e74c3c' : '#3498db',    // Red or Blue
+                opponentColor: isRootPlayerRed ? '#3498db' : '#e74c3c'       // Blue or Red
             } 
         });
     }

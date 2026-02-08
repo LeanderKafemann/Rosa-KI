@@ -50,7 +50,6 @@ class DFSTreeAdapter {
                     action: 'UPDATE_CONFIG',
                     config: { enableTreeExpansion: false }
                 });
-                console.log('DFSTreeAdapter: TreeVizEngine ready for DFS');
                 // Stop checking when ready
                 if (this.checkInterval) {
                     clearInterval(this.checkInterval);

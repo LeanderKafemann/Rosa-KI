@@ -172,18 +172,14 @@ class TreeVizEngine {
             const isCollapsed = NodeExpansionEngine && NodeExpansionEngine.isCollapsed(node);
             const hitExpansion = node._hitExpansionIndicator;
             
-            console.log('TreeEngine: Node clicked', node.id, 'expandable:', isExpandable, 'collapsed:', isCollapsed, 'hitExpansion:', hitExpansion);
-            
             // Wenn auf Expansion-Symbol geklickt
             if (isExpandable && hitExpansion) {
                 if (isCollapsed) {
                     // Expand
-                    console.log('TreeEngine: Expanding node', node.id);
                     this.expandNode({ nodeId: node.id });
                     return;
                 } else {
                     // Fold
-                    console.log('TreeEngine: Folding node', node.id);
                     this.foldNode({ nodeId: node.id });
                     return;
                 }
@@ -526,8 +522,6 @@ class TreeVizEngine {
         
         if (!NodeExpansionEngine.isExpandable(node)) return;
         
-        console.log('TreeEngine: Expanding node', node.id);
-        
         // Store current viewport state AND disable autoFitZoom
         this._expansionViewportState = {
             scale: this.viewport.scale,
@@ -569,8 +563,6 @@ class TreeVizEngine {
         if (!node) return;
         
         if (!NodeExpansionEngine.isExpandable(node)) return;
-        
-        console.log('TreeEngine: Folding node', node.id);
         
         // Store current viewport state
         const savedViewport = {
@@ -694,6 +686,9 @@ class TreeVizEngine {
 
         node.x = x;
         node.y = y;
+
+        // Stop recursion if node is collapsed
+        if (node.collapsed) return;
 
         const children = Array.from(this.nodes.values()).filter(n => n.parentId === node.id);
         if (children.length > 0) {

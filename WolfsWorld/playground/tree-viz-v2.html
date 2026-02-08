@@ -205,14 +205,11 @@
         }, 5000);
         
         try {
-            console.log('Starting TreeVizEngine initialization...');
             const canvas = document.getElementById('treeCanvas');
             
             if (!canvas) {
                 throw new Error('Canvas element #treeCanvas not found!');
             }
-            
-            console.log('Canvas found:', canvas);
             
             engine = new TreeVizEngine(canvas, {
                 nodeRadius: 40,
@@ -234,25 +231,12 @@
             // Clear timeout on success
             clearTimeout(initTimeout);
             
-            console.log('TreeVizEngine created successfully');
-            
             // Hide loading overlay after successful initialization
             const loadingOverlay = document.getElementById('loading');
             if (loadingOverlay) {
                 loadingOverlay.classList.add('hidden');
                 // Force display:none (backup to CSS hidden class)
                 loadingOverlay.style.display = 'none';
-                console.log('Loading overlay hidden (class + inline style)');
-            } else {
-                console.warn('Loading overlay element not found');
-            }
-            
-            // Verify canvas is visible
-            const canvas2 = document.getElementById('treeCanvas');
-            if (canvas2 && canvas2.offsetHeight > 0) {
-                console.log('Canvas visible and has dimensions:', canvas2.offsetWidth, 'x', canvas2.offsetHeight);
-            } else {
-                console.warn('Canvas not visible or has zero dimensions');
             }
             
         } catch (error) {
@@ -326,9 +310,6 @@
         
         console.log('TreeVizEngine v3.0 initialized');
         console.log('Keyboard shortcuts: R=Reset View, +/-=Zoom');
-        if (showControls) {
-            console.log('Test mode active - controls visible');
-        }
     </script>
 </body>
 </html>

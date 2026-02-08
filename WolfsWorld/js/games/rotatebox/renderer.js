@@ -35,9 +35,6 @@ function drawRotateBoard(board, canvas, ctx) {
             } else if (v === -3) { 
                 ctx.fillStyle = '#ecf0f1'; 
                 ctx.fillRect(x, y, bs, bs);
-                ctx.strokeStyle = '#e74c3c'; 
-                ctx.lineWidth = 2; 
-                ctx.strokeRect(x+2, y+2, bs-4, bs-4);
             } else if (v >= 0) {
                 // Animation Offset beachten
                 const off = (board.fallOffsets && board.fallOffsets[v]) ? board.fallOffsets[v] : 0;

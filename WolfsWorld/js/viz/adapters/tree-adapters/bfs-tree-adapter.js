@@ -49,7 +49,6 @@ class BFSTreeAdapter {
                     action: 'UPDATE_CONFIG',
                     config: { enableTreeExpansion: false }
                 });
-                console.log('BFSTreeAdapter: TreeVizEngine ready');
                 // Stop checking when ready
                 if (this.checkInterval) {
                     clearInterval(this.checkInterval);

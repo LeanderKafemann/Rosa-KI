@@ -215,15 +215,13 @@ var TreeRenderer = {
         } else if (board.size !== undefined && board.grid && Array.isArray(board.grid[0])) {
             // Knights-Tour board (hat size + 2D grid array)
             if (typeof KnightsTourNodeRenderer !== 'undefined') {
-                // Use specialized renderer if available
                 KnightsTourNodeRenderer.render(ctx, board, node.x, node.y, size, scale, 'classic');
-            } else {
-                // Fallback: Use default renderer
-                this.renderKnightBoard(ctx, board, node.x, node.y, size, scale);
             }
         } else if (board.rows !== undefined && board.cols !== undefined) {
-            // RotateBox board (has rows/cols) - use renderRotateBoard directly (from games engine)
-            this.renderRotateBoard(ctx, board, node.x, node.y, size, scale);
+            // RotateBox board (has rows/cols)
+            if (typeof RotateBoxNodeRenderer !== 'undefined') {
+                RotateBoxNodeRenderer.render(ctx, board, node.x, node.y, size, scale);
+            }
         }
 
         // Apply styling (border, glow) - AUS ZENTRALER STYLE_CONFIG
@@ -236,9 +234,11 @@ var TreeRenderer = {
         ctx.shadowBlur = 0;
         
         // Draw Label below the board (if present)
-        // IMPORTANT: Only show "f = ???" labels if node is READY
-        // Evaluation results like "Win = +1", "Max = 5", etc. are shown once evaluated
-        if (node.label && node.label !== node.id) {
+        // HINWEIS: Für KnightsTour und RotateBox verstecken wir Labels, um Überlappungen zu vermeiden.
+        // Für Minimax zeigen wir sie an, da sie wichtige Infos (Max/Min) enthalten können.
+        const shouldShowLabel = !node.boardData || node.boardType === 'minimax';
+
+        if (node.label && node.label !== node.id && shouldShowLabel) {
              // Check if this is a placeholder label that should only show when READY
              const isPlaceholderLabel = node.label.includes('f = ???') || node.label.includes('?');
              const hasReadyStatus = node.status && node.status.has('READY');
@@ -248,156 +248,21 @@ var TreeRenderer = {
              
              if (shouldDrawLabel) {
                  ctx.fillStyle = '#000';
-                 ctx.font = `${12 / scale}px Arial`;
+                 // Fixed font size in world space so it shrinks when zooming out (nodes get small)
+                 ctx.font = '10px Arial';
                  ctx.textAlign = 'center';
                  ctx.textBaseline = 'top';
+                 
                  // Position relative to bottom of board + padding
-                 const labelY = node.y + halfSize + (5 / scale);
+                 const labelY = node.y + halfSize + 5;
                  
                  // Split by newline to handle potential multi-line labels
                  const lines = String(node.label).split('\n');
                  lines.forEach((line, i) => {
-                     ctx.fillText(line, node.x, labelY + (i * 14 / scale));
+                     ctx.fillText(line, node.x, labelY + (i * 12));
                  });
              }
         }
-    },
-
-    /**
-     * Rendert ein Knights-Tour Schachbrett in einem Node
-     * @param {CanvasRenderingContext2D} ctx
-     * @param {Object} board - KnightBoard object
-     * @param {number} centerX - Center X coordinate
-     * @param {number} centerY - Center Y coordinate
-     * @param {number} size - Size of board in pixels
-     * @param {number} scale - Viewport scale
-     */
-    renderKnightBoard(ctx, board, centerX, centerY, size, scale) {
-        if (!board || !board.grid || !board.size) return;
-
-        const boardSize = board.size;
-        const cellSize = size / boardSize;
-        const startX = centerX - size / 2;
-        const startY = centerY - size / 2;
-
-        const COLORS = {
-            cellEven: '#ecf0f1',
-            cellOdd: '#bdc3c7',
-            visited: '#2ecc71',
-            current: '#e67e22'
-        };
-
-        ctx.save();
-
-        // Draw chess board grid
-        for (let r = 0; r < boardSize; r++) {
-            for (let c = 0; c < boardSize; c++) {
-                const x = startX + c * cellSize;
-                const y = startY + r * cellSize;
-                const val = board.grid[r][c];
-
-                // Cell background (checkerboard pattern)
-                if ((r + c) % 2 === 0) {
-                    ctx.fillStyle = COLORS.cellEven;
-                } else {
-                    ctx.fillStyle = COLORS.cellOdd;
-                }
-                ctx.fillRect(x, y, cellSize, cellSize);
-
-                // Visited cell highlight
-                if (val > 0) {
-                    ctx.fillStyle = COLORS.visited;
-                    const pad = Math.max(1, cellSize * 0.1);
-                    ctx.fillRect(x + pad, y + pad, cellSize - pad * 2, cellSize - pad * 2);
-
-                    // Move number
-                    ctx.fillStyle = '#fff';
-                    ctx.font = `bold ${cellSize * 0.5}px Arial`;
-                    ctx.textAlign = 'center';
-                    ctx.textBaseline = 'middle';
-                    ctx.fillText(val, x + cellSize / 2, y + cellSize / 2);
-                }
-            }
-        }
-
-        // Highlight current knight position
-        if (board.position) {
-            const r = board.position.r;
-            const c = board.position.c;
-            const x = startX + c * cellSize;
-            const y = startY + r * cellSize;
-            ctx.fillStyle = COLORS.current;
-            const pad = Math.max(1, cellSize * 0.05);
-            ctx.fillRect(x + pad, y + pad, cellSize - pad * 2, cellSize - pad * 2);
-
-            // Knight symbol (♞)
-            ctx.fillStyle = '#fff';
-            ctx.font = `bold ${cellSize * 0.6}px Arial`;
-            ctx.textAlign = 'center';
-            ctx.textBaseline = 'middle';
-            ctx.fillText('♞', x + cellSize / 2, y + cellSize / 2);
-        }
-
-        ctx.restore();
-    },
-
-    /**
-     * Rendert ein RotateBox Spielbrett in einem Node
-     * @param {CanvasRenderingContext2D} ctx
-     * @param {Object} board - RotateBoard object
-     * @param {number} centerX - Center X coordinate
-     * @param {number} centerY - Center Y coordinate
-     * @param {number} size - Size of board in pixels
-     * @param {number} scale - Viewport scale
-     */
-    renderRotateBoard(ctx, board, centerX, centerY, size, scale) {
-        if (!board || !board.grid || !board.rows || !board.cols) return;
-
-        const COLORS = [
-            '#e74c3c', '#2ecc71', '#f1c40f', '#3498db',
-            '#e67e22', '#9b59b6', '#1abc9c', '#bdc3c7'
-        ];
-
-        const rows = board.rows;
-        const cols = board.cols;
-        const cellSize = Math.min(size / rows, size / cols);
-        const boardWidth = cols * cellSize;
-        const boardHeight = rows * cellSize;
-        const startX = centerX - boardWidth / 2;
-        const startY = centerY - boardHeight / 2;
-
-        ctx.save();
-
-        // Draw grid
-        for (let r = 0; r < rows; r++) {
-            for (let c = 0; c < cols; c++) {
-                const x = startX + c * cellSize;
-                const y = startY + r * cellSize;
-                const v = board.grid[r][c];
-
-                // Empty cell
-                if (v === -2) {
-                    ctx.fillStyle = '#2c3e50';
-                    ctx.fillRect(x, y, cellSize, cellSize);
-                }
-                // Goal cell
-                else if (v === -3) {
-                    ctx.fillStyle = '#ecf0f1';
-                    ctx.fillRect(x, y, cellSize, cellSize);
-                    ctx.strokeStyle = '#e74c3c';
-                    ctx.lineWidth = 2;
-                    ctx.strokeRect(x + 2, y + 2, cellSize - 4, cellSize - 4);
-                }
-                // Piece
-                else if (v >= 0) {
-                    const off = (board.fallOffsets && board.fallOffsets[v]) ? board.fallOffsets[v] : 0;
-                    ctx.fillStyle = COLORS[v % COLORS.length];
-                    ctx.fillRect(x + 1, y - (off * cellSize) + 1, cellSize - 2, cellSize - 2);
-                }
-            }
-        }
-
-        ctx.restore();
     },
 
     /**
@@ -468,44 +333,38 @@ var TreeRenderer = {
         ctx.save();
         
         for (let d = 0; d <= maxDepth; d++) {
-            const y = treeTopY + (d * levelHeight);
+            const y = treeTopY + ((d+0.7) * levelHeight);
             
             // Draw dotted line between levels (except before root)
-            if (d > 1) {
-                const lineY = y - (levelHeight / 2);
+            if (d > 0) {
+                const lineY = y - (levelHeight / 2); // Line in the middle of the level
                 
                 ctx.beginPath();
                 ctx.strokeStyle = '#ccc';
-                ctx.lineWidth = 1;
+                ctx.lineWidth = 2;
                 ctx.setLineDash([5, 5]);
                 ctx.moveTo(visibleLeft, lineY);
                 ctx.lineTo(visibleRight, lineY);
                 ctx.stroke();
                 ctx.setLineDash([]); // Reset dash
-            }
-            
-            // Draw Labels (Max / Min)
-            // Even levels are MAX (Root perspective), Odd are MIN
-            const isMax = (d % 2 === 1);
-            const label = isMax ? 'MAX' : 'MIN';
-            const color = isMax ? maxColor : minColor;
-            
-            // convert screen left + padding to world x
-            // We want it fixed on the left side of the screen
-            // viewport.offsetX is the translation X
-            // visibleLeft is where the left edge of the screen is in world coordinates
-            
-            // To position text at specific SCREEN pixels (e.g. 20px from left):
-            // WorldX = (ScreenX - OffsetX) / Scale
-            const labelX = (10 - viewport.offsetX) / viewport.scale; // 10px from edge
-            const labelY = y; 
+                
+                // Draw Labels (Max / Min) - only for lines between levels
+                // d=1 -> MAX, d=2 -> MIN, d=3 -> MAX, etc.
+                const isMax = (d % 2 === 1);
+                const label = isMax ? 'MAX' : 'MIN';
+                const color = isMax ? maxColor : minColor;
+                
+                // Position label above the line
+                const labelX = (10 - viewport.offsetX) / viewport.scale; // 10px from edge
+                const labelY = lineY - 5; // Position closer to root, just above the line
 
-            ctx.fillStyle = color;
-            // Use scale-invariant font size
-            ctx.font = `bold ${16 / viewport.scale}px Arial`;
-            ctx.textAlign = 'left';
-            ctx.textBaseline = 'middle';
-            ctx.fillText(label, labelX, labelY);
+                ctx.fillStyle = color;
+                // Use scale-invariant font size
+                ctx.font = `bold ${16 / viewport.scale}px Arial`;
+                ctx.textAlign = 'left';
+                ctx.textBaseline = 'bottom';
+                ctx.fillText(label, labelX, labelY);
+            }
         }
         
         ctx.restore();
