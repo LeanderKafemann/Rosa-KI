@@ -50,6 +50,22 @@ window.COURSE_DATA = {"id":"search-trees-rotatebox","title":"Suchbäume mit Rota
 </script>
 <script src="../../js/learning-path.js"></script>
 <script>
+    // Global Keydown Listener: send key events to iframe
+    document.addEventListener('keydown', function(e) {
+        const gameFrame = document.getElementById('gameFrame');
+        if (gameFrame && gameFrame.contentWindow) {
+            gameFrame.contentWindow.postMessage({
+                type: 'keydown',
+                key: e.key,
+                code: e.code,
+                shift: e.shiftKey,
+                ctrl: e.ctrlKey,
+                alt: e.altKey
+            }, '*');
+        }
+    });
+</script>
+<script>
     let rotationCount = 0;
     let aiActivated = false;
     let taskCompleted = false;

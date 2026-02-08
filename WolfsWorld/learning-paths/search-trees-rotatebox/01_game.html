@@ -46,11 +46,34 @@ window.COURSE_DATA = {"id":"search-trees-rotatebox","title":"Suchbäume mit Rota
     let taskCompleted = false;
     window.addEventListener('message', (event) => {
         if (event.data && event.data.type === 'gameWon') {
+            console.log('gameWon event empfangen', event);
             taskCompleted = true;
             document.getElementById('task-status').style.display = 'block';
-            if (window.learningPath) {
-                window.learningPath.enableNextButton();
+            // enableNextButton nur aufrufen, wenn learningPath existiert
+            function tryEnableNextButton(retries = 10) {
+                if (window.learningPath && typeof window.learningPath.enableNextButton === 'function') {
+                    window.learningPath.enableNextButton();
+                } else if (retries > 0) {
+                    setTimeout(() => tryEnableNextButton(retries - 1), 100);
+                }
             }
+            tryEnableNextButton();
+        }
+    });
+</script>
+<script>
+    // Global Keydown Listener: send key events to iframe
+    document.addEventListener('keydown', function(e) {
+        const gameFrame = document.getElementById('gameFrame');
+        if (gameFrame && gameFrame.contentWindow) {
+            gameFrame.contentWindow.postMessage({
+                type: 'keydown',
+                key: e.key,
+                code: e.code,
+                shift: e.shiftKey,
+                ctrl: e.ctrlKey,
+                alt: e.altKey
+            }, '*');
         }
     });
 </script>

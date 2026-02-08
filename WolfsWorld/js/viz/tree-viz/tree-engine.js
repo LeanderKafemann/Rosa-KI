@@ -44,6 +44,7 @@ class TreeVizEngine {
             activeNodeTargetY: options.activeNodeTargetY !== undefined ? options.activeNodeTargetY : 0.5,
             activeNodeTrackingSmooth: options.activeNodeTrackingSmooth !== undefined ? options.activeNodeTrackingSmooth : true,
             activeNodeTrackingDuration: options.activeNodeTrackingDuration || 300,
+            enableTreeExpansion: options.enableTreeExpansion !== undefined ? options.enableTreeExpansion : false,
             ...options
         };
 
@@ -165,24 +166,27 @@ class TreeVizEngine {
      * Handle Node Click - emit postMessage or expand/fold node
      */
     handleNodeClick(node) {
-        const isExpandable = NodeExpansionEngine && NodeExpansionEngine.isExpandable(node);
-        const isCollapsed = NodeExpansionEngine && NodeExpansionEngine.isCollapsed(node);
-        const hitExpansion = node._hitExpansionIndicator;
-        
-        console.log('TreeEngine: Node clicked', node.id, 'expandable:', isExpandable, 'collapsed:', isCollapsed, 'hitExpansion:', hitExpansion);
-        
-        // Wenn auf Expansion-Symbol geklickt
-        if (isExpandable && hitExpansion) {
-            if (isCollapsed) {
-                // Expand
-                console.log('TreeEngine: Expanding node', node.id);
-                this.expandNode({ nodeId: node.id });
-                return;
-            } else {
-                // Fold
-                console.log('TreeEngine: Folding node', node.id);
-                this.foldNode({ nodeId: node.id });
-                return;
+        // Check for expansion indicator click (only if feature enabled)
+        if (this.config.enableTreeExpansion) {
+            const isExpandable = NodeExpansionEngine && NodeExpansionEngine.isExpandable(node);
+            const isCollapsed = NodeExpansionEngine && NodeExpansionEngine.isCollapsed(node);
+            const hitExpansion = node._hitExpansionIndicator;
+            
+            console.log('TreeEngine: Node clicked', node.id, 'expandable:', isExpandable, 'collapsed:', isCollapsed, 'hitExpansion:', hitExpansion);
+            
+            // Wenn auf Expansion-Symbol geklickt
+            if (isExpandable && hitExpansion) {
+                if (isCollapsed) {
+                    // Expand
+                    console.log('TreeEngine: Expanding node', node.id);
+                    this.expandNode({ nodeId: node.id });
+                    return;
+                } else {
+                    // Fold
+                    console.log('TreeEngine: Folding node', node.id);
+                    this.foldNode({ nodeId: node.id });
+                    return;
+                }
             }
         }
         
@@ -515,6 +519,8 @@ class TreeVizEngine {
      * @param {Object} data - {nodeId: nodeId}
      */
     expandNode(data) {
+        if (!this.config.enableTreeExpansion) return;
+        
         const node = this.nodes.get(data.nodeId);
         if (!node) return;
         
@@ -557,6 +563,8 @@ class TreeVizEngine {
      * @param {Object} data - {nodeId: nodeId}
      */
     foldNode(data) {
+        if (!this.config.enableTreeExpansion) return;
+        
         const node = this.nodes.get(data.nodeId);
         if (!node) return;
         
@@ -745,7 +753,7 @@ class TreeVizEngine {
         let nodesToRender = this.nodes;
         let edgesToRender = this.edges;
 
-        if (typeof NodeExpansionEngine !== 'undefined') {
+        if (this.config.enableTreeExpansion && typeof NodeExpansionEngine !== 'undefined') {
             const rootNode = Array.from(this.nodes.values()).find(n => n.parentId === null);
             if (rootNode) {
                 const visibleNodeIds = NodeExpansionEngine.getVisibleNodes(this.nodes, rootNode.id);

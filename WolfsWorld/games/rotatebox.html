@@ -133,5 +133,17 @@
     <script src="../js/games/rotatebox/solver.js"></script>
     
     <script src="../js/games/rotatebox/controller.js"></script>
+<script>
+// Listener für Tastatur-Events vom parent (01_game.html)
+window.addEventListener('message', function(event) {
+    if (event.data && event.data.type === 'keydown') {
+        if (event.data.key === 'ArrowLeft' && window.RotateController) {
+            window.RotateController.handleMove(false);
+        } else if (event.data.key === 'ArrowRight' && window.RotateController) {
+            window.RotateController.handleMove(true);
+        }
+    }
+});
+</script>
 </body>
 </html>

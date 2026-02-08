@@ -142,8 +142,20 @@ const RotateController = {
             this.render();
         }
         
+        // Sende gameState an Parent-Window (für Lernpfad)
+        if (window.parent && window.parent !== window) {
+            window.parent.postMessage({ 
+                type: 'gameState',
+                rotationCount: this.currentBoard.moves
+            }, '*');
+        }
+        
         if (this.currentBoard.won) {
             document.getElementById('winMessage').classList.remove('hidden');
+            // Sende Signal an Parent-Window (für Lernpfad)
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ type: 'gameWon' }, '*');
+            }
         }
         this.updateStats();
         this.render();
@@ -221,9 +233,14 @@ const RotateController = {
     async playSolution() {
         if (this.optimalPath.length === 0 || this.isAnimating) return;
         
+        // Speichere die Lösung, weil reset() sie löscht
+        const savedPath = [...this.optimalPath];
+        
         this.reset();
         await new Promise(r => setTimeout(r, 200));
-        await this.runAISolver(); 
+        
+        // Stelle die Lösung wieder her
+        this.optimalPath = savedPath;
         
         for (const move of this.optimalPath) {
             if(this.currentBoard.won) break;
@@ -233,4 +250,5 @@ const RotateController = {
     }
 };
 
+window.RotateController = RotateController;
 window.onload = () => RotateController.init();

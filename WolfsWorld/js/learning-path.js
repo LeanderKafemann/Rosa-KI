@@ -207,13 +207,11 @@ class LearningPath {
      * Aktiviert den Weiter-Button, wenn die Aufgabe erfüllt wurde
      */
     enableNextButton() {
+        console.log('enableNextButton called');
+        console.log('this:', this);
         this.taskCompleted = true;
-        const nextBtn = document.getElementById('lp-next-btn');
-        if (nextBtn) {
-            nextBtn.style.opacity = '1';
-            nextBtn.style.pointerEvents = 'auto';
-            nextBtn.title = '';
-        }
+        console.log('taskCompleted now:', this.taskCompleted);
+        this.renderNavigation(); // Button sofort aktualisieren
     }
 }
 
