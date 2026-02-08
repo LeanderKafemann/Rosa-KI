@@ -44,6 +44,11 @@ class MinimaxTreeAdapter {
             if (event.data.type === 'TREE_READY') {
                 this.ready = true;
                 if (this.checkInterval) clearInterval(this.checkInterval);
+                // Enable tree expansion for Minimax (important for exploring large search trees)
+                this.sendCommand({
+                    action: 'UPDATE_CONFIG',
+                    config: { enableTreeExpansion: true }
+                });
             }
             else if (event.data.type === 'NODE_EXPANSION_REQUEST') {
                 this.handleExpansionRequest(event.data.nodeId);

@@ -28,6 +28,11 @@ class AlphaBetaTreeAdapter {
             if (!event.data) return;
             if (event.data.type === 'TREE_READY') {
                 this.ready = true;
+                // Explicitly disable tree expansion for Alpha-Beta (full search tree shown)
+                this.sendCommand({
+                    action: 'UPDATE_CONFIG',
+                    config: { enableTreeExpansion: false }
+                });
             }
             else if (event.data.type === 'NODE_EXPANSION_REQUEST') {
                 this.handleExpansionRequest(event.data.nodeId);

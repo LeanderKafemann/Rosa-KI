@@ -44,6 +44,11 @@ class BFSTreeAdapter {
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'TREE_READY') {
                 this.ready = true;
+                // Explicitly disable tree expansion for BFS (full tree shown for level-by-level view)
+                this.sendCommand({
+                    action: 'UPDATE_CONFIG',
+                    config: { enableTreeExpansion: false }
+                });
                 console.log('BFSTreeAdapter: TreeVizEngine ready');
                 // Stop checking when ready
                 if (this.checkInterval) {

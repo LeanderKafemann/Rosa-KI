@@ -45,6 +45,11 @@ class DFSTreeAdapter {
         window.addEventListener('message', (event) => {
             if (event.data && event.data.type === 'TREE_READY') {
                 this.ready = true;
+                // Explicitly disable tree expansion for DFS (full tree shown for path tracing)
+                this.sendCommand({
+                    action: 'UPDATE_CONFIG',
+                    config: { enableTreeExpansion: false }
+                });
                 console.log('DFSTreeAdapter: TreeVizEngine ready for DFS');
                 // Stop checking when ready
                 if (this.checkInterval) {
