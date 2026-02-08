@@ -166,8 +166,8 @@ class TreeVizEngine {
      * Handle Node Click - emit postMessage or expand/fold node
      */
     handleNodeClick(node) {
-        // Check for expansion indicator click (only if feature enabled)
-        if (this.config.enableTreeExpansion) {
+        // Check for expansion indicator click (disabled only if enableTreeExpansion === false)
+        if (this.config.enableTreeExpansion !== false) {
             const isExpandable = NodeExpansionEngine && NodeExpansionEngine.isExpandable(node);
             const isCollapsed = NodeExpansionEngine && NodeExpansionEngine.isCollapsed(node);
             const hitExpansion = node._hitExpansionIndicator;
@@ -519,7 +519,7 @@ class TreeVizEngine {
      * @param {Object} data - {nodeId: nodeId}
      */
     expandNode(data) {
-        if (!this.config.enableTreeExpansion) return;
+        if (this.config.enableTreeExpansion === false) return;
         
         const node = this.nodes.get(data.nodeId);
         if (!node) return;
@@ -563,7 +563,7 @@ class TreeVizEngine {
      * @param {Object} data - {nodeId: nodeId}
      */
     foldNode(data) {
-        if (!this.config.enableTreeExpansion) return;
+        if (this.config.enableTreeExpansion === false) return;
         
         const node = this.nodes.get(data.nodeId);
         if (!node) return;
@@ -753,7 +753,7 @@ class TreeVizEngine {
         let nodesToRender = this.nodes;
         let edgesToRender = this.edges;
 
-        if (this.config.enableTreeExpansion && typeof NodeExpansionEngine !== 'undefined') {
+        if (this.config.enableTreeExpansion !== false && typeof NodeExpansionEngine !== 'undefined') {
             const rootNode = Array.from(this.nodes.values()).find(n => n.parentId === null);
             if (rootNode) {
                 const visibleNodeIds = NodeExpansionEngine.getVisibleNodes(this.nodes, rootNode.id);

@@ -151,9 +151,12 @@ var TreeRenderer = {
                 ctx.fillText(node.label || node.id, node.x, node.y);
             }
             
-            // Draw expansion indicator if node is expandable (only if feature enabled)
-            if (config && config.enableTreeExpansion && typeof NodeExpansionEngine !== 'undefined' && NodeExpansionEngine.isExpandable(node)) {
-                NodeExpansionEngine.drawExpansionIndicator(ctx, node, scale);
+            // Draw expansion indicator if node is expandable (disabled only if enableTreeExpansion === false)
+            if (typeof NodeExpansionEngine !== 'undefined' && NodeExpansionEngine.isExpandable(node)) {
+                // Skip only if explicitly disabled
+                if (!config || config.enableTreeExpansion !== false) {
+                    NodeExpansionEngine.drawExpansionIndicator(ctx, node, scale);
+                }
             }
         }
     },

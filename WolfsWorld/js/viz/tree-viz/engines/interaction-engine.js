@@ -194,10 +194,13 @@ var TreeInteractionEngine = {
         for (let i = nodeArray.length - 1; i >= 0; i--) {
             const node = nodeArray[i];
             
-            // Prüfe zuerst Expansion-Symbol (nur wenn Feature enabled)
-            if (config && config.enableTreeExpansion && NodeExpansionEngine && NodeExpansionEngine.isClickOnExpansionIndicator(node, treeX, treeY)) {
-                node._hitExpansionIndicator = true;
-                return node;
+            // Prüfe zuerst Expansion-Symbol (skip only if enableTreeExpansion === false)
+            if (NodeExpansionEngine && NodeExpansionEngine.isClickOnExpansionIndicator(node, treeX, treeY)) {
+                // Skip only if explicitly disabled
+                if (!config || config.enableTreeExpansion !== false) {
+                    node._hitExpansionIndicator = true;
+                    return node;
+                }
             }
             
             // Dann prüfe Node selbst
