@@ -276,7 +276,9 @@
     <script src="../js/viz/tree-viz/utils/node-status-manager.js"></script>
     
     <!-- Tree Adapter -->
+    <script src="../js/viz/adapters/tree-adapters/base-tree-adapter.js"></script>
     <script src="../js/viz/adapters/tree-adapters/minimax-tree-adapter.js"></script>
+    <script src="../js/viz/adapters/tree-adapters/alpha-beta-tree-adapter.js"></script>
 
     <script>
         /**
@@ -467,15 +469,35 @@
         }
 
         /**
+         * Checks and updates the adapter based on selected algorithm
+         */
+        function updateAdapter(algo) {
+            let requiredClass = MinimaxTreeAdapter;
+            if (algo === 'alphabeta') {
+                requiredClass = AlphaBetaTreeAdapter;
+            }
+            // Note: 'limited' uses MinimaxTreeAdapter with depth limit
+            
+            if (!adapter || !(adapter instanceof requiredClass)) {
+                console.log(`Switching adapter to ${requiredClass.name}`);
+                if (adapter && adapter.destroy) adapter.destroy();
+                adapter = new requiredClass(iframe);
+            }
+        }
+
+        /**
          * Startet Minimax-Visualisierung (LIVE nach jedem Zug)
          */
         async function visualizeMinimax() {
+            const algo = document.getElementById('algoSelect').value;
+            updateAdapter(algo);
+            
             if (!adapter || !adapter.ready) {
                 console.warn('Adapter not ready yet, retrying...');
                 setTimeout(visualizeMinimax, 100);
                 return;
             }
-            const algo = document.getElementById('algoSelect').value;
+            
             const maxDepth = parseInt(document.getElementById('depthInput').value);
             document.getElementById('stats').textContent = 'Berechne Minimax-Baum...';
             try {

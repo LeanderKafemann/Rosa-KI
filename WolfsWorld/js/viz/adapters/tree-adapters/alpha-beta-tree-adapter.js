@@ -2,70 +2,24 @@
  * @fileoverview Alpha-Beta Tree Adapter - Visualisierung mit Pruning
  * 
  * Basiert auf MinimaxTreeAdapter, fügt Alpha-Beta Pruning hinzu.
- * - Interactive Pruning: Wenn ein Knoten bewertet wird, der einen Cutoff verursacht,
- *   werden verleibende Geschwister automatisch PRUNED.
- * 
- * @class AlphaBetaTreeAdapter
- * @version 1.0
  */
-class AlphaBetaTreeAdapter {
-    constructor(iframeElement) {
-        this.iframe = iframeElement;
-        this.nodeIdCounter = 0;
-        this.nodeMap = new Map();
-        this.ready = false;
-        this.commands = [];
-        
-        // State management
-        this.currentGameState = null;
-        this.currentConfig = null;
-        this.nodeStates = new Map(); 
-        
-        // Structure: id -> { parentId, childrenIds[], status, value, alpha, beta, depth, isMaximizing }
-        this.treeStructure = new Map(); 
-        
-        window.addEventListener('message', (event) => {
-            if (!event.data) return;
-            if (event.data.type === 'TREE_READY') {
-                this.ready = true;
-                // Explicitly disable tree expansion for Alpha-Beta (full search tree shown)
-                this.sendCommand({
-                    action: 'UPDATE_CONFIG',
-                    config: { enableTreeExpansion: false }
-                });
-            }
-            else if (event.data.type === 'NODE_EXPANSION_REQUEST') {
-                this.handleExpansionRequest(event.data.nodeId);
-            }
-            else if (event.data.type === 'NODE_CLICKED') {
-                this.handleNodeClick(event.data.nodeId);
-            }
+class AlphaBetaTreeAdapter extends MinimaxTreeAdapter {
+    onTreeReady() {
+        super.onTreeReady();
+        this.sendCommand({
+            action: 'UPDATE_CONFIG',
+            config: { enableTreeExpansion: false }
         });
-        
-        this.startHandshake();
-    }
-
-    startHandshake() {
-        setTimeout(() => { this.ready = true; }, 500);
-    }
-    
-    sendCommand(command) {
-        if (!this.iframe || !this.iframe.contentWindow) return;
-        this.iframe.contentWindow.postMessage({ type: 'TREE_COMMAND', command }, '*');
-    }
-
-    getBoardKey(board) {
-        return board.getStateKey ? board.getStateKey() : JSON.stringify(board.grid || board);
     }
 
     async visualizeSearch(gameState, config) {
         this.currentGameState = gameState;
         this.currentConfig = config;
-        // Speichere den Root-Spieler für dynamische Farben
         this.rootPlayer = gameState.currentPlayer;
+        
         this.reset();
         
-        // Root Node: Alpha = -Inf, Beta = +Inf
+        // Root Node with Alpha/Beta
         const rootId = this.createNode(gameState, null, {
             depth: 0,
             isMaximizing: true,
@@ -91,140 +45,50 @@ class AlphaBetaTreeAdapter {
         
         return { bestMove: null };
     }
-    
-    flushCommands() {
-        if (this.commands.length > 0) {
-            this.sendCommand({ action: 'BATCH', commands: this.commands });
-            this.commands = [];
-        }
-    }
 
-
-
-    createNode(board, parentId, metadata) {
-        const nodeId = this.nodeIdCounter++;
-        const stateKey = this.getBoardKey(board);
-        this.nodeMap.set(stateKey, nodeId);
-        
-        const command = {
-            action: 'ADD_NODE',
-            id: nodeId,
-            label: "", // Initially empty
-            boardData: {
-                grid: [...board.grid],
-                currentPlayer: board.currentPlayer,
-                size: board.size || 3,
-                winner: board.winner
-            },
-            boardType: 'minimax',
-            metadata: { ...metadata },
-            status: 'WAIT'
-        };
-        
-        if (parentId !== null) command.parentId = parentId;
-        
-        this.commands.push(command);
-        return nodeId;
+    getInitialConfig() {
+        const config = super.getInitialConfig();
+        // Override for AlphaBeta
+        config.enableTreeExpansion = false;
+        return config;
     }
 
     /**
-     * Expandiert Node und gibt Kindern aktuelle Alpha/Beta Fenster.
+     * Override metadata creation to include Alpha/Beta from parent
      */
-    expandNodeChildren(nodeId, state) {
-        if (state.winner !== 0) return; 
-
-        const parentData = this.treeStructure.get(nodeId);
+    _createChildMetadata(nodeId, childState, move, currentData) {
         // Calculate current effective alpha/beta for NEW children
-        // (Though in Expand-Then-Evaluate, this is just the inherited values)
-        const currentAlpha = parentData ? parentData.alpha : -Infinity;
-        const currentBeta = parentData ? parentData.beta : Infinity;
+        // (Inherit from parent)
+        const currentAlpha = currentData ? currentData.alpha : -Infinity;
+        const currentBeta = currentData ? currentData.beta : Infinity;
 
-        const validMoves = state.getAllValidMoves();
-        const currentDepth = parentData ? parentData.depth : 0;
-        const isMaximizing = (currentDepth % 2 === 0);
-        const childIsMax = !isMaximizing;
-        
-        for (const move of validMoves) {
-            const childState = state.clone();
-            childState.makeMove(move);
-            
-            const childId = this.createNode(childState, nodeId, {
-                depth: currentDepth + 1,
-                isMaximizing: childIsMax,
-                inheritedAlpha: currentAlpha,
-                inheritedBeta: currentBeta
-            });
-            
-            this.nodeStates.set(childId, childState);
-            
-            const childStruct = {
-                parentId: nodeId,
-                children: [],
-                status: 'WAIT',
-                value: null,
-                depth: currentDepth + 1,
-                isMaximizing: childIsMax,
-                isTerminal: (childState.winner !== 0 || childState.getAllValidMoves().length === 0),
-                alpha: currentAlpha, 
-                beta: currentBeta
-            };
-            this.treeStructure.set(childId, childStruct);
-            
-            if (parentData) parentData.children.push(childId);
-            
-            if (!childStruct.isTerminal) {
-                this.commands.push({ action: 'MARK_EXPANDABLE', id: childId });
-            }
-            
-            this.checkNodeStatus(childId);
-        }
-        
-        this.checkNodeStatus(nodeId);
+        return {
+            depth: currentData.depth + 1,
+            isMaximizing: !currentData.isMaximizing,
+            inheritedAlpha: currentAlpha,
+            inheritedBeta: currentBeta
+        };
+    }
+
+    _createChildStructure(childId, nodeId, childState, currentData) {
+        const currentAlpha = currentData ? currentData.alpha : -Infinity;
+        const currentBeta = currentData ? currentData.beta : Infinity;
+
+        return {
+            parentId: nodeId,
+            children: [],
+            status: 'WAIT',
+            value: null,
+            depth: currentData.depth + 1,
+            isMaximizing: !currentData.isMaximizing,
+            isTerminal: (childState.winner !== 0 || childState.getAllValidMoves().length === 0),
+            alpha: currentAlpha,
+            beta: currentBeta
+        };
     }
 
     /**
-     * Ready logic: Leaf (Terminal) or All Children Evaluated/Pruned
-     */
-    checkNodeStatus(nodeId) {
-        const data = this.treeStructure.get(nodeId);
-        if (!data) return;
-        if (data.status === 'EVALUATED' || data.status === 'PRUNED') return;
-        
-        let newStatus = 'WAIT';
-        const state = this.nodeStates.get(nodeId);
-        const isTerminal = state && (state.winner !== 0 || state.getAllValidMoves().length === 0);
-        
-        // 1. Leaf
-        if (data.children.length === 0) {
-            if (isTerminal) newStatus = 'READY';
-            else newStatus = 'WAIT';
-        } 
-        // 2. Inner Node
-        else {
-            // Include PRUNED in "done" check
-            const allChildrenDone = data.children.every(childId => {
-                const child = this.treeStructure.get(childId);
-                return child && (child.status === 'EVALUATED' || child.status === 'PRUNED');
-            });
-            
-            if (allChildrenDone) newStatus = 'READY';
-            else newStatus = 'WAIT';
-        }
-        
-        if (newStatus !== data.status) {
-            NodeStatusManager.setNodeStatus(nodeId, newStatus, [], this.treeStructure, this.commands);
-        }
-    }
-
-    handleNodeClick(nodeId) {
-        const data = this.treeStructure.get(nodeId);
-        if (data && data.status === 'READY') {
-            this.evaluateNode(nodeId);
-        }
-    }
-
-    /**
-     * Evaluation + Pruning Logic
+     * Führt die Bewertung eines Knotens durch.
      */
     evaluateNode(nodeId) {
         const data = this.treeStructure.get(nodeId);
@@ -345,41 +209,13 @@ class AlphaBetaTreeAdapter {
             // Mark all WAIT/READY siblings as PRUNED
             parent.children.forEach(childId => {
                 const sib = this.treeStructure.get(childId);
+                // Important: Prune even if not EVALUATED. 
+                // Don't prune EVALUATED nodes (they are the proof).
                 if (sib && sib.status !== 'EVALUATED' && sib.status !== 'PRUNED') {
                      sib.value = null; 
                      NodeStatusManager.setNodeStatus(childId, 'PRUNED', [], this.treeStructure, this.commands);
                 }
             });
         }
-    }
-
-    handleExpansionRequest(nodeId) {
-        if (this.nodeStates.has(nodeId)) {
-             this.expandNodeChildren(nodeId, this.nodeStates.get(nodeId));
-        }
-        this.flushCommands();
-    }
-    
-    reset() {
-        this.nodeIdCounter = 0;
-        this.nodeMap.clear();
-        this.treeStructure.clear();
-        this.nodeStates.clear();
-        this.commands = [];
-        this.sendCommand({ action: 'CLEAR' });
-        
-        // Config mit dynamischen Farben basierend auf rootPlayer
-        // rootPlayer: 1 = Blue, 2 = Red
-        // MAX-Farbe = Farbe des Root-Spielers
-        const isRootPlayerRed = this.rootPlayer === 2;
-        this.sendCommand({ 
-            action: 'UPDATE_CONFIG', 
-            config: { 
-                showLevelIndicators: true,
-                levelIndicatorType: 'minimax',
-                rootPlayerColor: isRootPlayerRed ? '#e74c3c' : '#3498db',    // Red or Blue
-                opponentColor: isRootPlayerRed ? '#3498db' : '#e74c3c'       // Blue or Red
-            } 
-        });
     }
 }

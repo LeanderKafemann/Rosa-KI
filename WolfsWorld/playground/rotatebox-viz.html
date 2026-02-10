@@ -208,12 +208,26 @@
             if (hideControls) {
                 document.querySelector('.viz-toolbar').style.display = 'none';
             }
-            
+
+            // Menü-Button deaktivieren, falls disableBackButton=true
+            const disableBackButton = urlParams.get('disableBackButton') === 'true';
+            if (disableBackButton) {
+                const backBtn = document.querySelector('.btn-back');
+                if (backBtn) {
+                    backBtn.classList.add('disabled');
+                    backBtn.setAttribute('tabindex', '-1');
+                    backBtn.setAttribute('aria-disabled', 'true');
+                    backBtn.addEventListener('click', function(e) { e.preventDefault(); });
+                    backBtn.style.pointerEvents = 'none';
+                    backBtn.style.opacity = '0.5';
+                }
+            }
+
             // Einzelne Controls verstecken
             const showLevelSelect = urlParams.get('showLevelSelect') !== 'false';
             const showDuplicateToggle = urlParams.get('showDuplicateToggle') !== 'false';
             const showAlgoSelect = urlParams.get('showAlgoSelect') !== 'false';
-            
+
             if (!showLevelSelect) {
                 document.querySelector('#levelSelect').closest('.viz-control-group').style.display = 'none';
             }
@@ -223,7 +237,7 @@
             if (!showAlgoSelect) {
                 document.querySelector('#algoSelect').closest('.viz-control-group').style.display = 'none';
             }
-            
+
             // Parameter-basierte Defaults setzen
             if (urlParams.has('level')) {
                 document.getElementById('levelSelect').value = urlParams.get('level');
@@ -234,7 +248,7 @@
             if (urlParams.has('duplicates')) {
                 document.getElementById('chkDuplicates').checked = urlParams.get('duplicates') === 'true';
             }
-            
+
             // Event Listeners für automatische Updates bei ALLEN Änderungen
             document.getElementById('levelSelect').addEventListener('change', updateTree);
             document.getElementById('depthInput').addEventListener('change', updateTree);

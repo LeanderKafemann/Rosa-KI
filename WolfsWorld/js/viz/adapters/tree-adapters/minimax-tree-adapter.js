@@ -1,78 +1,21 @@
 /**
  * @fileoverview Minimax Tree Adapter - Visualisierung des Minimax Algorithmus
- * 
- * Konvertiert Minimax-Suchbaum in TreeVizEngine-Kommandos.
- * Unterstützt verschiedene Algorithmus-Varianten:
- * - Standard Minimax (vollständige Exploration)
- * - Alpha-Beta Pruning (mit Pruning-Markierungen)
- * - Tiefenbegrenzung (mit Heuristik-Bewertung)
- * - Interactive Evaluation Mode: Manuelles Bewerten durch Klicken
- * 
- * Status-Management: Nutzt zentrale NodeStatusManager Klasse
- * (siehe: /viz/tree-viz/utils/node-status-manager.js)
- * 
- * @class MinimaxTreeAdapter
- * @author Alexander Wolf
- * @version 2.0
+ * ...
  */
-class MinimaxTreeAdapter {
-    /**
-     * Erstellt einen neuen Minimax Tree Adapter.
-     * @param {HTMLIFrameElement} iframeElement - Das iframe-Element mit der TreeVizEngine.
-     */
+class MinimaxTreeAdapter extends BaseTreeAdapter {
     constructor(iframeElement) {
-        this.iframe = iframeElement;
-        this.nodeIdCounter = 0;
-        this.nodeMap = new Map();
-        this.ready = false;
-        this.commands = [];
-        this.stats = { nodesVisited: 0, nodesPruned: 0 }; // Removed maxDepth stat
-        
-        // State management
-        this.currentGameState = null;
-        this.currentConfig = null;
-        this.nodeStates = new Map(); // id -> GameState
-        this.rootPlayer = null; // Speichert welcher Spieler am Root startet (für relative Bewertung)
-        
-        // Structure for Interactive Mode
-        this.treeStructure = new Map(); // id -> { parentId, childrenIds[], status, value }
-        
-        // Listen for messages
-        window.addEventListener('message', (event) => {
-            if (!event.data) return;
-            
-            if (event.data.type === 'TREE_READY') {
-                this.ready = true;
-                if (this.checkInterval) clearInterval(this.checkInterval);
-                // Enable tree expansion for Minimax (important for exploring large search trees)
-                this.sendCommand({
-                    action: 'UPDATE_CONFIG',
-                    config: { enableTreeExpansion: true }
-                });
-            }
-            else if (event.data.type === 'NODE_EXPANSION_REQUEST') {
-                this.handleExpansionRequest(event.data.nodeId);
-            }
-            else if (event.data.type === 'NODE_CLICKED') {
-                this.handleNodeClick(event.data.nodeId);
-            }
-        });
-        
-        this.startHandshake();
+        super(iframeElement);
+        this.stats = { nodesVisited: 0, nodesPruned: 0 };
     }
 
-    startHandshake() {
+    onTreeReady() {
+        super.onTreeReady();
         if (this.checkInterval) clearInterval(this.checkInterval);
-        setTimeout(() => { this.ready = true; }, 500);
-    }
-    
-    sendCommand(command) {
-        if (!this.iframe || !this.iframe.contentWindow) return;
-        this.iframe.contentWindow.postMessage({ type: 'TREE_COMMAND', command }, '*');
-    }
-
-    getBoardKey(board) {
-        return board.getStateKey ? board.getStateKey() : JSON.stringify(board.grid || board);
+        // Enable tree expansion for Minimax
+        this.sendCommand({
+            action: 'UPDATE_CONFIG',
+            config: { enableTreeExpansion: true }
+        });
     }
 
     /**
@@ -83,13 +26,9 @@ class MinimaxTreeAdapter {
         this.currentConfig = config;
         
         // Speichere den Root-Spieler für relative Bewertung
-        // currentPlayer kann 1 (Blue) oder 2 (Red) sein
         this.rootPlayer = gameState.currentPlayer;
         
         this.reset();
-        
-        // Initialsierung
-        this.commands = [];
         
         // Root Node erstellen
         const rootId = this.createNode(gameState, null, {
@@ -118,88 +57,62 @@ class MinimaxTreeAdapter {
         
         return { bestMove: null };
     }
-    
-    flushCommands() {
-        if (this.commands.length > 0) {
-            this.sendCommand({ action: 'BATCH', commands: this.commands });
-            this.commands = [];
-        }
-    }
 
-
-
-    /**
-     * Erstellt und registriert einen Knoten.
-     */
-    createNode(board, parentId, metadata) {
-        const nodeId = this.nodeIdCounter++;
-        const stateKey = this.getBoardKey(board);
-        this.nodeMap.set(stateKey, nodeId);
-        
-        // SIMPLIFIED: Keine Beschriftung bei creation ("f = ???" weg)
-        let label = "";
-        
-        // SIMPLIFIED: Initial immer WAIT
-        const status = 'WAIT';
-        
-        const command = {
-            action: 'ADD_NODE',
-            id: nodeId,
-            label: label,
-            boardData: {
-                grid: [...board.grid], // Copy grid
-                currentPlayer: board.currentPlayer,
-                size: board.size || 3,
-                winner: board.winner
-            },
-            boardType: 'minimax',
-            metadata: { ...metadata },
-            status: status
+    getInitialConfig() {
+        const isRootPlayerRed = this.rootPlayer === 2;
+        return { 
+            showLevelIndicators: true,
+            levelIndicatorType: 'minimax',
+            rootPlayerColor: isRootPlayerRed ? '#e74c3c' : '#3498db',    // Red or Blue
+            opponentColor: isRootPlayerRed ? '#3498db' : '#e74c3c',       // Blue or Red
+            enableTreeExpansion: true 
         };
-        
-        if (parentId !== null) command.parentId = parentId;
-        
-        this.commands.push(command);
-        return nodeId;
     }
 
     /**
-     * Expandiert Kinder eines Knotens.
-     * SIMPLIFIED: Removes maxDepth logic entirely.
+     * Helper to create child metadata. Can be overridden.
      */
+    _createChildMetadata(nodeId, childState, move, currentData) {
+        return {
+            depth: currentData.depth + 1,
+            isMaximizing: !currentData.isMaximizing,
+            move: move,
+            value: null
+        };
+    }
+    
+    /**
+     * Helper to create additional tree structure data. Can be overridden.
+     */
+    _createChildStructure(childId, nodeId, childState, currentData) {
+        return {
+            parentId: nodeId,
+            children: [],
+            status: 'WAIT',
+            value: null,
+            depth: currentData.depth + 1,
+            isMaximizing: !currentData.isMaximizing,
+            isTerminal: (childState.winner !== 0 || childState.getAllValidMoves().length === 0)
+        };
+    }
+
     expandNodeChildren(nodeId, state) {
         if (state.winner !== 0) return; // Terminal
         
         const validMoves = state.getAllValidMoves();
         const currentData = this.treeStructure.get(nodeId);
-        const currentDepth = currentData ? currentData.depth : 0;
-        
-        const isMaximizing = (currentDepth % 2 === 0); // Root (0) is MAX
-        const childIsMax = !isMaximizing;
         
         for (const move of validMoves) {
             const childState = state.clone();
             childState.makeMove(move);
             
-            const childId = this.createNode(childState, nodeId, {
-                depth: currentDepth + 1,
-                isMaximizing: childIsMax,
-                move: move,
-                value: null
-            });
+            const metadata = this._createChildMetadata(nodeId, childState, move, currentData);
+            const childId = this.createNode(childState, nodeId, metadata);
             
             this.nodeStates.set(childId, childState);
             
             // Update Structure
-            const childStruct = {
-                parentId: nodeId,
-                children: [],
-                status: 'WAIT',
-                value: null,
-                depth: currentDepth + 1,
-                isMaximizing: childIsMax,
-                isTerminal: (childState.winner !== 0 || childState.getAllValidMoves().length === 0)
-            };
+            const childStruct = this._createChildStructure(childId, nodeId, childState, currentData);
             this.treeStructure.set(childId, childStruct);
             
             // Add to parent
@@ -214,9 +127,16 @@ class MinimaxTreeAdapter {
             this.checkNodeStatus(childId);
         }
         
-        // Re-check parent status now that it has children
         this.checkNodeStatus(nodeId);
     }
+
+    // checkNodeStatus, handleNodeClick, evaluateNode remain mostly the same 
+    // but I need to make sure I don't delete them if they are not in the newString.
+    // I will use replace_string_in_file for parts, but since I am changing the class heritage and 
+    // removing methods, a full overwrite or large chunk replace is better.
+    // However, createNode is now in Base, but Minimax had `status='WAIT'` and `label=""`. Base has those defaults too.
+    
+    // I will replace from "class MinimaxTreeAdapter" down to "expandNodeChildren" end.
 
     /**
      * Prüft und aktualisiert den Status eines Knotens.
@@ -250,7 +170,8 @@ class MinimaxTreeAdapter {
             // "Wenn alle Kindknoten bewertet sind -> Status Ready"
             const allChildrenEvaluated = data.children.every(childId => {
                 const child = this.treeStructure.get(childId);
-                return child && child.status === 'EVALUATED';
+                // Allow EVALUATED or PRUNED (needed for Alpha-Beta inheritance)
+                return child && (child.status === 'EVALUATED' || child.status === 'PRUNED');
             });
             
             if (allChildrenEvaluated) {
@@ -407,41 +328,5 @@ class MinimaxTreeAdapter {
         }
         
         this.flushCommands();
-    }
-
-    handleExpansionRequest(nodeId) {
-        // Handle node expansion request from visualization
-        this.commands = [];
-        const data = this.treeStructure.get(nodeId);
-        
-        // Only expand if we have state
-        if (this.nodeStates.has(nodeId)) {
-            // Force expansion completely ignored, simpler logic
-            this.expandNodeChildren(nodeId, this.nodeStates.get(nodeId));
-        }
-        this.flushCommands();
-    }
-    
-    reset() {
-        this.nodeIdCounter = 0;
-        this.nodeMap.clear();
-        this.treeStructure.clear();
-        this.nodeStates.clear();
-        this.commands = [];
-        this.sendCommand({ action: 'CLEAR' });
-        
-        // Config mit dynamischen Farben basierend auf rootPlayer
-        // rootPlayer: 1 = Blue, 2 = Red
-        // MAX-Farbe = Farbe des Root-Spielers
-        const isRootPlayerRed = this.rootPlayer === 2;
-        this.sendCommand({ 
-            action: 'UPDATE_CONFIG', 
-            config: { 
-                showLevelIndicators: true,
-                levelIndicatorType: 'minimax',
-                rootPlayerColor: isRootPlayerRed ? '#e74c3c' : '#3498db',    // Red or Blue
-                opponentColor: isRootPlayerRed ? '#3498db' : '#e74c3c'       // Blue or Red
-            } 
-        });
     }
 }
