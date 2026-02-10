@@ -1,0 +1,11 @@
+/* Page-specific styles for playground/rotatebox-viz.html */
+/* Override für Full-Screen Layout */
+        body { 
+            margin: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+            background: #f0f3f4;
+        }

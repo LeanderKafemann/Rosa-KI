@@ -1,0 +1,46 @@
+/* Page-specific styles for games/rotatebox.html */
+/* Layout Fixes basierend auf deinem Original */
+        body { margin: 0; background: #f0f2f5; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; }
+        
+        /* Container Setup wie in deiner Sandbox */
+        #container { display: flex; width: 100%; height: 100%; }
+        
+        #menu { 
+            width: 300px; 
+            background: white; 
+            border-right: 1px solid #ddd; 
+            padding: 20px; 
+            box-shadow: 2px 0 10px rgba(0,0,0,0.05); 
+            z-index: 10; 
+            display: flex; 
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        #game-area { 
+            flex-grow: 1; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            background: #dfe6e9; 
+            position: relative;
+        }
+
+        /* Canvas Begrenzung damit es nicht riesig wird */
+        canvas { 
+            background: white; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
+            border-radius: 8px;
+            max-width: 90vh; 
+            max-height: 90vh;
+        }
+
+        .control-group { margin-bottom: 20px; }
+        
+        .primary-btn { 
+            background: #3498db; color: white; border: none; padding: 10px; 
+            width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; 
+        }
+        .primary-btn:hover { background: #2980b9; }
+        
+        .hidden { display: none !important; }

@@ -1,0 +1,14 @@
+/* Page-specific styles for games/tictactoe-menu.html */
+/* Zentrierung für das Menü */
+        body { 
+            display: block; 
+            overflow-y: auto; /* Scrollbar erlauben */
+            height: auto;
+        }
+        .menu-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        h1 { color: #2c3e50; margin-bottom: 40px; }

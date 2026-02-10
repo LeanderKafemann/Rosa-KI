@@ -1,0 +1,16 @@
+/* Page-specific styles for games/ttt-3d.html */
+/* Spezielles Layout für 3D: Split View im Game Area */
+        .game-split {
+            display: flex;
+            flex-direction: row;
+            align-items: flex-start;
+            justify-content: center;
+            gap: 20px;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .main-view { flex: 2; display: flex; flex-direction: column; align-items: center; }
+        .side-view { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        #isoCanvas { background: transparent; box-shadow: none; border: 1px solid #ddd; border-radius: 8px; }
