@@ -1,0 +1,24 @@
+/* Page-specific styles for learning/viewer.html */
+body { display: flex; height: 100vh; overflow: hidden; margin: 0; background: #2c3e50; }
+        
+        /* Sidebar Styles */
+        .sidebar { width: 280px; background: #2c3e50; color: white; display: flex; flex-direction: column; border-right: 1px solid #34495e; }
+        .sidebar-header { padding: 20px; background: #1a252f; }
+        .back-link { color: #bdc3c7; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
+        .path-title { font-size: 1.1rem; font-weight: bold; color: #ecf0f1; }
+        
+        .step-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
+        .step-item { padding: 15px 20px; border-bottom: 1px solid #34495e; cursor: pointer; transition: background 0.2s; color: #bdc3c7; }
+        .step-item:hover { background: #34495e; color: white; }
+        .step-item.active { background: #3498db; color: white; font-weight: bold; border-left: 5px solid #f1c40f; }
+        
+        /* Content Area */
+        .content-area { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
+        iframe { flex: 1; border: none; width: 100%; height: 100%; }
+        
+        /* Navigation Bar unten */
+        .nav-bar { 
+            height: 60px; background: #f8f9fa; border-top: 1px solid #ddd; 
+            display: flex; align-items: center; justify-content: space-between; padding: 0 20px; 
+        }
+        .progress-text { font-weight: bold; color: #7f8c8d; }

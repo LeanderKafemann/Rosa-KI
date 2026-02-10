@@ -3,14 +3,7 @@
 <head>
     <link rel="stylesheet" href="../../../css/style.css">
     <link rel="stylesheet" href="../../../css/tree-viz.css">
-    <style>
-        body { padding: 20px; background: white; height: 100vh; display: flex; flex-direction: column; box-sizing: border-box; }
-        .layout { display: flex; gap: 20px; flex: 1; min-height: 0; }
-        .text-col { flex: 1; overflow-y: auto; padding-right: 15px; }
-        .viz-col { flex: 1.5; display: flex; flex-direction: column; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; }
-        .canvas-area { flex: 1; position: relative; overflow: hidden; }
-        canvas { width: 100%; height: 100%; }
-    </style>
+    <link rel="stylesheet" href="../../../css/pages/learning-modules-search-bfs-demo.css">
 </head>
 <body>
     <div class="layout">
@@ -41,38 +34,6 @@
     <script src="../../../js/games/rotatebox/renderer.js"></script>
     <script src="../../../js/viz/tree-engine.js"></script>
 
-    <script>
-        // Kleiner Inline-Controller für dieses Modul
-        let viz;
-        
-        window.onload = () => {
-            viz = new TreeVisualizer('treeCanvas');
-            updateDemo();
-        };
-
-        function updateDemo() {
-            const depth = parseInt(document.getElementById('depthInput').value);
-            document.getElementById('depthVal').innerText = depth;
-
-            // 1. Board erstellen (Level 1)
-            const board = new RotateBoard('1');
-            
-            // 2. Baum generieren (BFS)
-            const root = RotateBoxAdapter.generateTree(board, {
-                maxDepth: depth,
-                algorithm: 'BFS',
-                checkDuplicates: true
-            });
-
-            // 3. Zeichnen
-            viz.drawTree(root, {
-                drawNodeFn: (ctx, data, size) => {
-                    const mock = { width: size, height: size };
-                    drawRotateBoard(data, mock, ctx);
-                },
-                config: { nodeSize: 50, levelHeight: 80 }
-            });
-        }
-    </script>
+    <script src="../../../js/pages/learning-modules-search-bfs-demo.js"></script>
 </body>
 </html>
