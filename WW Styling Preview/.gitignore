@@ -1,0 +1,13 @@
+# Dependencies
+node_modules/
+
+# Mac OS Systemdateien (nerven oft)
+.DS_Store
+
+# Editor Settings
+.vscode/
+
+# Logs
+npm-debug.log*
+# Dokumentation in DOCUMENTATION verschieben
+*.md

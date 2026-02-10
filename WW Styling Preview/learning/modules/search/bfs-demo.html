@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/tree-viz.css">
+    <style>
+        body { padding: 20px; background: white; height: 100vh; display: flex; flex-direction: column; box-sizing: border-box; }
+        .layout { display: flex; gap: 20px; flex: 1; min-height: 0; }
+        .text-col { flex: 1; overflow-y: auto; padding-right: 15px; }
+        .viz-col { flex: 1.5; display: flex; flex-direction: column; border: 1px solid #ddd; border-radius: 8px; background: #f9f9f9; }
+        .canvas-area { flex: 1; position: relative; overflow: hidden; }
+        canvas { width: 100%; height: 100%; }
+    </style>
+</head>
+<body>
+    <div class="layout">
+        <div class="text-col">
+            <h2>Breitensuche (BFS)</h2>
+            <p>Die Breitensuche arbeitet sich Schicht für Schicht vor. Sie ist optimal, um den kürzesten Weg zu finden.</p>
+            
+            <div class="viz-control-group">
+                <label class="viz-label">Maximale Tiefe:</label>
+                <input type="range" id="depthInput" min="1" max="6" value="3" oninput="updateDemo()">
+                <span id="depthVal">3</span>
+            </div>
+            
+            <p><strong>Beobachtung:</strong><br>
+            Achte darauf, wie der Baum gleichmäßig in die Breite wächst. Alle Knoten auf Tiefe 1 werden besucht, bevor Tiefe 2 beginnt.</p>
+        </div>
+
+        <div class="viz-col">
+            <div class="canvas-area" id="canvasContainer">
+                <canvas id="treeCanvas"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <script src="../../../js/core/game-state.js"></script>
+    <script src="../../../js/games/rotatebox/logic.js"></script>
+    <script src="../../../js/games/rotatebox/tree-adapter.js"></script>
+    <script src="../../../js/games/rotatebox/renderer.js"></script>
+    <script src="../../../js/viz/tree-engine.js"></script>
+
+    <script>
+        // Kleiner Inline-Controller für dieses Modul
+        let viz;
+        
+        window.onload = () => {
+            viz = new TreeVisualizer('treeCanvas');
+            updateDemo();
+        };
+
+        function updateDemo() {
+            const depth = parseInt(document.getElementById('depthInput').value);
+            document.getElementById('depthVal').innerText = depth;
+
+            // 1. Board erstellen (Level 1)
+            const board = new RotateBoard('1');
+            
+            // 2. Baum generieren (BFS)
+            const root = RotateBoxAdapter.generateTree(board, {
+                maxDepth: depth,
+                algorithm: 'BFS',
+                checkDuplicates: true
+            });
+
+            // 3. Zeichnen
+            viz.drawTree(root, {
+                drawNodeFn: (ctx, data, size) => {
+                    const mock = { width: size, height: size };
+                    drawRotateBoard(data, mock, ctx);
+                },
+                config: { nodeSize: 50, levelHeight: 80 }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>4 Gewinnt 3D</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/connect4.css">
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="connect4-menu.html" class="viz-btn btn-back">⬅ Menü</a>
+            <h2>3D (4x4x4)</h2>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="control-section">
+                <label class="viz-label">Spieler 1 (Blau)</label>
+                <select id="p1Type" class="viz-select">
+                    <option value="human" selected>Mensch</option>
+                    <option value="random">KI: Zufall</option>
+                    <option value="minimax">KI: Minimax</option>
+                    <option value="rule_complex">KI: Regel</option>
+                </select>
+                
+                <label class="viz-label" style="margin-top:10px;">Spieler 2 (Rot)</label>
+                <select id="p2Type" class="viz-select">
+                    <option value="human">Mensch</option>
+                    <option value="random" selected>KI: Zufall</option>
+                    <option value="minimax">KI: Minimax</option>
+                    <option value="rule_complex">KI: Regel</option>
+                </select>
+            </div>
+
+            <div class="control-section">
+                <label class="viz-label">KI Geschwindigkeit</label>
+                <input type="range" id="aiSpeed" min="0" max="2000" step="10" value="1000">
+            </div>
+
+            <div class="control-section" style="text-align:center;">
+                <div id="statusText" class="stats-display">Bereit</div>
+            </div>
+
+            <button class="viz-btn btn-restart" onclick="C43DController.reset()">Neues Spiel</button>
+        </div>
+    </aside>
+
+    <main class="game-area">
+        <div style="background:#ecf0f1; padding:10px; border-radius:4px; margin-bottom:15px; text-align:center; width: 100%;">
+             <strong>Anleitung:</strong> Klicke auf eine Spalte in einer der 4 Ebenen (Z1-Z4), um einen Stein fallen zu lassen.
+             <br>Die Ebenen stellen Tiefenschichten dar. (Denke dir die Ebenen hintereinander).
+        </div>
+        <canvas id="gameCanvas" width="800" height="300"></canvas>
+    </main>
+
+    <!-- Core -->
+    <script src="../js/core/game-state.js"></script>
+    <script src="../js/core/agent.js"></script>
+    <script src="../js/core/game-adapter.js"></script>
+    <script src="../js/core/base-game-controller.js"></script>
+    
+    <!-- AI -->
+    <script src="../js/ai/agents/random-agent.js"></script>
+    <script src="../js/ai/minimax.js"></script>
+    <script src="../js/ai/agents/minimax-agent.js"></script>
+    
+    <!-- Heuristics -->
+    <script src="../js/ai/heuristics/base.js"></script>
+    <script src="../js/ai/heuristics/connect4.js"></script>
+    
+    <!-- Rule Based -->
+    <script src="../js/ai/rules/rule-structure.js"></script>
+    <script src="../js/ai/rules/connect4-rules.js"></script>
+    <script src="../js/ai/agents/rule-based-agent.js"></script>
+
+    <!-- Game -->
+    <script src="../js/games/connect4/logic.js"></script>
+    <script src="../js/games/connect4/renderer.js"></script>
+    <script src="../js/games/connect4/3d-controller.js"></script>
+
+    <script>
+        const C43DController = new Connect43DController();
+        window.onload = () => C43DController.init();
+    </script>
+</body>
+</html>
