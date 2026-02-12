@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neuronen Spiel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f0f0f0;
+        }
+        .game-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            width: 80%;
+            max-width: 800px;
+        }
+        .neuron {
+            margin: 20px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .axon {
+            width: 200px;
+            height: 5px;
+            background-color: #007bff;
+            margin: 0 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .axon-active {
+            background-color: #ff5733;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="game-container">
+    <h1>Neuronen-Spiel: Lernen durch Interaktion</h1>
+    <div id="neuron"></div>
+    <button class="button" id="startBtn">Starte das Spiel</button>
+    <div id="action-result"></div>
+</div>
+
+<script>
+    // Teile des Neurons für die Darstellung
+    const neuronParts = ['Dendriten', 'Zellkörper', 'Axon', 'Synapse'];
+    
+    // Initiale Darstellung des Neurons
+    function createNeuron() {
+        let neuronContainer = document.getElementById('neuron');
+        neuronContainer.innerHTML = ''; // Leeren Container
+        
+        neuronParts.forEach(part => {
+            let partElement = document.createElement('div');
+            partElement.classList.add('neuron');
+            partElement.innerText = `Teil: ${part}`;
+            neuronContainer.appendChild(partElement);
+        });
+        
+        // Axon hinzufügen
+        let axon = document.createElement('div');
+        axon.classList.add('axon');
+        axon.addEventListener('click', activateSignal);
+        neuronContainer.appendChild(axon);
+    }
+
+    // Funktion für die elektrische Signalübertragung
+    function activateSignal() {
+        let axon = document.querySelector('.axon');
+        axon.classList.add('axon-active');
+        
+        // Ergebnis anzeigen
+        let resultContainer = document.getElementById('action-result');
+        resultContainer.innerHTML = '<strong>Das Aktionspotential wurde ausgelöst!</strong> Signal wird entlang des Axons weitergeleitet.';
+        
+        // Simulation der chemischen Signalübertragung
+        setTimeout(chemicalSignal, 2000);
+    }
+
+    // Chemische Signalübertragung
+    function chemicalSignal() {
+        let resultContainer = document.getElementById('action-result');
+        resultContainer.innerHTML += '<br><strong>Neurotransmitter wurden freigesetzt!</strong> Signal über Synapsen an das nächste Neuron übertragen.';
+        
+        // Hinzufügen von Neuronenplastizität
+        setTimeout(neuralPlasticity, 3000);
+    }
+
+    // Lernen und neuronale Plastizität
+    function neuralPlasticity() {
+        let resultContainer = document.getElementById('action-result');
+        resultContainer.innerHTML += '<br><strong>Neuronale Plastizität aktiviert!</strong> Stärkung der Synapse durch wiederholte Nutzung.';
+    }
+
+    // Startknopf für das Spiel
+    document.getElementById('startBtn').addEventListener('click', () => {
+        createNeuron();
+        document.getElementById('startBtn').style.display = 'none';
+    });
+</script>
+
+</body>
+</html>
