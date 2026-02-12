@@ -11,7 +11,7 @@
     <div class="lab-toolbar">
         <a href="../index.html" class="viz-btn btn-back">⬅ Menü</a>
         
-        <div class="viz-control-group" style="margin-left: 20px;">
+        <div class="viz-control-group ml-20">
             <label class="viz-label">Szenario:</label>
             <select id="gameTypeSelector" class="viz-select" onchange="Lab.changeGameType()">
                 <option value="regular">Klassik 3x3</option>
@@ -20,7 +20,7 @@
             </select>
         </div>
 
-        <div style="flex-grow: 1;"></div> 
+        <div class="flex-grow"></div> 
 
         <div class="viz-control-group">
             <button class="viz-btn viz-btn-action" onclick="Lab.stepAI()">▶ Schritt</button>
@@ -28,17 +28,17 @@
             <button class="viz-btn viz-btn-restart" onclick="Lab.reset()">↺ Reset</button>
         </div>
 
-        <div class="viz-control-group" style="margin-left: 20px;">
+        <div class="viz-control-group ml-20">
             <label class="viz-label">⏱ KI Tempo:</label>
             <input type="range" id="speedSlider" min="50" max="1500" value="900" 
-                   style="width:150px; cursor:pointer;" onchange="Lab.setDelay(this.value)">
+                   class="input-wide" onchange="Lab.setDelay(this.value)">
         </div>
     </div>
 
     <div class="lab-grid">
         
         <div class="col-tree">
-            <div class="panel-header" style="border-left: 5px solid #3498db;">
+            <div class="panel-header panel-header-blue">
                 <span>🧠</span> KI Blau
             </div>
             <div class="tree-container" id="treeDisplayP1"></div>
@@ -56,7 +56,7 @@
                     <canvas id="gameCanvas" width="400" height="400"></canvas>
                 </div>
                 
-                <div id="statusText" class="stats-display" style="margin-top:10px;">Bereit</div>
+                <div id="statusText" class="stats-display mt-10">Bereit</div>
             </div>
 
             <div class="log-box" id="log">
@@ -65,7 +65,7 @@
         </div>
 
         <div class="col-tree">
-            <div class="panel-header" style="border-left: 5px solid #e74c3c;">
+            <div class="panel-header panel-header-red">
                 <span>🤖</span> KI Rot
             </div>
             <div class="tree-container" id="treeDisplayP2"></div>
