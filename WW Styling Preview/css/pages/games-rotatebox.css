@@ -1,32 +1,24 @@
 /* Page-specific styles for games/rotatebox.html */
-/* Layout Fixes basierend auf deinem Original */
-        body { margin: 0; background: linear-gradient(135deg, #e8ecf1 0%, #d5dde5 100%); font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; }
-        
-        /* Container Setup wie in deiner Sandbox */
-        #container { display: flex; width: 100%; height: 100%; }
-        
-        #menu { 
-            width: 300px; 
-            background: var(--glass-bg, rgba(255,255,255,0.65)); 
-            backdrop-filter: var(--glass-blur, blur(12px)); 
-            -webkit-backdrop-filter: var(--glass-blur, blur(12px));
-            border-right: 1px solid rgba(255,255,255,0.18); 
-            padding: 20px; 
-            box-shadow: 2px 0 20px rgba(0,0,0,0.08); 
-            z-index: 10; 
-            display: flex; 
+/* Toolbar-based layout (moved from sidebar to top) */
+
+        /* Main area below toolbar */
+        .rb-main-area {
+            flex: 1;
+            display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e8ecf1 0%, #d5dde5 100%);
+            position: relative;
+            overflow: hidden;
         }
 
-        #game-area { 
-            flex-grow: 1; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            background: #dfe6e9;
-            background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 70%);
-            position: relative;
+        .rb-game-area {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
         }
 
         /* Canvas Begrenzung damit es nicht riesig wird */
@@ -38,30 +30,54 @@
             max-height: 90vh;
         }
 
-        .control-group { margin-bottom: 20px; }
-        
-        .primary-btn { 
-            background: #3498db; color: white; border: none; padding: 10px; 
-            width: 100%; border-radius: 8px; cursor: pointer; font-weight: bold;
-            box-shadow: 0 2px 8px rgba(52,152,219,0.25);
-            transition: background 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s, transform 0.2s;
+        /* Toolbar checkbox label */
+        .rb-checkbox-label {
+            color: #ecf0f1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9rem;
+            margin-bottom: 0;
         }
-        .primary-btn:hover { background: #2980b9; box-shadow: 0 4px 16px rgba(52,152,219,0.3); transform: translateY(-1px); }
-        
-        .hidden { display: none !important; }
 
-        /* Sidebar elements */
-        .back-link { text-decoration: none; display: block; margin-bottom: 15px; }
-        .back-btn { cursor: pointer; padding: 5px 10px; background: linear-gradient(135deg, #34495e, #2c3e50); color: white; border: none; border-radius: 6px; }
-        .sidebar-title { margin-top: 0; }
-        .control-label { font-weight: bold; }
-        .checkbox-label { display: flex; align-items: center; gap: 10px; cursor: pointer; }
-        .reset-btn { width: 100%; padding: 8px; cursor: pointer; background: rgba(236,240,241,0.7); border: 1px solid rgba(189,195,199,0.5); border-radius: 8px; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
-        .reset-btn:hover { background: rgba(236,240,241,0.9); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-        .divider { opacity: 0.2; margin: 20px 0; }
-        .ai-header { margin-top: 20px; }
-        .ai-title { margin-bottom: 5px; }
-        .animate-btn { background: #27ae60; margin-top: 15px; margin-bottom: 15px; }
-        .animate-btn:hover { background: #1e8449; }
-        .win-message { margin-top: 20px; color: #27ae60; font-weight: bold; text-align: center; font-size: 1.5em; }
-        .sidebar-footer { margin-top: auto; font-size: 0.8rem; color: #888; text-align: center; }
+        /* Hint text in toolbar */
+        .rb-hint {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            white-space: nowrap;
+        }
+
+        /* AI panel below the game canvas */
+        .rb-ai-panel {
+            background: var(--glass-bg, rgba(255,255,255,0.65));
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border-radius: 10px;
+            padding: 12px 20px;
+            margin: 10px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid rgba(255,255,255,0.18);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        .rb-ai-panel .ai-title {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+        }
+
+        .win-message {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #27ae60;
+            font-weight: bold;
+            text-align: center;
+            font-size: 1.5em;
+            background: var(--glass-bg, rgba(255,255,255,0.65));
+            padding: 10px 30px;
+            border-radius: 12px;
+            box-shadow: var(--shadow-md);
+        }

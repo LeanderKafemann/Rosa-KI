@@ -13,7 +13,7 @@
             <a href="../index.html" class="viz-btn btn-back">⬅ Menü</a>
 
             <div class="viz-control-group">
-                <label class="viz-label">Blau:</label>
+                <label class="viz-label">🔵 Blau:</label>
                 <select id="aiTypeBlue" class="viz-select" onchange="Arena.updateKIConfig(1)">
                     <option value="random" selected>Random</option>
                     <option value="ruledbased">Regelbaum</option>
@@ -37,7 +37,7 @@
             </div>
 
             <div class="viz-control-group">
-                <label class="viz-label">Startspieler:</label>
+                <label class="viz-label">Starter:</label>
                 <select id="startPlayerSelector" class="viz-select">
                     <option value="1">Blau</option>
                     <option value="2">Rot</option>
@@ -53,12 +53,13 @@
             <div class="viz-control-group">
                 <button class="viz-btn viz-btn-action" onclick="Arena.stepSingleGame()">▶ Einzelspiel</button>
                 <button class="viz-btn viz-btn-action" id="btnBattle" onclick="Arena.startBattle()">⚔️ Battle</button>
+                <button class="viz-btn viz-btn-restart" onclick="Arena.reset()">↺ Reset</button>
             </div>
         </div>
 
         <div class="toolbar-right">
             <div class="viz-control-group">
-                <label class="viz-label">Rot:</label>
+                <label class="viz-label">🔴 Rot:</label>
                 <select id="aiTypeRed" class="viz-select" onchange="Arena.updateKIConfig(2)">
                     <option value="random" selected>Random</option>
                     <option value="ruledbased">Regelbaum</option>
@@ -67,10 +68,6 @@
             </div>
 
             <div class="viz-control-group" id="paramRedContainer"></div>
-
-            <div class="viz-control-group">
-                <button class="viz-btn viz-btn-restart" onclick="Arena.reset()">↺ Reset</button>
-            </div>
         </div>
     </div>
 

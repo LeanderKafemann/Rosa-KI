@@ -39,11 +39,13 @@ const RotateController = {
       
         document.getElementById('winMessage').classList.add('hidden');
         document.getElementById('aiOutput').classList.add('hidden');
+        const toolbarAI = document.getElementById('aiToolbarOutput');
+        if (toolbarAI) toolbarAI.style.display = 'none';
         document.getElementById('pathWarning').classList.add('hidden');
         document.getElementById('solutionPath').innerHTML = '';
         
         document.getElementById('solveBtn').disabled = false;
-        document.getElementById('solveBtn').innerText = "KI Lösung suchen 🧠";
+        document.getElementById('solveBtn').innerText = "🧠 KI Lösung";
         
         this.updateStats();
         this.render();
@@ -122,6 +124,8 @@ const RotateController = {
             this.optimalPath = result.path;
             
             document.getElementById('aiOutput').classList.remove('hidden');
+            const toolbarAI = document.getElementById('aiToolbarOutput');
+            if (toolbarAI) toolbarAI.style.display = '';
             document.getElementById('stat-depth').innerText = result.path.length;
             document.getElementById('stat-nodes').innerText = result.nodes;
             document.getElementById('stat-duplicates').innerText = result.duplicates || 0;

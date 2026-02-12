@@ -7,76 +7,67 @@
     <link rel="stylesheet" href="../css/rotatebox.css">
     <link rel="stylesheet" href="../css/pages/games-rotatebox.css">
 </head>
-<body>
+<body class="lab-page">
 
-    <div id="container">
-        <aside id="menu">
-            <header>
-                <a href="../index.html" class="back-link">
-                    <button class="primary-btn back-btn">← Hauptmenü</button>
-                </a>
-                <h2 class="sidebar-title">RotateBox</h2>
-            </header>
+    <div class="lab-toolbar">
+        <a href="../index.html" class="viz-btn btn-back">⬅ Menü</a>
 
-            <div class="control-group">
-                <label for="boardSelect" class="control-label">Level wählen:</label>
-                <select id="boardSelect" class="input-field viz-select">
-                    <option value="0">Tutorial</option>
-                    <option value="1">Level 1</option>
-                    <option value="2">Level 2</option>
-                    <option value="3">Level 3</option>
-                </select>
-            </div>
-            
-            <div class="control-group">
-                <label class="checkbox-label">
-                    <input type="checkbox" id="animateToggle" checked> Animationen
-                </label>
-            </div>
-            
-            <div class="stats-panel">
-                <p>Schritte: <strong id="moveCount">0</strong></p>
-                <button id="resetBtn" class="reset-btn">Reset Board</button>
-                
-                <hr class="divider">
-                
-                <button id="solveBtn" class="primary-btn">KI Lösung suchen 🧠</button>
-            </div>
+        <div class="viz-control-group">
+            <label class="viz-label">Level:</label>
+            <select id="boardSelect" class="viz-select">
+                <option value="0">Tutorial</option>
+                <option value="1">Level 1</option>
+                <option value="2">Level 2</option>
+                <option value="3">Level 3</option>
+            </select>
+        </div>
 
-            <div id="aiOutput" class="hidden">
-                <div class="ai-header">
-                    <h3 class="ai-title">KI Analyse</h3>
-                    <span id="pathWarning" class="warning-tag hidden">⚠️ Pfad verlassen!</span>
-                </div>
-                
-                <div class="stat-row">
-                    <span>Pfadlänge: <b id="stat-depth">-</b></span>
-                    <span>Knoten: <b id="stat-nodes">-</b></span>
-                    <span>Doppelungen: <b id="stat-duplicates">-</b></span>
-                </div>
+        <div class="viz-control-group">
+            <label class="viz-label rb-checkbox-label">
+                <input type="checkbox" id="animateToggle" checked> Animationen
+            </label>
+        </div>
 
-                <button id="animateBtn" class="primary-btn animate-btn">
-                    ▶ Lösung abspielen
-                </button>
+        <div class="viz-control-group">
+            <span class="viz-label">Schritte: <strong id="moveCount">0</strong></span>
+        </div>
 
-                <div id="solutionContainer">
-                    <small>Weg:</small>
-                    <div id="solutionPath"></div>
-                </div>
-            </div>
+        <div class="viz-control-group">
+            <button id="resetBtn" class="viz-btn viz-btn-restart">↺ Reset</button>
+            <button id="solveBtn" class="viz-btn viz-btn-action">🧠 KI Lösung</button>
+        </div>
 
-            <div id="winMessage" class="hidden win-message">
-                🎉 GEWONNEN!
-            </div>
-            
-            <div class="sidebar-footer">
-                Steuerung: Pfeiltasten Links/Rechts
-            </div>
-        </aside>
+        <div class="viz-control-group" id="aiToolbarOutput" style="display:none;">
+            <span id="pathWarning" class="warning-tag hidden">⚠️ Pfad verlassen!</span>
+            <span class="viz-label">Pfad: <b id="stat-depth">-</b></span>
+            <span class="viz-label">Knoten: <b id="stat-nodes">-</b></span>
+            <span class="viz-label">Doppelt: <b id="stat-duplicates">-</b></span>
+            <button id="animateBtn" class="viz-btn viz-btn-action">▶ Abspielen</button>
+        </div>
 
-        <main id="game-area">
+        <div class="flex-grow"></div>
+
+        <span class="rb-hint">Steuerung: Pfeiltasten ←/→</span>
+    </div>
+
+    <div class="rb-main-area">
+        <main class="rb-game-area">
             <canvas id="gameCanvas" width="600" height="600"></canvas>
         </main>
+
+        <div id="aiOutput" class="rb-ai-panel hidden">
+            <div class="ai-header">
+                <h3 class="ai-title">KI Analyse</h3>
+            </div>
+            <div id="solutionContainer">
+                <small>Lösungsweg:</small>
+                <div id="solutionPath"></div>
+            </div>
+        </div>
+
+        <div id="winMessage" class="hidden win-message">
+            🎉 GEWONNEN!
+        </div>
     </div>
 
     <script src="../js/core/game-state.js"></script>
