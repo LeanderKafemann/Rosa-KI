@@ -17,12 +17,12 @@
         <div class="sidebar-content">
             <div class="control-section">
                 <label class="viz-label">Spielfeldgröße</label>
-                <div style="display: flex; gap: 10px;">
-                    <div style="flex:1;">
+                <div class="flex-row-gap">
+                    <div class="flex-1">
                         <small>Reihen</small>
                         <input type="number" id="rowsInput" class="viz-select" value="6" min="4" max="10">
                     </div>
-                    <div style="flex:1;">
+                    <div class="flex-1">
                         <small>Spalten</small>
                         <input type="number" id="colsInput" class="viz-select" value="7" min="4" max="10">
                     </div>
@@ -38,7 +38,7 @@
                     <option value="rule_complex">KI: Regel</option>
                 </select>
                 
-                <label class="viz-label" style="margin-top:10px;">Spieler 2 (Rot)</label>
+                <label class="viz-label mt-10">Spieler 2 (Rot)</label>
                 <select id="p2Type" class="viz-select">
                     <option value="human">Mensch</option>
                     <option value="random" selected>KI: Zufall</option>
@@ -52,7 +52,7 @@
                 <input type="range" id="aiSpeed" min="0" max="2000" step="10" value="1000">
             </div>
 
-            <div class="control-section" style="text-align:center;">
+            <div class="control-section text-center">
                 <div id="statusText" class="stats-display">Bereit</div>
             </div>
 

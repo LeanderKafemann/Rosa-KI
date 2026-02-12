@@ -40,14 +40,17 @@
         canvas {
             max-width: 100%;
             height: auto;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+            border-radius: 10px;
         }
         
         /* Stats Bereich */
         .stats-box {
-            background: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 4px;
+            background: rgba(248,249,250,0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 10px;
             padding: 12px;
             font-size: 0.9em;
             line-height: 1.6;
@@ -93,9 +96,11 @@
             justify-content: center;
             padding: 30px 10px;
             margin: 10px;
-            border: 2px dashed #d0d0d0;
-            border-radius: 10px;
-            background: #fafafa;
+            border: 2px dashed rgba(208,208,208,0.6);
+            border-radius: 14px;
+            background: rgba(250,250,250,0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
             color: #666;
             text-align: center;
             gap: 8px;
@@ -111,16 +116,18 @@
         }
 
         .minimax-panel {
-            background: #fdfdfd;
-            border: 1px solid #ddd;
-            border-radius: 8px;
+            background: rgba(253,253,253,0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 12px;
             margin: 10px;
         }
         .desc-box {
             margin-top: 10px;
             padding: 10px;
-            background: #eee;
-            border-radius: 4px;
+            background: rgba(238,238,238,0.5);
+            border-radius: 8px;
             font-size: 0.85em;
             color: #555;
             font-style: italic;

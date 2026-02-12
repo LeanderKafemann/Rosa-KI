@@ -4,7 +4,7 @@
 /* Seitenspezifisch: einfacherer Container, eigener Hintergrund */
 body {
     font-family: sans-serif;
-    background: #f0f0f0;
+    background: linear-gradient(135deg, #e8ecf1 0%, #d5dde5 100%);
     margin: 0;
     padding: 20px;
 }
@@ -12,16 +12,24 @@ body {
 .container {
     max-width: 600px;
     margin: 0 auto;
-    background: white;
+    background: var(--glass-bg, rgba(255,255,255,0.65));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
     padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border-radius: 14px;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.10);
+    border: 1px solid rgba(255,255,255,0.22);
 }
 
 a {
     color: #667eea;
     text-decoration: none;
     font-size: 14px;
+    transition: color 0.2s;
+}
+
+a:hover {
+    color: #764ba2;
 }
 
 h1 {
@@ -40,6 +48,7 @@ canvas {
     display: block;
     margin: 20px 0;
     cursor: pointer;
+    border-radius: 8px;
 }
 
 .controls {
@@ -54,29 +63,36 @@ button {
     color: white;
     border: none;
     padding: 10px 15px;
-    border-radius: 5px;
+    border-radius: 8px;
     cursor: pointer;
     font-size: 14px;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.25);
+    transition: background 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s, transform 0.2s;
 }
 
 button:hover {
     background: #764ba2;
+    box-shadow: 0 4px 16px rgba(118,75,162,0.3);
+    transform: translateY(-1px);
 }
 
 select {
     padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 1px solid rgba(204,204,204,0.5);
+    border-radius: 8px;
     font-size: 14px;
 }
 
 .stats {
-    background: #e7f3ff;
+    background: rgba(231,243,255,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     padding: 15px;
-    border-radius: 5px;
+    border-radius: 10px;
     font-family: monospace;
     font-size: 13px;
     line-height: 1.6;
+    border: 1px solid rgba(255,255,255,0.18);
 }
 
 .stat-row {

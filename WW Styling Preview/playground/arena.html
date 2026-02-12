@@ -47,7 +47,7 @@
 
             <div class="viz-control-group">
                 <label class="viz-label">Spiele:</label>
-                <input type="number" id="numGames" class="viz-select" value="10" min="1" max="1000" style="width: 80px;">
+                <input type="number" id="numGames" class="viz-select input-medium" value="10" min="1" max="1000">
             </div>
 
             <div class="viz-control-group">
@@ -77,7 +77,7 @@
     <div class="lab-grid">
         
         <div class="col-tree">
-            <div class="panel-header" style="border-left: 5px solid #3498db;">
+            <div class="panel-header panel-header-blue">
                 <span>🧠</span> KI Blau
             </div>
             <div class="tree-container" id="treeDisplayP1"></div>
@@ -100,10 +100,10 @@
                     <canvas id="gameCanvas" width="250" height="250"></canvas>
                 </div>
                 
-                <div id="statusText" class="stats-display" style="margin-top:5px; font-size: 0.85em;">Bereit</div>
+                <div id="statusText" class="stats-display ai-stats">Bereit</div>
             </div>
 
-            <div class="stats-box" id="statsPanel" style="display:none; margin-top: 10px;">
+            <div class="stats-box hidden" id="statsPanel">
                 <div class="stat-row">
                     <span class="stat-label">Spiele:</span>
                     <span class="stat-value" id="statGames">0</span>
@@ -120,7 +120,7 @@
                     <span class="stat-label">Remis:</span>
                     <span class="stat-value draw" id="statDraws">0</span>
                 </div>
-                <div class="stat-row" style="border-top: 1px solid #bbb; margin-top: 6px; padding-top: 6px;">
+                <div class="stat-row stat-row-separator">
                     <span class="stat-label">Blau %:</span>
                     <span class="stat-value blue" id="statBluePercent">0%</span>
                 </div>
@@ -132,7 +132,7 @@
                     <span class="stat-label">Remis %:</span>
                     <span class="stat-value draw" id="statDrawPercent">0%</span>
                 </div>
-                <div class="stat-row" style="border-top: 1px solid #bbb; margin-top: 6px; padding-top: 6px;">
+                <div class="stat-row stat-row-separator">
                     <span class="stat-label">Ø Züge:</span>
                     <span class="stat-value" id="statAvgMoves">0</span>
                 </div>
@@ -144,7 +144,7 @@
         </div>
 
         <div class="col-tree">
-            <div class="panel-header" style="border-left: 5px solid #e74c3c;">
+            <div class="panel-header panel-header-red">
                 <span>🤖</span> KI Rot
             </div>
             <div class="tree-container" id="treeDisplayP2"></div>
