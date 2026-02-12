@@ -8,4 +8,5 @@
 [neue Hauptseite vom Wolf](https://leanderkafemann.github.io/Rosa-KI/WolfsWorld)<br/><br/>
 
 #### Playgrounds
+[Neuronen Spiel](https://leanderkafemann.github.io/Rosa-KI/Neuronen.html)<br/>
 [Florian Paul Playground](https://leanderkafemann.github.io/Rosa-KI/FlorianPaul)<br/>
