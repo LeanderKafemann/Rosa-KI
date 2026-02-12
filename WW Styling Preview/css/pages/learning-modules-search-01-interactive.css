@@ -1,12 +1,7 @@
 /* Page-specific styles for learning/modules/search/01-interactive.html */
 /* Gemeinsame Learning-Styles → css/learning-page.css */
 
-/* Seitenspezifisch: einfacherer Container */
-html, body {
-    height: auto !important;
-    overflow: visible !important;
-}
-
+/* Seitenspezifisch: einfacherer Container, eigener Hintergrund */
 body {
     font-family: sans-serif;
     background: #f0f0f0;
