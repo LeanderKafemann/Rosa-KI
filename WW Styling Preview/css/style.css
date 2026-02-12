@@ -30,6 +30,7 @@
     --glass-blur: blur(12px);
     --glass-border-subtle: 1px solid rgba(255,255,255,0.18);
     --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -101,12 +102,15 @@ body.lab-page {
     border-radius: 10px;
     border: var(--glass-border-subtle);
     box-shadow: var(--shadow-sm);
-    transition: box-shadow var(--transition-smooth), transform var(--transition-smooth);
+    transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .control-section:hover {
-    box-shadow: var(--shadow-md);
-    transform: translateY(-1px);
+    box-shadow: 0 6px 24px rgba(0,0,0,0.10);
+    transform: translateY(-2px);
+    background: var(--glass-bg-hover);
 }
 
 .viz-label {
@@ -145,11 +149,18 @@ body.lab-page {
     font-size: 0.95rem;
     text-decoration: none;
     display: inline-block;
-    transition: filter var(--transition-smooth), box-shadow var(--transition-smooth), transform 0.15s ease;
+    transition: filter 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                box-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.35s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: center;
     box-shadow: var(--shadow-sm);
 }
-.viz-btn:hover { filter: brightness(92%); box-shadow: var(--shadow-md); transform: translateY(-2px); }
+.viz-btn:hover {
+    filter: brightness(92%);
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
 .viz-btn:active { transform: translateY(0); box-shadow: var(--shadow-sm); }
 .viz-btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); box-shadow: none; }
 
@@ -161,15 +172,15 @@ body.lab-page {
     font-size: 0.85rem;
     border-radius: 8px;
     font-weight: 600;
-    transition: all var(--transition-smooth);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(6px);
     -webkit-backdrop-filter: blur(6px);
 }
 .btn-back:hover {
-    background: rgba(255,255,255,0.18);
-    border-color: rgba(255,255,255,0.8);
-    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
-    transform: translateY(-1px);
+    background: rgba(255,255,255,0.22);
+    border-color: rgba(255,255,255,0.85);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18), 0 0 20px rgba(255,255,255,0.08);
+    transform: translateY(-2px);
 }
 .btn-action { background: var(--accent-blue); color: white; width: 100%; }
 .btn-restart { background: var(--accent-yellow); color: #333; width: 100%; }
@@ -358,12 +369,15 @@ canvas {
     flex-direction: column;
     align-items: center;
     width: 100%;
-    transition: box-shadow var(--transition-smooth), transform var(--transition-smooth);
+    transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .game-card:hover {
-    box-shadow: var(--shadow-lg);
+    box-shadow: 0 10px 36px rgba(0,0,0,0.15);
     transform: translateY(-3px);
+    background: var(--glass-bg-hover);
 }
 
 .view-controls {
@@ -386,7 +400,13 @@ canvas {
     font-size: 0.8rem;
     color: var(--text-muted);
     border-radius: 6px;
-    transition: all var(--transition-smooth);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.view-btn:hover {
+    background: rgba(255,255,255,0.6);
+    color: var(--accent-blue);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
 }
 
 .view-btn.active {
@@ -464,10 +484,12 @@ canvas {
 .back-link-learning {
     color: #667eea;
     text-decoration: none;
-    transition: color 0.2s;
+    transition: color 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                text-shadow 0.35s cubic-bezier(0.4, 0, 0.2, 1);
 }
 .back-link-learning:hover {
     color: #764ba2;
+    text-shadow: 0 0 8px rgba(118,75,162,0.25);
 }
 
 /* Common quick-start box */
