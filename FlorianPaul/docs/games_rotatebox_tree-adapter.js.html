@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>games/rotatebox/tree-adapter.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a><ul class='methods'><li data-type='method'><a href="Agent.html#getAction">getAction</a></li></ul></li><li><a href="AlgorithmRunner.html">AlgorithmRunner</a><ul class='methods'><li data-type='method'><a href="AlgorithmRunner.html#setSpeed">setSpeed</a></li><li data-type='method'><a href="AlgorithmRunner.html#start">start</a></li><li data-type='method'><a href="AlgorithmRunner.html#stop">stop</a></li><li data-type='method'><a href="AlgorithmRunner.html#triggerStep">triggerStep</a></li></ul></li><li></li><li><a href="Arena.html">Arena</a><ul class='methods'><li data-type='method'><a href="Arena.html#runSeries">runSeries</a></li></ul></li><li></li><li><a href="AtomicRule.html">AtomicRule</a></li><li><a href="Benchmark.html">Benchmark</a><ul class='methods'><li data-type='method'><a href="Benchmark.html#getAverage">getAverage</a></li><li data-type='method'><a href="Benchmark.html#getDuration">getDuration</a></li><li data-type='method'><a href="Benchmark.html#record">record</a></li><li data-type='method'><a href="Benchmark.html#reset">reset</a></li><li data-type='method'><a href="Benchmark.html#start">start</a></li><li data-type='method'><a href="Benchmark.html#stop">stop</a></li></ul></li><li><a href="ConditionNode.html">ConditionNode</a></li><li><a href="DecisionTree.html">DecisionTree</a></li><li><a href="FlowchartVisualizer.html">FlowchartVisualizer</a></li><li><a href="GameState.html">GameState</a><ul class='methods'><li data-type='method'><a href="GameState.html#clone">clone</a></li><li data-type='method'><a href="GameState.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameState.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="GameState.html#makeMove">makeMove</a></li></ul></li><li><a href="KnightBoard.html">KnightBoard</a><ul class='methods'><li data-type='method'><a href="KnightBoard.html#_getMovesFrom">_getMovesFrom</a></li><li data-type='method'><a href="KnightBoard.html#clone">clone</a></li><li data-type='method'><a href="KnightBoard.html#getDegree">getDegree</a></li><li data-type='method'><a href="KnightBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="KnightBoard.html#getPossibleMoves">getPossibleMoves</a></li><li data-type='method'><a href="KnightBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="KnightBoard.html#initGrid">initGrid</a></li><li data-type='method'><a href="KnightBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="KnightBoard.html#isInside">isInside</a></li><li data-type='method'><a href="KnightBoard.html#isValidMove">isValidMove</a></li><li data-type='method'><a href="KnightBoard.html#move">move</a></li><li data-type='method'><a href="KnightBoard.html#undo">undo</a></li></ul></li><li><a href="RandomAgent.html">RandomAgent</a><ul class='methods'><li data-type='method'><a href="RandomAgent.html#getAction">getAction</a></li></ul></li><li><a href="RotateBoard.html">RotateBoard</a><ul class='methods'><li data-type='method'><a href="RotateBoard.html#canFall">canFall</a></li><li data-type='method'><a href="RotateBoard.html#clone">clone</a></li><li data-type='method'><a href="RotateBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="RotateBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="RotateBoard.html#initFromId">initFromId</a></li><li data-type='method'><a href="RotateBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="RotateBoard.html#moveDown">moveDown</a></li><li data-type='method'><a href="RotateBoard.html#relaxBoardSync">relaxBoardSync</a></li><li data-type='method'><a href="RotateBoard.html#rotate">rotate</a></li></ul></li><li><a href="RuleBasedAgent.html">RuleBasedAgent</a><ul class='methods'><li data-type='method'><a href="RuleBasedAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="RuleGroup.html">RuleGroup</a></li><li><a href="RuleNode.html">RuleNode</a><ul class='methods'><li data-type='method'><a href="RuleNode.html#evaluate">evaluate</a></li></ul></li><li><a href="RuleVisualizer.html">RuleVisualizer</a></li><li><a href="SearchEngine.html">SearchEngine</a><ul class='methods'><li data-type='method'><a href="SearchEngine.html#solve">solve</a></li></ul></li><li></li><li><a href="TTT3DBoard.html">TTT3DBoard</a><ul class='methods'><li data-type='method'><a href="TTT3DBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTT3DBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTT3DBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTT3DBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTBase.html">TTTBase</a><ul class='methods'><li data-type='method'><a href="TTTBase.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTRegularBoard.html">TTTRegularBoard</a><ul class='methods'><li data-type='method'><a href="TTTRegularBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTTRegularBoard.html#clone">clone</a></li><li data-type='method'><a href="TTTRegularBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTRegularBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TTTRegularBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTRegularBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TreeNode.html">TreeNode</a></li><li><a href="TreeVisualizer.html">TreeVisualizer</a><ul class='methods'><li data-type='method'><a href="TreeVisualizer.html#drawTree">drawTree</a></li></ul></li><li><a href="UltimateBoard.html">UltimateBoard</a><ul class='methods'><li data-type='method'><a href="UltimateBoard.html#_checkSmallWin">_checkSmallWin</a></li><li data-type='method'><a href="UltimateBoard.html#_isBoardFullOrWon">_isBoardFullOrWon</a></li><li data-type='method'><a href="UltimateBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="UltimateBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="UltimateBoard.html#switchPlayer">switchPlayer</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#animateRelax">animateRelax</a></li><li><a href="global.html#checkSmallWin">checkSmallWin</a></li><li><a href="global.html#createStrategyTree">createStrategyTree</a></li><li><a href="global.html#drawRotateBoard">drawRotateBoard</a></li><li><a href="global.html#solveBFS">solveBFS</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">games/rotatebox/tree-adapter.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview Adapter, der RotateBox-Zustände in einen Visualisierungs-Baum wandelt.
+ */
+
+const RotateBoxAdapter = {
+    
+    /**
+     * Generiert den Suchbaum.
+     * @param {RotateBoard} startBoard - Der Startzustand.
+     * @param {Object} options - Parameter (Tiefe, Algo, Duplikate).
+     * @returns {TreeNode} Der Wurzelknoten.
+     */
+    generateTree(startBoard, options = {}) {
+        const {
+            maxDepth = 3,
+            checkDuplicates = true,
+            algorithm = 'BFS', // 'BFS' oder 'DFS'
+            continueAfterSolution = false
+        } = options;
+
+        let nodeId = 0;
+        // TreeNode Klasse muss global verfügbar sein (durch tree-engine.js)
+        const root = new TreeNode(nodeId++, startBoard.clone(), 0);
+        
+        // Speicher für besuchte Zustände: Map&lt;StateHash, Depth>
+        const visitedStates = new Map();
+        visitedStates.set(startBoard.getStateKey(), 0);
+
+        // Queue/Stack für die Traversierung
+        let toVisit = [root];
+
+        while (toVisit.length > 0) {
+            // Strategie wählen: BFS (Queue/Shift) oder DFS (Stack/Pop)
+            const currentNode = (algorithm === 'DFS') ? toVisit.pop() : toVisit.shift();
+
+            // 1. Abbruchbedingungen
+            if (currentNode.depth >= maxDepth) continue;
+            
+            // Wenn Knoten als Duplikat markiert wurde, hier stoppen (keine Kinder)
+            if (currentNode.isDuplicate) continue; 
+            
+            // Wenn Lösung gefunden und wir nicht weitermachen sollen -> Stopp
+            if (currentNode.isSolution &amp;&amp; !continueAfterSolution) continue;
+
+            // 2. Nachfolger generieren
+            // RotateBox hat immer Züge: 'L' und 'R'
+            // Für DFS drehen wir die Reihenfolge um, damit die Abarbeitung natürlich wirkt
+            const moves = (algorithm === 'DFS') ? ['R', 'L'] : ['L', 'R'];
+
+            moves.forEach(move => {
+                // Neuen Zustand berechnen
+                const nextBoard = currentNode.data.clone();
+                nextBoard.rotate(move === 'R');
+                nextBoard.relaxBoardSync(); // Physik anwenden
+                
+                const child = new TreeNode(nodeId++, nextBoard, currentNode.depth + 1, move);
+                const stateKey = nextBoard.getStateKey();
+
+                // Zielprüfung
+                if (nextBoard.won) {
+                    child.isSolution = true;
+                    child.annotation = "ZIEL";
+                }
+
+                // Duplikatsprüfung
+                let isDup = false;
+                if (checkDuplicates) {
+                    if (visitedStates.has(stateKey)) {
+                        const previousDepth = visitedStates.get(stateKey);
+                        
+                        // Wenn wir diesen Zustand schon mal auf gleicher oder besserer Ebene hatten
+                        if (child.depth >= previousDepth) {
+                            isDup = true;
+                            child.isDuplicate = true;
+                            child.annotation = "Duplikat";
+                        } else {
+                            // Besserer Weg gefunden (passiert bei DFS oft) -> Update
+                            visitedStates.set(stateKey, child.depth);
+                        }
+                    } else {
+                        // Neu entdeckt
+                        visitedStates.set(stateKey, child.depth);
+                    }
+                }
+
+                currentNode.children.push(child);
+
+                // Zur Liste hinzufügen, wenn kein Duplikat (oder wir weitersuchen)
+                if (!isDup) {
+                    // Wenn es eine Lösung ist und wir stoppen sollen -> nicht in Queue
+                    if (!child.isSolution || continueAfterSolution) {
+                        toVisit.push(child);
+                    }
+                }
+            });
+        }
+
+        return root;
+    }
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Jan 26 2026 19:49:05 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>

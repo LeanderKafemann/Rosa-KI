@@ -1,0 +1,63 @@
+/* css/rotatebox.css */
+
+/* Lösungsweg Box */
+#solutionContainer {
+    margin-top: 15px;
+    background: rgba(0, 0, 0, 0.05); /* Leicht grau/transparent */
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 6px;
+    padding: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+#solutionPath {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+}
+
+/* Die Badges (Schritt-Marker) */
+.step-badge {
+    background: #34495e;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-family: monospace;
+    font-weight: bold;
+    font-size: 0.9rem;
+    border: 1px solid transparent;
+    transition: all 0.2s ease;
+    opacity: 0.7;
+}
+
+/* AKTIVER SCHRITT - Highlighting */
+.step-badge.active {
+    background-color: #f39c12; /* Das Orange aus dem Original */
+    color: white;
+    transform: scale(1.15);
+    border-color: #e67e22;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    opacity: 1;
+    z-index: 2; /* In den Vordergrund */
+}
+
+.warning-tag {
+    color: #c0392b;
+    background: #fadbd8;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.8rem;
+    margin-left: 10px;
+}
+
+/* Stats */
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #eee;
+    font-size: 0.9rem;
+}

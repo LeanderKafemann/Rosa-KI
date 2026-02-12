@@ -1,0 +1,117 @@
+{
+  "courseId": "search-trees-rotatebox",
+  "title": "Suchbäume verstehen mit Rotatebox",
+  "description": "Lerne wie Computer Suchräume mit Tiefensuche (DFS) und Breitensuche (BFS) erkunden. Interaktive Visualisierung mit dem Rotatebox-Puzzle.",
+  "difficulty": "mittel",
+  "duration_minutes": 90,
+  "prerequisites": [
+    "Grundlagen JavaScript (for Schleifen, Arrays)",
+    "Rekursion verstehen"
+  ],
+  "learningOutcomes": [
+    "Verstehe Baumstrukturen und wie sie Suchprobleme abbilden",
+    "Implementiere Breitensuche (BFS) und Tiefensuche (DFS)",
+    "Erkenne Duplikate in Suchräumen und optimiere die Suche",
+    "Visualisiere Suchbäume mit realen Puzzlen",
+    "Erkenne Performance-Unterschiede zwischen Such-Strategien"
+  ],
+  "lessons": [
+    {
+      "id": 1,
+      "title": "Das Rotatebox-Puzzle",
+      "duration_minutes": 10,
+      "type": "lecture",
+      "file": "modules/search/01-rotatebox-intro.html",
+      "learning_points": [
+        "Was ist Rotatebox und wie funktioniert das Spiel?",
+        "Das Ziel: alle Felder auf grün setzen",
+        "Wie viele mögliche Züge gibt es?"
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Suchräume und Spielbäume",
+      "duration_minutes": 15,
+      "type": "interactive",
+      "file": "modules/search/02-search-space.html",
+      "exercise_id": 1,
+      "learning_points": [
+        "Ein Spielzustand ist ein Knoten im Baum",
+        "Ein Zug erzeugt einen Nachfolger",
+        "Der Suchraum ist exponentiell: 2^(Anzahl Felder)",
+        "Visualisierung mit kleinen Bäumen"
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Breitensuche (BFS)",
+      "duration_minutes": 20,
+      "type": "coding+interactive",
+      "file": "modules/search/03-bfs.html",
+      "exercise_id": 2,
+      "learning_points": [
+        "BFS erkundet alle Knoten einer Tiefe vor der nächsten",
+        "Queue: FIFO (First-In-First-Out)",
+        "BFS findet immer den kürzesten Weg",
+        "Live-Visualisierung mit Rotatebox-Beispielen"
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Tiefensuche (DFS)",
+      "duration_minutes": 20,
+      "type": "coding+interactive",
+      "file": "modules/search/04-dfs.html",
+      "exercise_id": 3,
+      "learning_points": [
+        "DFS erkundet einen Ast vollständig bevor es andere versucht",
+        "Stack: LIFO (Last-In-First-Out)",
+        "DFS nutzt weniger Speicher aber länger Wege",
+        "Vergleich mit BFS in der Praxis"
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Duplikate erkennen und Optimieren",
+      "duration_minutes": 15,
+      "type": "interactive",
+      "file": "modules/search/05-duplicates.html",
+      "exercise_id": 4,
+      "learning_points": [
+        "Viele Züge führen zum gleichen Zustand",
+        "State-Hashing: Eindeutige ID für jeden Zustand",
+        "Besuchte-Menge: Duplikate markieren",
+        "Performance-Gewinn durch Duplikat-Vermeidung"
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Live-Demo: Rotatebox-Solver",
+      "duration_minutes": 10,
+      "type": "visualization",
+      "file": "modules/search/06-solver-demo.html",
+      "learning_points": [
+        "BFS und DFS auf echtem Rotatebox-Level",
+        "Siehe den Algorithmus bei der Arbeit",
+        "Statistiken: Nodes, Depth, Solution Steps"
+      ]
+    }
+  ],
+  "resources": {
+    "visualizations": [
+      "playground/rotatebox-viz.html",
+      "js/games/rotatebox/tree-adapter.js",
+      "js/viz/tree-engine.js"
+    ],
+    "code_examples": [
+      "js/games/rotatebox/logic.js",
+      "js/core/game-state.js"
+    ]
+  },
+  "metadata": {
+    "version": "1.0",
+    "created": "2026-01-28",
+    "last_updated": "2026-01-28",
+    "language": "de"
+  }
+}

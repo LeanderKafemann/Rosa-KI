@@ -1,0 +1,32 @@
+{
+    "tags": {
+        "allowUnknownTags": true,
+        "dictionaries": ["jsdoc","closure"]
+    },
+    "source": {
+        "include": ["js"],
+        "includePattern": ".+\\.js(doc|x)?$",
+        "excludePattern": "(^|\\/|\\\\)_"
+    },
+    "plugins": ["plugins/markdown"],
+    
+    "opts": {
+        "destination": "./docs",
+        "recurse": true,
+        "readme": "README.md",
+        "template": "node_modules/docdash" 
+    },
+
+    "templates": {
+        "default": {
+            "outputSourceFiles": true
+        },
+        "docdash": {
+            "static": false,
+            "sort": true,
+            "search": true,
+            "collapse": true,
+            "typography": true
+        }
+    }
+}

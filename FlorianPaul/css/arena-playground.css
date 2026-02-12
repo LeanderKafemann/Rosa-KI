@@ -1,0 +1,373 @@
+/**
+ * CSS für die KI Arena Playground
+ */
+
+/* Body Layout */
+body {
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* Toolbar passend zum Design der anderen Playgrounds */
+.viz-toolbar {
+    background: #2c3e50;
+    padding: 12px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
+}
+
+.viz-input-number {
+    width: 80px;
+    padding: 6px 10px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 0.9em;
+}
+
+.viz-input-number:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+}
+
+/* Container für scrollable Inhalt */
+.arena-container {
+    flex: 1;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 20px;
+    background: #f5f7fa;
+}
+
+/* Modal Dialog */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 8px;
+    padding: 30px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-content h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+.modal-close {
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+}
+
+.modal-close:hover {
+    color: #000;
+}
+
+/* Config Item */
+.config-item {
+    margin-bottom: 15px;
+    padding: 12px;
+    background: #f8f9fa;
+    border-radius: 6px;
+}
+
+.config-item label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #2c3e50;
+    font-size: 0.9em;
+}
+
+.config-item input[type="range"],
+.config-item select {
+    width: 100%;
+    padding: 6px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-family: inherit;
+}
+
+.config-item input[type="range"] {
+    padding: 4px;
+}
+
+.range-value {
+    text-align: right;
+    color: #3498db;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+/* Sections */
+.progress-section,
+.results-section,
+.error-section {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #3498db;
+}
+
+.error-section {
+    border-left-color: #e74c3c;
+}
+
+.progress-section h3,
+.results-section h3,
+.error-section h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #2c3e50;
+    font-size: 1.2em;
+}
+
+/* ===== PROGRESS BAR ===== */
+
+.progress-bar {
+    width: 100%;
+    height: 25px;
+    background: #ecf0f1;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3498db, #2980b9);
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8em;
+    font-weight: 600;
+}
+
+.progress-text {
+    text-align: center;
+    color: #7f8c8d;
+    font-size: 0.9em;
+    margin: 0;
+}
+
+/* ===== STATISTIK CARDS ===== */
+
+.stats-overview {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    padding: 20px;
+    border-radius: 8px;
+    text-align: center;
+    color: white;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.stat-card.blue {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+}
+
+.stat-card.red {
+    background: linear-gradient(135deg, #e74c3c, #c0392b);
+}
+
+.stat-card.draw {
+    background: linear-gradient(135deg, #95a5a6, #7f8c8d);
+}
+
+.stat-value {
+    font-size: 2.5em;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.stat-label {
+    font-size: 0.95em;
+    opacity: 0.9;
+    margin-bottom: 8px;
+}
+
+.stat-percentage {
+    font-size: 1.3em;
+    opacity: 0.85;
+}
+
+/* ===== DETAILS ===== */
+
+.stats-details {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #ecf0f1;
+    font-size: 0.95em;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    color: #2c3e50;
+    font-weight: 600;
+}
+
+.detail-value {
+    color: #3498db;
+    font-weight: bold;
+    font-family: 'Courier New', monospace;
+}
+
+/* ===== ADVANCED STATS ===== */
+
+.stats-advanced {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e0e0e0;
+    margin-bottom: 15px;
+}
+
+.stats-advanced summary {
+    cursor: pointer;
+    font-weight: 600;
+    color: #2c3e50;
+    padding: 5px;
+    user-select: none;
+}
+
+.stats-advanced summary:hover {
+    color: #3498db;
+}
+
+.advanced-content {
+    padding: 15px 10px;
+    background: white;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+.advanced-content .detail-item {
+    border-bottom: 1px solid #ecf0f1;
+}
+
+/* ===== AGENT NAMES ===== */
+
+.agent-names {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    border-left: 3px solid #3498db;
+}
+
+.agent-names p {
+    margin: 5px 0;
+    color: #2c3e50;
+    font-size: 0.95em;
+}
+
+.agent-names strong {
+    color: #2980b9;
+}
+
+/* ===== ERROR ===== */
+
+.error-message {
+    color: #922b21;
+    font-weight: 500;
+    margin: 0;
+    padding: 10px;
+    background: #fadbd8;
+    border-radius: 4px;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 1024px) {
+    .viz-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .viz-control-group,
+    .viz-checkboxes {
+        width: 100%;
+    }
+
+    .stats-overview {
+        grid-template-columns: 1fr;
+    }
+
+    .stat-value {
+        font-size: 2em;
+    }
+}
+
+@media (max-width: 768px) {
+    .arena-container {
+        padding: 15px;
+    }
+
+    .viz-toolbar {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-value {
+        font-size: 1.8em;
+    }
+
+    .detail-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .modal-content {
+        width: 95%;
+    }
+}

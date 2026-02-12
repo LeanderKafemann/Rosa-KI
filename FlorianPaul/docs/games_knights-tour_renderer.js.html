@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>games/knights-tour/renderer.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav >
+    
+    
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Agent.html">Agent</a><ul class='methods'><li data-type='method'><a href="Agent.html#getAction">getAction</a></li></ul></li><li><a href="AlgorithmRunner.html">AlgorithmRunner</a><ul class='methods'><li data-type='method'><a href="AlgorithmRunner.html#setSpeed">setSpeed</a></li><li data-type='method'><a href="AlgorithmRunner.html#start">start</a></li><li data-type='method'><a href="AlgorithmRunner.html#stop">stop</a></li><li data-type='method'><a href="AlgorithmRunner.html#triggerStep">triggerStep</a></li></ul></li><li></li><li><a href="Arena.html">Arena</a><ul class='methods'><li data-type='method'><a href="Arena.html#runSeries">runSeries</a></li></ul></li><li></li><li><a href="AtomicRule.html">AtomicRule</a></li><li><a href="Benchmark.html">Benchmark</a><ul class='methods'><li data-type='method'><a href="Benchmark.html#getAverage">getAverage</a></li><li data-type='method'><a href="Benchmark.html#getDuration">getDuration</a></li><li data-type='method'><a href="Benchmark.html#record">record</a></li><li data-type='method'><a href="Benchmark.html#reset">reset</a></li><li data-type='method'><a href="Benchmark.html#start">start</a></li><li data-type='method'><a href="Benchmark.html#stop">stop</a></li></ul></li><li><a href="ConditionNode.html">ConditionNode</a></li><li><a href="DecisionTree.html">DecisionTree</a></li><li><a href="FlowchartVisualizer.html">FlowchartVisualizer</a></li><li><a href="GameState.html">GameState</a><ul class='methods'><li data-type='method'><a href="GameState.html#clone">clone</a></li><li data-type='method'><a href="GameState.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="GameState.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="GameState.html#makeMove">makeMove</a></li></ul></li><li><a href="KnightBoard.html">KnightBoard</a><ul class='methods'><li data-type='method'><a href="KnightBoard.html#_getMovesFrom">_getMovesFrom</a></li><li data-type='method'><a href="KnightBoard.html#clone">clone</a></li><li data-type='method'><a href="KnightBoard.html#getDegree">getDegree</a></li><li data-type='method'><a href="KnightBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="KnightBoard.html#getPossibleMoves">getPossibleMoves</a></li><li data-type='method'><a href="KnightBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="KnightBoard.html#initGrid">initGrid</a></li><li data-type='method'><a href="KnightBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="KnightBoard.html#isInside">isInside</a></li><li data-type='method'><a href="KnightBoard.html#isValidMove">isValidMove</a></li><li data-type='method'><a href="KnightBoard.html#move">move</a></li><li data-type='method'><a href="KnightBoard.html#undo">undo</a></li></ul></li><li><a href="RandomAgent.html">RandomAgent</a><ul class='methods'><li data-type='method'><a href="RandomAgent.html#getAction">getAction</a></li></ul></li><li><a href="RotateBoard.html">RotateBoard</a><ul class='methods'><li data-type='method'><a href="RotateBoard.html#canFall">canFall</a></li><li data-type='method'><a href="RotateBoard.html#clone">clone</a></li><li data-type='method'><a href="RotateBoard.html#getNextStates">getNextStates</a></li><li data-type='method'><a href="RotateBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="RotateBoard.html#initFromId">initFromId</a></li><li data-type='method'><a href="RotateBoard.html#isGoal">isGoal</a></li><li data-type='method'><a href="RotateBoard.html#moveDown">moveDown</a></li><li data-type='method'><a href="RotateBoard.html#relaxBoardSync">relaxBoardSync</a></li><li data-type='method'><a href="RotateBoard.html#rotate">rotate</a></li></ul></li><li><a href="RuleBasedAgent.html">RuleBasedAgent</a><ul class='methods'><li data-type='method'><a href="RuleBasedAgent.html#getAction">getAction</a></li></ul></li><li></li><li><a href="RuleGroup.html">RuleGroup</a></li><li><a href="RuleNode.html">RuleNode</a><ul class='methods'><li data-type='method'><a href="RuleNode.html#evaluate">evaluate</a></li></ul></li><li><a href="RuleVisualizer.html">RuleVisualizer</a></li><li><a href="SearchEngine.html">SearchEngine</a><ul class='methods'><li data-type='method'><a href="SearchEngine.html#solve">solve</a></li></ul></li><li></li><li><a href="TTT3DBoard.html">TTT3DBoard</a><ul class='methods'><li data-type='method'><a href="TTT3DBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTT3DBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTT3DBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTT3DBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTBase.html">TTTBase</a><ul class='methods'><li data-type='method'><a href="TTTBase.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TTTRegularBoard.html">TTTRegularBoard</a><ul class='methods'><li data-type='method'><a href="TTTRegularBoard.html#checkWin">checkWin</a></li><li data-type='method'><a href="TTTRegularBoard.html#clone">clone</a></li><li data-type='method'><a href="TTTRegularBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="TTTRegularBoard.html#getStateKey">getStateKey</a></li><li data-type='method'><a href="TTTRegularBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="TTTRegularBoard.html#switchPlayer">switchPlayer</a></li></ul></li><li><a href="TreeNode.html">TreeNode</a></li><li><a href="TreeVisualizer.html">TreeVisualizer</a><ul class='methods'><li data-type='method'><a href="TreeVisualizer.html#drawTree">drawTree</a></li></ul></li><li><a href="UltimateBoard.html">UltimateBoard</a><ul class='methods'><li data-type='method'><a href="UltimateBoard.html#_checkSmallWin">_checkSmallWin</a></li><li data-type='method'><a href="UltimateBoard.html#_isBoardFullOrWon">_isBoardFullOrWon</a></li><li data-type='method'><a href="UltimateBoard.html#getAllValidMoves">getAllValidMoves</a></li><li data-type='method'><a href="UltimateBoard.html#makeMove">makeMove</a></li><li data-type='method'><a href="UltimateBoard.html#switchPlayer">switchPlayer</a></li></ul></li></ul><h3>Global</h3><ul><li><a href="global.html#animateRelax">animateRelax</a></li><li><a href="global.html#checkSmallWin">checkSmallWin</a></li><li><a href="global.html#createStrategyTree">createStrategyTree</a></li><li><a href="global.html#drawRotateBoard">drawRotateBoard</a></li><li><a href="global.html#solveBFS">solveBFS</a></li></ul>
+    
+</nav>
+
+<div id="main">
+    
+    <h1 class="page-title">games/knights-tour/renderer.js</h1>
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * @fileoverview Renderer für das Springerproblem.
+ * Zeichnet das Brett mit einem verbesserten Farbschema.
+ */
+
+const KnightRenderer = {
+    /**
+     * @param {HTMLCanvasElement} canvas 
+     * @param {KnightBoard} board 
+     * @param {Object} config 
+     */
+    draw(canvas, board, config = {}) {
+        const ctx = canvas.getContext('2d');
+        const size = board.size;
+        const showMoves = config.showPossibleMoves || false;
+        
+        // --- NEUES FARBSCHEMA ---
+        const COLORS = {
+            bg: '#ffffff',
+            cellEven: '#ecf0f1', // Helles Grau
+            cellOdd:  '#bdc3c7', // Dunkleres Grau
+            visited:  '#2ecc71', // Grün (angenehm)
+            visitedText: '#ffffff',
+            current:  '#e67e22', // Orange für den Springer
+            possible: 'rgba(52, 152, 219, 0.6)', // Blau transparent
+            coord:    '#7f8c8d'
+        };
+
+        // Layout
+        const paddingLeft = 30;
+        const paddingBottom = 30;
+        const availWidth = canvas.width - paddingLeft;
+        const availHeight = canvas.height - paddingBottom;
+        const cellSize = Math.min(availWidth, availHeight) / size;
+
+        // Reset
+        ctx.fillStyle = COLORS.bg;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // 1. Koordinaten (A-H, 1-8)
+        ctx.fillStyle = COLORS.coord;
+        ctx.font = "12px 'Segoe UI'";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+
+        for(let i=0; i&lt;size; i++) {
+            // Buchstaben unten
+            const char = String.fromCharCode(65 + i); 
+            ctx.fillText(char, paddingLeft + i * cellSize + cellSize/2, canvas.height - (paddingBottom / 2));
+            // Zahlen links
+            const num = size - i; 
+            ctx.fillText(num, paddingLeft / 2, i * cellSize + cellSize/2);
+        }
+
+        // Canvas verschieben für das Grid
+        ctx.save();
+        ctx.translate(paddingLeft, 0);
+
+        // 2. Gitter &amp; Zellen zeichnen
+        for (let r = 0; r &lt; size; r++) {
+            for (let c = 0; c &lt; size; c++) {
+                const x = c * cellSize;
+                const y = r * cellSize;
+                const val = board.grid[r][c];
+
+                // Grundfarbe (Schachbrett)
+                if ((r + c) % 2 === 0) ctx.fillStyle = COLORS.cellEven;
+                else ctx.fillStyle = COLORS.cellOdd;
+                ctx.fillRect(x, y, cellSize, cellSize);
+
+                // Besuchte Felder
+                if (val > 0) {
+                    // Verblassen alter Züge leicht, damit der Pfad sichtbar ist?
+                    // Nein, lieber klarer Kontrast.
+                    ctx.fillStyle = COLORS.visited;
+                    // Mache es etwas kleiner als die Zelle für schöneren Look
+                    const pad = 2;
+                    ctx.fillRect(x + pad, y + pad, cellSize - pad*2, cellSize - pad*2);
+                    
+                    // Zugnummer
+                    ctx.fillStyle = COLORS.visitedText;
+                    ctx.font = `bold ${cellSize * 0.4}px sans-serif`;
+                    ctx.fillText(val, x + cellSize/2, y + cellSize/2);
+                }
+            }
+        }
+
+        // 3. Mögliche Züge (Vorschau)
+        if (showMoves &amp;&amp; !board.won &amp;&amp; !config.hideHints) {
+            const moves = board.getPossibleMoves();
+            moves.forEach(m => {
+                const cx = m.c * cellSize + cellSize/2;
+                const cy = m.r * cellSize + cellSize/2;
+                
+                ctx.beginPath();
+                ctx.fillStyle = COLORS.possible;
+                ctx.arc(cx, cy, cellSize * 0.2, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        // 4. Springer (Aktuelle Position)
+        if (board.currentPos) {
+            const { r, c } = board.currentPos;
+            const x = c * cellSize;
+            const y = r * cellSize;
+
+            // Highlight Box
+            ctx.fillStyle = COLORS.current;
+            ctx.fillRect(x, y, cellSize, cellSize);
+            
+            // Springer Icon
+            ctx.fillStyle = "white";
+            ctx.font = `${cellSize * 0.7}px serif`;
+            ctx.fillText("♞", x + cellSize/2, y + cellSize/2 + 2);
+        }
+
+        ctx.restore();
+    }
+};</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Jan 26 2026 19:49:05 GMT+0100 (Central European Standard Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+
+
+</body>
+</html>
