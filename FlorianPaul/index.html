@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KI Lernplattform</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        .hero { text-align: center; padding: 40px 20px; background: #2c3e50; color: white; margin-bottom: 20px; }
+        .hero h1 { margin: 0; font-size: 2.5rem; }
+        .hero p { opacity: 0.8; margin-top: 10px; font-size: 1.1rem; }
+        
+        .main-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .column { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; }
+        .column-header { padding: 15px; text-align: center; font-weight: bold; font-size: 1.2rem; color: white; }
+        .header-games { background: #e67e22; }      /* Orange */
+        .header-learning { background: #27ae60; }   /* Grün */
+        .header-play { background: #3498db; }       /* Blau */
+
+        .link-list { list-style: none; padding: 0; margin: 0; flex-grow: 1; }
+        .link-item { border-bottom: 1px solid #eee; }
+        .link-item:last-child { border-bottom: none; }
+        
+        .nav-link { 
+            display: flex; align-items: center; gap: 15px; 
+            padding: 20px; text-decoration: none; color: #2c3e50; 
+            transition: background 0.2s; 
+        }
+        .nav-link:hover { background: #f8f9fa; transform: translateX(5px); }
+        .nav-icon { font-size: 1.5rem; width: 30px; text-align: center; }
+        .nav-content div { font-weight: bold; margin-bottom: 4px; }
+        .nav-content small { color: #7f8c8d; display: block; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+    <div class="hero">
+        <h1>KI Algorithmen verstehen</h1>
+        <p>Spielen, Lernen und Experimentieren mit Informatik-Konzepten.</p>
+    </div>
+
+    <div class="main-grid">
+        <div class="column">
+            <div class="column-header header-games">🎮 Spiele</div>
+            <ul class="link-list">
+                <li class="link-item">
+                    <a href="games/rotatebox.html" class="nav-link">
+                        <span class="nav-icon">📦</span>
+                        <div class="nav-content">
+                            <div>RotateBox</div>
+                            <small>Rätselspiel. Bringe die Kisten zum Ziel.</small>
+                        </div>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="games/knights-tour.html" class="nav-link">
+                        <span class="nav-icon">♞</span>
+                        <div class="nav-content">
+                            <div>Springerproblem</div>
+                            <small>Besuche alle Felder genau einmal.</small>
+                        </div>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="games/tictactoe-menu.html" class="nav-link">
+                        <span class="nav-icon">❌</span>
+                        <div class="nav-content">
+                            <div>Tic-Tac-Toe Welt</div>
+                            <small>Klassik, 3D und Ultimate Varianten.</small>
+                        </div>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="games/connect4-menu.html" class="nav-link">
+                        <span class="nav-icon">🔴</span>
+                        <div class="nav-content">
+                            <div>4 Gewinnt Universum</div>
+                            <small>Klassisch und 3D Varianten.</small>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="column">
+            <div class="column-header header-learning">🎓 Lernpfade</div>
+            <ul class="link-list">
+                <li class="link-item">
+                    <a href="learning/modules/search/index.html" class="nav-link">
+                        <span class="nav-icon">🌳</span>
+                        <div class="nav-content">
+                            <div>Suchbäume verstehen</div>
+                            <small>Lerne BFS & DFS mit Rotatebox. (90 Min)</small>
+                        </div>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <span class="nav-link" style="opacity: 0.5; cursor: default;">
+                        <span class="nav-icon">🤖</span>
+                        <div class="nav-content">
+                            <div>Minimax & Alpha-Beta</div>
+                            <small>Demnächst verfügbar...</small>
+                        </div>
+                    </span>
+                </li>
+            </ul>
+        </div>
+
+        <div class="column">
+            <div class="column-header header-play">🧪 Playground</div>
+            <ul class="link-list">
+                <li class="link-item">
+                    <a href="playground/minimax-viz.html" class="nav-link">
+                        <span class="nav-icon">🌲</span>
+                        <div class="nav-content">
+                            <div>Minimax Visualisierung</div>
+                            <small>Untersuche den Minimax-Algorithmus.</small>
+                        </div>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="playground/rules-lab.html" class="nav-link">
+                        <span class="nav-icon">🌲</span>
+                        <div class="nav-content">
+                            <div>Regel-Labor</div>
+                            <small>Baue eigene Entscheidungsbäume für KIs.</small>
+                        </div>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="playground/rotatebox-viz.html" class="nav-link">
+                        <span class="nav-icon">🕸️</span>
+                        <div class="nav-content">
+                            <div>Suchbaum-Visualisierung</div>
+                            <small>Sieh dem Computer beim Denken zu (RotateBox).</small>
+                        </div>
+                    </a>
+                </li>
+                <li class="link-item">
+                    <a href="playground/arena.html" class="nav-link">
+                        <span class="nav-icon">⚔️</span>
+                        <div class="nav-content">
+                            <div>KI Arena</div>
+                            <small>Lasse verschiedene KIs gegeneinander antreten.</small>
+                        </div>
+                    </a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px; color: #bdc3c7;">
+        <small>&copy; 2024 KI Lernplattform - Version 1.0</small>
+        <br>
+        <a href="docs/index.html" style="color: #bdc3c7; text-decoration: none; font-size: 0.8rem;">Entwickler Dokumentation</a>
+    </div>
+
+</body>
+</html>

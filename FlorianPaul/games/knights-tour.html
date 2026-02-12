@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Springerproblem</title>
+    <link rel="stylesheet" href="../css/style.css">
+    </head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="../index.html" class="viz-btn btn-back">⬅ Hauptmenü</a>
+            <h2>Springer</h2>
+        </div>
+
+        <div class="sidebar-content">
+            <div class="control-section">
+                <label class="viz-label">Brettgröße</label>
+                <select id="sizeSelect" class="viz-select">
+                    <option value="5">5 x 5</option>
+                    <option value="6">6 x 6</option>
+                    <option value="8" selected>8 x 8</option>
+                    <option value="10">10 x 10</option>
+                </select>
+            </div>
+
+            <div class="control-section">
+                <label class="viz-label">Geschwindigkeit</label>
+                <input type="range" id="solveSpeed" min="0" max="200" step="1" value="100" style="width:100%">
+                
+                <div style="margin-top:10px;">
+                    <label style="display:flex; align-items:center; cursor:pointer;">
+                        <input type="checkbox" id="chkShowMoves" checked> 
+                        <span style="margin-left:8px;">Mögliche Züge zeigen</span>
+                    </label>
+                    <label style="display:flex; align-items:center; cursor:pointer; margin-top:8px;">
+                        <input type="checkbox" id="chkShowWarnsdorf"> 
+                        <span style="margin-left:8px;">Warnsdorf Heuristik</span>
+                    </label>
+                </div>
+            </div>
+
+            <div class="control-section" style="text-align:center;">
+                <div id="stats" class="stats-display">Züge: 0 / 64</div>
+                <div id="aiStats" class="stats-display" style="margin-top:10px; font-size:0.9em; color:#7f8c8d;">KI Knoten: 0</div>
+            </div>
+
+            <div style="margin-top:auto; display:flex; flex-direction:column; gap:10px;">
+                <button id="solveBtn" class="viz-btn btn-action" onclick="Game.toggleSolver()">
+                    ⚡ Automatisch Lösen
+                </button>
+                
+                <div style="display:flex; gap:10px;">
+                    <button class="viz-btn" style="flex:1; background:#95a5a6; color:white;" onclick="Game.undo()">
+                        ↺ Zurück
+                    </button>
+                    <button class="viz-btn btn-restart" style="flex:1;" onclick="Game.reset()">
+                        Neustart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </aside>
+
+    <main class="game-area">
+        <canvas id="boardCanvas" width="600" height="600"></canvas>
+    </main>
+
+    <script src="../js/core/game-state.js"></script>
+    <script src="../js/ai/search-algorithms.js"></script>
+    
+    <script src="../js/games/knights-tour/logic.js"></script>
+    <script src="../js/games/knights-tour/renderer.js"></script>
+    <script src="../js/games/knights-tour/controller.js"></script>
+</body>
+</html>

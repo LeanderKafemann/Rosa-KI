@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic-Tac-Toe Universum</title>
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/tictactoe.css">
+    <style>
+        /* Zentrierung für das Menü */
+        body { 
+            display: block; 
+            overflow-y: auto; /* Scrollbar erlauben */
+            height: auto;
+        }
+        .menu-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+            text-align: center;
+        }
+        h1 { color: #2c3e50; margin-bottom: 40px; }
+    </style>
+</head>
+<body>
+
+    <div class="menu-container">
+        <header style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+            <a href="../index.html" class="viz-btn btn-back" style="background:#34495e; color:white;">⬅ Hauptmenü</a>
+        </header>
+
+        <h1>Tic-Tac-Toe Universum</h1>
+
+        <div class="ttt-grid">
+            <a href="ttt-regular.html" class="game-card">
+                <span class="tag">Der Einstieg</span>
+                <div class="icon">#️⃣</div>
+                <h2>Klassik (3x3)</h2>
+                <p>Das Grundspiel. Perfekt um den Minimax-Algorithmus zu verstehen.</p>
+            </a>
+
+            <a href="ttt-3d.html" class="game-card">
+                <span class="tag">Räumliches Denken</span>
+                <div class="icon">🧊</div>
+                <h2>3D Tic-Tac-Toe</h2>
+                <p>Denke in drei Dimensionen (3x3x3 oder 4x4x4).</p>
+            </a>
+
+            <a href="ttt-ultimate.html" class="game-card">
+                <span class="tag">Strategie</span>
+                <div class="icon">🤯</div>
+                <h2>Ultimate</h2>
+                <p>Das Spiel im Spiel. Strategische Tiefe durch verschachtelte Boards.</p>
+            </a>
+        </div>
+    </div>
+
+</body>
+</html>
