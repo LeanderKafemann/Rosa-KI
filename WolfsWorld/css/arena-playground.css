@@ -14,27 +14,28 @@ body {
 
 /* Toolbar passend zum Design der anderen Playgrounds */
 .viz-toolbar {
-    background: #2c3e50;
+    background: linear-gradient(135deg, #34495e, #2c3e50);
     padding: 12px 20px;
     display: flex;
     flex-direction: column;
     gap: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 3px 16px rgba(0, 0, 0, 0.18);
     flex-shrink: 0;
 }
 
 .viz-input-number {
     width: 80px;
     padding: 6px 10px;
-    border: 1px solid #bdc3c7;
-    border-radius: 4px;
+    border: 1px solid rgba(189,195,199,0.5);
+    border-radius: 6px;
     font-size: 0.9em;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 
 .viz-input-number:focus {
     outline: none;
     border-color: #3498db;
-    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.1);
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.15);
 }
 
 /* Container für scrollable Inhalt */
@@ -43,7 +44,7 @@ body {
     overflow-y: auto;
     overflow-x: hidden;
     padding: 20px;
-    background: #f5f7fa;
+    background: linear-gradient(135deg, #f0f2f5 0%, #e8ecf1 100%);
 }
 
 /* Modal Dialog */
@@ -53,7 +54,9 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -61,12 +64,15 @@ body {
 }
 
 .modal-content {
-    background: white;
-    border-radius: 8px;
+    background: var(--glass-bg-hover, rgba(255,255,255,0.82));
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 14px;
     padding: 30px;
     max-width: 500px;
     width: 90%;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 12px 48px rgba(0, 0, 0, 0.25);
+    border: 1px solid rgba(255,255,255,0.22);
 }
 
 .modal-content h3 {
@@ -91,8 +97,11 @@ body {
 .config-item {
     margin-bottom: 15px;
     padding: 12px;
-    background: #f8f9fa;
-    border-radius: 6px;
+    background: rgba(248,249,250,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.18);
 }
 
 .config-item label {
@@ -127,11 +136,15 @@ body {
 .progress-section,
 .results-section,
 .error-section {
-    background: white;
-    border-radius: 8px;
+    background: var(--glass-bg, rgba(255,255,255,0.65));
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border-radius: 12px;
     padding: 20px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
+    border-left: 4px solid #3498db;
+    border: 1px solid rgba(255,255,255,0.18);
     border-left: 4px solid #3498db;
 }
 
@@ -153,8 +166,8 @@ body {
 .progress-bar {
     width: 100%;
     height: 25px;
-    background: #ecf0f1;
-    border-radius: 4px;
+    background: rgba(236,240,241,0.7);
+    border-radius: 8px;
     overflow: hidden;
     margin-bottom: 10px;
 }
@@ -169,6 +182,7 @@ body {
     color: white;
     font-size: 0.8em;
     font-weight: 600;
+    border-radius: 8px;
 }
 
 .progress-text {
@@ -189,10 +203,16 @@ body {
 
 .stat-card {
     padding: 20px;
-    border-radius: 8px;
+    border-radius: 12px;
     text-align: center;
     color: white;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
 }
 
 .stat-card.blue {
@@ -227,10 +247,13 @@ body {
 /* ===== DETAILS ===== */
 
 .stats-details {
-    background: #f8f9fa;
+    background: rgba(248,249,250,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     padding: 15px;
-    border-radius: 6px;
+    border-radius: 10px;
     margin-bottom: 15px;
+    border: 1px solid rgba(255,255,255,0.18);
 }
 
 .detail-item {
@@ -260,10 +283,12 @@ body {
 /* ===== ADVANCED STATS ===== */
 
 .stats-advanced {
-    background: #f8f9fa;
+    background: rgba(248,249,250,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     padding: 15px;
-    border-radius: 6px;
-    border: 1px solid #e0e0e0;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.18);
     margin-bottom: 15px;
 }
 
@@ -281,8 +306,8 @@ body {
 
 .advanced-content {
     padding: 15px 10px;
-    background: white;
-    border-radius: 4px;
+    background: rgba(255,255,255,0.7);
+    border-radius: 8px;
     margin-top: 10px;
 }
 
@@ -293,9 +318,11 @@ body {
 /* ===== AGENT NAMES ===== */
 
 .agent-names {
-    background: #f8f9fa;
+    background: rgba(248,249,250,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     padding: 12px;
-    border-radius: 6px;
+    border-radius: 10px;
     margin-bottom: 15px;
     border-left: 3px solid #3498db;
 }
@@ -317,8 +344,8 @@ body {
     font-weight: 500;
     margin: 0;
     padding: 10px;
-    background: #fadbd8;
-    border-radius: 4px;
+    background: rgba(250,219,216,0.7);
+    border-radius: 8px;
 }
 
 /* ===== RESPONSIVE ===== */

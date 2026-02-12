@@ -1,0 +1,408 @@
+/* css/learning-page.css */
+
+/**
+ * Gemeinsame Styles für Learning-Modul-Seiten
+ * (Lektionen, Kurs-Index, interaktive Demos etc.)
+ *
+ * Wird zusammen mit style.css eingebunden.
+ * Überschreibt das globale Flex-Layout für scrollbare Inhaltsseiten.
+ */
+
+/* ============================================ */
+/* LAYOUT OVERRIDES                             */
+/* ============================================ */
+
+html, body {
+    height: auto !important;
+    overflow: visible !important;
+    display: block !important;
+    flex: none !important;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    margin: 0;
+    padding: 20px;
+    line-height: 1.6;
+}
+
+/* ============================================ */
+/* CONTENT CONTAINERS                           */
+/* ============================================ */
+
+.lesson-container,
+.course-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+    border: 1px solid rgba(255,255,255,0.25);
+}
+
+/* ============================================ */
+/* HEADINGS                                     */
+/* ============================================ */
+
+.lesson-container h1,
+.course-container h1 {
+    color: #667eea;
+    border-bottom: 3px solid #667eea;
+    padding-bottom: 15px;
+}
+
+.lesson-container h2,
+.course-container h2 {
+    color: #764ba2;
+    margin-top: 35px;
+}
+
+/* ============================================ */
+/* INFO-BOXES (mit linkem Farbstreifen)         */
+/* ============================================ */
+
+.content-box,
+.intro-box {
+    background: rgba(248,249,250,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-left: 4px solid #667eea;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+}
+
+.interactive-box,
+.quiz {
+    background: rgba(231,243,255,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-left: 4px solid #2196F3;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+}
+
+.example-box {
+    background: rgba(255,243,205,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-left: 4px solid #ffc107;
+    padding: 20px;
+    margin: 15px 0;
+    border-radius: 10px;
+}
+
+.key-insight {
+    background: rgba(243,229,245,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-left: 4px solid #764ba2;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+}
+
+.key-insight strong {
+    color: #764ba2;
+    font-size: 1.1em;
+}
+
+.learning-outcomes {
+    background: rgba(255,243,205,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-left: 4px solid #ffc107;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+}
+
+.learning-outcomes h2 {
+    margin-top: 0;
+    color: #ff9800;
+}
+
+.learning-outcomes ul {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.learning-outcomes li {
+    margin: 8px 0;
+}
+
+/* ============================================ */
+/* BUTTONS                                      */
+/* ============================================ */
+
+.lesson-container button,
+.course-container button {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 15px;
+    margin-top: 15px;
+    transition: background 0.3s cubic-bezier(0.4,0,0.2,1), box-shadow 0.3s, transform 0.2s;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.25);
+}
+
+.lesson-container button:hover,
+.course-container button:hover {
+    background: #764ba2;
+    box-shadow: 0 4px 16px rgba(118,75,162,0.3);
+    transform: translateY(-1px);
+}
+
+/* ============================================ */
+/* NAVIGATION                                   */
+/* ============================================ */
+
+.nav-buttons {
+    display: flex;
+    gap: 15px;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}
+
+.nav-top {
+    margin-bottom: 30px;
+}
+
+.btn-back {
+    background: rgba(108,117,125,0.85);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+.btn-back:hover {
+    background: rgba(90,98,104,0.9);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+}
+
+.btn-next {
+    margin-left: auto;
+}
+
+/* ============================================ */
+/* PROGRESS BAR                                 */
+/* ============================================ */
+
+.progress-bar {
+    background: rgba(224,224,224,0.5);
+    height: 8px;
+    border-radius: 8px;
+    margin: 20px 0;
+    overflow: hidden;
+}
+
+.progress-fill {
+    background: linear-gradient(90deg, #667eea, #764ba2);
+    height: 100%;
+    transition: width 0.3s ease;
+}
+
+/* ============================================ */
+/* QUIZ                                         */
+/* ============================================ */
+
+.quiz-question {
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+.quiz-option {
+    margin: 10px 0;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.quiz-option:hover {
+    background: rgba(208,232,255,0.7);
+}
+
+.quiz-option input {
+    margin-right: 10px;
+}
+
+.feedback {
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 8px;
+    display: none;
+}
+
+.feedback.show {
+    display: block;
+}
+
+.feedback.correct {
+    background: rgba(212,237,218,0.8);
+    color: #155724;
+    border: 1px solid rgba(195,230,203,0.7);
+}
+
+.feedback.incorrect {
+    background: rgba(248,215,218,0.8);
+    color: #721c24;
+    border: 1px solid rgba(245,198,203,0.7);
+}
+
+/* ============================================ */
+/* LESSON CARDS                                 */
+/* ============================================ */
+
+.lesson-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.lesson-card {
+    background: rgba(255,255,255,0.75);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    border: 1px solid rgba(224,224,224,0.5);
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+    cursor: pointer;
+}
+
+.lesson-card:hover {
+    border-color: #667eea;
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+    transform: translateY(-3px);
+}
+
+.lesson-card a {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+}
+
+.lesson-number {
+    background: #667eea;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.lesson-title {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+}
+
+.lesson-duration {
+    color: #666;
+    font-size: 14px;
+    margin: 5px 0;
+}
+
+.lesson-description {
+    color: #555;
+    margin: 10px 0;
+    line-height: 1.5;
+}
+
+.lesson-type {
+    display: inline-block;
+    background: rgba(240,240,240,0.7);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #666;
+    margin-top: 10px;
+}
+
+/* ============================================ */
+/* STATS                                        */
+/* ============================================ */
+
+.progress-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 20px 0;
+}
+
+.stat-box {
+    background: rgba(231,243,255,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    border: 1px solid rgba(255,255,255,0.18);
+}
+
+.stat-number {
+    font-size: 32px;
+    font-weight: bold;
+    color: #667eea;
+}
+
+.stat-label {
+    color: #666;
+    margin-top: 5px;
+}
+
+.started-badge {
+    display: inline-block;
+    background: #2ecc71;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 3px;
+    font-size: 11px;
+    margin-left: 10px;
+}
+
+/* ============================================ */
+/* CODE                                         */
+/* ============================================ */
+
+.code-box {
+    background: #2d2d2d;
+    color: #f8f8f2;
+    padding: 15px;
+    border-radius: 10px;
+    overflow-x: auto;
+    margin: 15px 0;
+    border-left: 4px solid #667eea;
+    font-family: 'Monaco', 'Courier New', monospace;
+    font-size: 13px;
+    line-height: 1.4;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+}
+
+.code-label {
+    color: #aaa;
+    font-size: 11px;
+    margin-bottom: 8px;
+}
+
+code {
+    background: rgba(240,240,240,0.7);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Monaco', 'Courier New', monospace;
+}

@@ -4,31 +4,7 @@
     <meta charset="UTF-8">
     <title>Lernpfad Viewer</title>
     <link rel="stylesheet" href="../css/style.css">
-    <style>
-        body { display: flex; height: 100vh; overflow: hidden; margin: 0; background: #2c3e50; }
-        
-        /* Sidebar Styles */
-        .sidebar { width: 280px; background: #2c3e50; color: white; display: flex; flex-direction: column; border-right: 1px solid #34495e; }
-        .sidebar-header { padding: 20px; background: #1a252f; }
-        .back-link { color: #bdc3c7; text-decoration: none; font-size: 0.9rem; display: block; margin-bottom: 10px; }
-        .path-title { font-size: 1.1rem; font-weight: bold; color: #ecf0f1; }
-        
-        .step-list { list-style: none; padding: 0; margin: 0; overflow-y: auto; flex: 1; }
-        .step-item { padding: 15px 20px; border-bottom: 1px solid #34495e; cursor: pointer; transition: background 0.2s; color: #bdc3c7; }
-        .step-item:hover { background: #34495e; color: white; }
-        .step-item.active { background: #3498db; color: white; font-weight: bold; border-left: 5px solid #f1c40f; }
-        
-        /* Content Area */
-        .content-area { flex: 1; display: flex; flex-direction: column; background: white; position: relative; }
-        iframe { flex: 1; border: none; width: 100%; height: 100%; }
-        
-        /* Navigation Bar unten */
-        .nav-bar { 
-            height: 60px; background: #f8f9fa; border-top: 1px solid #ddd; 
-            display: flex; align-items: center; justify-content: space-between; padding: 0 20px; 
-        }
-        .progress-text { font-weight: bold; color: #7f8c8d; }
-    </style>
+    <link rel="stylesheet" href="../css/pages/learning-viewer.css">
 </head>
 <body>
 
@@ -52,84 +28,6 @@
 
     <script src="data/paths.js"></script>
 
-    <script>
-        const Viewer = {
-            pathId: null,
-            currentStepIndex: 0,
-            pathData: null,
-
-            init() {
-                // Liest ?path=xyz aus der URL
-                const params = new URLSearchParams(window.location.search);
-                this.pathId = params.get('path');
-
-                if (!this.pathId || !LEARNING_PATHS[this.pathId]) {
-                    alert("Lernpfad nicht gefunden!");
-                    window.location.href = "../index.html";
-                    return;
-                }
-
-                this.pathData = LEARNING_PATHS[this.pathId];
-                this.renderSidebar();
-                this.loadStep(0);
-            },
-
-            renderSidebar() {
-                document.getElementById('pathTitle').innerText = this.pathData.title;
-                const list = document.getElementById('stepList');
-                list.innerHTML = '';
-
-                this.pathData.steps.forEach((step, index) => {
-                    const li = document.createElement('li');
-                    li.className = 'step-item';
-                    li.id = `step-btn-${index}`;
-                    li.innerText = step.title;
-                    li.onclick = () => this.loadStep(index);
-                    list.appendChild(li);
-                });
-            },
-
-            loadStep(index) {
-                if (index < 0 || index >= this.pathData.steps.length) return;
-                
-                this.currentStepIndex = index;
-                const step = this.pathData.steps[index];
-
-                // WICHTIG: Pfad zum Modul bauen (modules/ + Unterordner/Datei)
-                const modulePath = `modules/${step.file}`;
-                document.getElementById('contentFrame').src = modulePath;
-
-                // UI Updates
-                document.querySelectorAll('.step-item').forEach(el => el.classList.remove('active'));
-                const activeBtn = document.getElementById(`step-btn-${index}`);
-                if(activeBtn) activeBtn.classList.add('active');
-                if(activeBtn) activeBtn.scrollIntoView({ block: 'nearest' });
-
-                document.getElementById('progressText').innerText = 
-                    `Schritt ${index + 1} von ${this.pathData.steps.length}`;
-
-                // Buttons
-                document.getElementById('prevBtn').disabled = (index === 0);
-                
-                const nextBtn = document.getElementById('nextBtn');
-                if (index === this.pathData.steps.length - 1) {
-                    nextBtn.innerText = "Abschließen 🏁";
-                    nextBtn.className = "viz-btn btn-restart"; // Gelb
-                    nextBtn.onclick = () => {
-                        if(confirm("Glückwunsch! Zurück zum Menü?")) window.location.href = "../index.html";
-                    };
-                } else {
-                    nextBtn.innerText = "Weiter ▶";
-                    nextBtn.className = "viz-btn btn-action"; // Grün/Blau
-                    nextBtn.onclick = () => this.next();
-                }
-            },
-
-            next() { this.loadStep(this.currentStepIndex + 1); },
-            prev() { this.loadStep(this.currentStepIndex - 1); }
-        };
-
-        window.onload = () => Viewer.init();
-    </script>
+    <script src="../js/pages/learning-viewer.js"></script>
 </body>
 </html>

@@ -3,12 +3,14 @@
 /* Lösungsweg Box */
 #solutionContainer {
     margin-top: 15px;
-    background: rgba(0, 0, 0, 0.05); /* Leicht grau/transparent */
-    border: 1px solid rgba(0,0,0,0.1);
-    border-radius: 6px;
+    background: rgba(0, 0, 0, 0.04);
+    border: 1px solid rgba(0,0,0,0.06);
+    border-radius: 10px;
     padding: 10px;
     max-height: 200px;
     overflow-y: auto;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 #solutionPath {
@@ -23,24 +25,24 @@
     background: #34495e;
     color: white;
     padding: 4px 8px;
-    border-radius: 4px;
+    border-radius: 6px;
     font-family: monospace;
     font-weight: bold;
     font-size: 0.9rem;
     border: 1px solid transparent;
-    transition: all 0.2s ease;
+    transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
     opacity: 0.7;
 }
 
 /* AKTIVER SCHRITT - Highlighting */
 .step-badge.active {
-    background-color: #f39c12; /* Das Orange aus dem Original */
+    background-color: #f39c12;
     color: white;
     transform: scale(1.15);
     border-color: #e67e22;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 12px rgba(243,156,18,0.35);
     opacity: 1;
-    z-index: 2; /* In den Vordergrund */
+    z-index: 2;
 }
 
 .warning-tag {

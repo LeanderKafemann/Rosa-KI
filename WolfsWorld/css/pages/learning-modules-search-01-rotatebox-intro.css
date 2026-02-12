@@ -1,0 +1,23 @@
+/* Page-specific styles for learning/modules/search/01-rotatebox-intro.html */
+/* Gemeinsame Learning-Styles → css/learning-page.css */
+
+/* Seitenspezifisch: Fortschrittsbalken-Breite */
+.progress-fill {
+    width: 14%;
+}
+
+/* Puzzle-Bild */
+.puzzle-image {
+    background: white;
+    border: 2px solid #667eea;
+    border-radius: 8px;
+    padding: 15px;
+    margin: 15px 0;
+    text-align: center;
+}
+
+.puzzle-image img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 5px;
+}

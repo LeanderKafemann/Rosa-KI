@@ -5,68 +5,22 @@
     <title>RotateBox Sandbox</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/rotatebox.css">
-    <style>
-        /* Layout Fixes basierend auf deinem Original */
-        body { margin: 0; background: #f0f2f5; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; }
-        
-        /* Container Setup wie in deiner Sandbox */
-        #container { display: flex; width: 100%; height: 100%; }
-        
-        #menu { 
-            width: 300px; 
-            background: white; 
-            border-right: 1px solid #ddd; 
-            padding: 20px; 
-            box-shadow: 2px 0 10px rgba(0,0,0,0.05); 
-            z-index: 10; 
-            display: flex; 
-            flex-direction: column;
-            overflow-y: auto;
-        }
-
-        #game-area { 
-            flex-grow: 1; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            background: #dfe6e9; 
-            position: relative;
-        }
-
-        /* Canvas Begrenzung damit es nicht riesig wird */
-        canvas { 
-            background: white; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2); 
-            border-radius: 8px;
-            max-width: 90vh; 
-            max-height: 90vh;
-        }
-
-        .control-group { margin-bottom: 20px; }
-        
-        .primary-btn { 
-            background: #3498db; color: white; border: none; padding: 10px; 
-            width: 100%; border-radius: 5px; cursor: pointer; font-weight: bold; 
-        }
-        .primary-btn:hover { background: #2980b9; }
-        
-        .hidden { display: none !important; }
-    </style>
+    <link rel="stylesheet" href="../css/pages/games-rotatebox.css">
 </head>
 <body>
 
     <div id="container">
         <aside id="menu">
             <header>
-                <a href="../index.html" style="text-decoration: none; display:block; margin-bottom:15px;">
-                    <button style="cursor:pointer; padding: 5px 10px;">← Hauptmenü</button>
+                <a href="../index.html" class="back-link">
+                    <button class="primary-btn back-btn">← Hauptmenü</button>
                 </a>
-                <h2 style="margin-top:0;">RotateBox</h2>
+                <h2 class="sidebar-title">RotateBox</h2>
             </header>
 
             <div class="control-group">
-                <label for="boardSelect" style="font-weight:bold;">Level wählen:</label>
-                <select id="boardSelect" class="input-field" style="width: 100%; padding: 8px; margin-top:5px;">
+                <label for="boardSelect" class="control-label">Level wählen:</label>
+                <select id="boardSelect" class="input-field viz-select">
                     <option value="0">Tutorial</option>
                     <option value="1">Level 1</option>
                     <option value="2">Level 2</option>
@@ -75,24 +29,24 @@
             </div>
             
             <div class="control-group">
-                <label style="display: flex; align-items: center; gap: 10px; cursor: pointer;">
+                <label class="checkbox-label">
                     <input type="checkbox" id="animateToggle" checked> Animationen
                 </label>
             </div>
             
             <div class="stats-panel">
                 <p>Schritte: <strong id="moveCount">0</strong></p>
-                <button id="resetBtn" style="width: 100%; padding: 8px; cursor: pointer; background: #ecf0f1; border: 1px solid #bdc3c7; border-radius: 4px;">Reset Board</button>
+                <button id="resetBtn" class="reset-btn">Reset Board</button>
                 
-                <hr style="opacity: 0.2; margin: 20px 0;">
+                <hr class="divider">
                 
                 <button id="solveBtn" class="primary-btn">KI Lösung suchen 🧠</button>
             </div>
 
             <div id="aiOutput" class="hidden">
-                <div class="ai-header" style="margin-top: 20px;">
-                    <h3 style="margin-bottom: 5px;">KI Analyse</h3>
-                    <span id="pathWarning" class="warning-tag hidden" style="color:red; font-weight:bold;">⚠️ Pfad verlassen!</span>
+                <div class="ai-header">
+                    <h3 class="ai-title">KI Analyse</h3>
+                    <span id="pathWarning" class="warning-tag hidden">⚠️ Pfad verlassen!</span>
                 </div>
                 
                 <div class="stat-row">
@@ -101,21 +55,21 @@
                     <span>Doppelungen: <b id="stat-duplicates">-</b></span>
                 </div>
 
-                <button id="animateBtn" class="primary-btn" style="background: #27ae60; margin-top: 15px; margin-bottom: 15px;">
+                <button id="animateBtn" class="primary-btn animate-btn">
                     ▶ Lösung abspielen
                 </button>
 
-                <div id="solutionContainer" style="margin-top: 10px; border:1px solid #ddd; padding:5px; max-height:150px; overflow-y:auto;">
+                <div id="solutionContainer">
                     <small>Weg:</small>
-                    <div id="solutionPath" style="display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px;"></div>
+                    <div id="solutionPath"></div>
                 </div>
             </div>
 
-            <div id="winMessage" class="hidden" style="margin-top: 20px; color: #27ae60; font-weight: bold; text-align: center; font-size: 1.5em;">
+            <div id="winMessage" class="hidden win-message">
                 🎉 GEWONNEN!
             </div>
             
-            <div style="margin-top:auto; font-size:0.8rem; color:#888; text-align:center;">
+            <div class="sidebar-footer">
                 Steuerung: Pfeiltasten Links/Rechts
             </div>
         </aside>
