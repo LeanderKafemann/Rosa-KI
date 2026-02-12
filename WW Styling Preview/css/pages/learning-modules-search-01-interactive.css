@@ -1,75 +1,85 @@
 /* Page-specific styles for learning/modules/search/01-interactive.html */
-html, body {
-            height: auto !important;
-            overflow: visible !important;
-        }
-        body {
-            font-family: sans-serif;
-            background: #f0f0f0;
-            margin: 0;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        }
-        a {
-            color: #667eea;
-            text-decoration: none;
-            font-size: 14px;
-        }
-        h1 {
-            margin-top: 0;
-            color: #333;
-        }
-        p {
-            color: #666;
-            font-size: 14px;
-        }
-        canvas {
-            border: 2px solid #333;
-            background: white;
-            display: block;
-            margin: 20px 0;
-            cursor: pointer;
-        }
-        .controls {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0;
-            flex-wrap: wrap;
-        }
-        button {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        button:hover {
-            background: #764ba2;
-        }
-        select {
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-        .stats {
-            background: #e7f3ff;
-            padding: 15px;
-            border-radius: 5px;
-            font-family: monospace;
-            font-size: 13px;
-            line-height: 1.6;
-        }
-        .stat-row {
-            display: flex;
-            justify-content: space-between;
-        }
+/* Gemeinsame Learning-Styles → css/learning-page.css */
+
+/* Seitenspezifisch: einfacherer Container, eigener Hintergrund */
+body {
+    font-family: sans-serif;
+    background: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+}
+
+.container {
+    max-width: 600px;
+    margin: 0 auto;
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+a {
+    color: #667eea;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+h1 {
+    margin-top: 0;
+    color: #333;
+}
+
+p {
+    color: #666;
+    font-size: 14px;
+}
+
+canvas {
+    border: 2px solid #333;
+    background: white;
+    display: block;
+    margin: 20px 0;
+    cursor: pointer;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+button {
+    background: #667eea;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+button:hover {
+    background: #764ba2;
+}
+
+select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.stats {
+    background: #e7f3ff;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: monospace;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.stat-row {
+    display: flex;
+    justify-content: space-between;
+}
