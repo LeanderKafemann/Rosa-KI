@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Neuronen Spiel</title>
+    <title>Neuronen und neuronale Signalübertragung</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -95,22 +95,7 @@
         // Simulation der chemischen Signalübertragung
         setTimeout(chemicalSignal, 2000);
     }
-
-    // Chemische Signalübertragung
-    function chemicalSignal() {
-        let resultContainer = document.getElementById('action-result');
-        resultContainer.innerHTML += '<br><strong>Neurotransmitter wurden freigesetzt!</strong> Signal über Synapsen an das nächste Neuron übertragen.';
-        
-        // Hinzufügen von Neuronenplastizität
-        setTimeout(neuralPlasticity, 3000);
-    }
-
-    // Lernen und neuronale Plastizität
-    function neuralPlasticity() {
-        let resultContainer = document.getElementById('action-result');
-        resultContainer.innerHTML += '<br><strong>Neuronale Plastizität aktiviert!</strong> Stärkung der Synapse durch wiederholte Nutzung.';
-    }
-
+    
     // Startknopf für das Spiel
     document.getElementById('startBtn').addEventListener('click', () => {
         createNeuron();
