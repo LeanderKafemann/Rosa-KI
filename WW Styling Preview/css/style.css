@@ -19,13 +19,17 @@
     --accent-red: #e74c3c;
     --accent-green: #2ecc71;
     --accent-yellow: #f1c40f;
-    --border-color: #ddd;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.1);
-    --shadow-lg: 0 8px 30px rgba(0,0,0,0.15);
-    --shadow-xl: 0 12px 40px rgba(0,0,0,0.18);
-    --glass-bg: rgba(255,255,255,0.85);
+    --border-color: rgba(255,255,255,0.18);
+    --shadow-sm: 0 2px 8px rgba(0,0,0,0.08);
+    --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+    --shadow-lg: 0 8px 32px rgba(0,0,0,0.18);
+    --shadow-xl: 0 12px 48px rgba(0,0,0,0.22);
+    --glass-bg: rgba(255,255,255,0.65);
+    --glass-bg-hover: rgba(255,255,255,0.82);
     --glass-border: rgba(255,255,255,0.25);
+    --glass-blur: blur(12px);
+    --glass-border-subtle: 1px solid rgba(255,255,255,0.18);
+    --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 body {
@@ -48,20 +52,21 @@ body.lab-page {
 .sidebar {
     width: 320px;
     background: var(--glass-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-right: 1px solid var(--glass-border);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border-right: var(--glass-border-subtle);
     display: flex;
     flex-direction: column;
     z-index: 10;
-    box-shadow: 2px 0 20px rgba(0,0,0,0.08);
+    box-shadow: 2px 0 24px rgba(0,0,0,0.10);
+    transition: box-shadow var(--transition-smooth);
 }
 
 .sidebar-header {
     padding: 20px;
     background: linear-gradient(135deg, #34495e, #2c3e50);
     color: white;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
 }
 
 .sidebar-header h2 { margin: 10px 0 0 0; font-size: 1.5rem; }
@@ -82,25 +87,26 @@ body.lab-page {
     justify-content: center;
     align-items: center;
     background-color: #dfe6e9;
-    background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 70%);
+    background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.5) 0%, transparent 70%);
     position: relative;
 }
 
 /* --- UI Komponenten --- */
 
 .control-section {
-    background: rgba(248,249,250,0.8);
-    backdrop-filter: blur(6px);
-    -webkit-backdrop-filter: blur(6px);
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 15px;
-    border-radius: 8px;
-    border: 1px solid rgba(238,238,238,0.6);
+    border-radius: 10px;
+    border: var(--glass-border-subtle);
     box-shadow: var(--shadow-sm);
-    transition: box-shadow 0.2s ease;
+    transition: box-shadow var(--transition-smooth), transform var(--transition-smooth);
 }
 
 .control-section:hover {
     box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
 }
 
 .viz-label {
@@ -115,12 +121,12 @@ body.lab-page {
 .viz-select, .viz-input {
     width: 100%;
     padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 8px;
     background: rgba(255,255,255,0.9);
     font-size: 1rem;
     box-sizing: border-box;
-    transition: border-color 0.2s, box-shadow 0.2s;
+    transition: border-color var(--transition-smooth), box-shadow var(--transition-smooth);
 }
 
 .viz-select:focus, .viz-input:focus {
@@ -133,36 +139,37 @@ body.lab-page {
 .viz-btn {
     border: none;
     padding: 10px 15px;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
     font-weight: bold;
     font-size: 0.95rem;
     text-decoration: none;
     display: inline-block;
-    transition: filter 0.2s, box-shadow 0.2s, transform 0.15s;
+    transition: filter var(--transition-smooth), box-shadow var(--transition-smooth), transform 0.15s ease;
     text-align: center;
     box-shadow: var(--shadow-sm);
 }
-.viz-btn:hover { filter: brightness(90%); box-shadow: var(--shadow-md); transform: translateY(-1px); }
+.viz-btn:hover { filter: brightness(92%); box-shadow: var(--shadow-md); transform: translateY(-2px); }
 .viz-btn:active { transform: translateY(0); box-shadow: var(--shadow-sm); }
 .viz-btn:disabled { opacity: 0.6; cursor: not-allowed; filter: grayscale(1); box-shadow: none; }
 
 .btn-back { 
-    background: rgba(255,255,255,0.08); 
+    background: rgba(255,255,255,0.10); 
     border: 1px solid rgba(255,255,255,0.5); 
     color: #fff; 
     padding: 8px 14px; 
     font-size: 0.85rem;
-    border-radius: 6px;
+    border-radius: 8px;
     font-weight: 600;
-    transition: all 0.2s;
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    transition: all var(--transition-smooth);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
 }
 .btn-back:hover {
-    background: rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.18);
     border-color: rgba(255,255,255,0.8);
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.18);
+    transform: translateY(-1px);
 }
 .btn-action { background: var(--accent-blue); color: white; width: 100%; }
 .btn-restart { background: var(--accent-yellow); color: #333; width: 100%; }
@@ -180,7 +187,7 @@ body.lab-page {
 canvas {
     background: white;
     box-shadow: var(--shadow-lg);
-    border-radius: 8px;
+    border-radius: 10px;
     /* Damit es nicht riesig wird: */
     max-width: 95%;
     max-height: 95%;
@@ -198,7 +205,7 @@ canvas {
     display: flex;
     align-items: center;
     gap: 15px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.15);
+    box-shadow: 0 3px 16px rgba(0,0,0,0.18);
     z-index: 100;
     height: 50px;
     flex-wrap: wrap;
@@ -215,15 +222,16 @@ canvas {
 .col-tree {
     flex: 1;
     background: var(--glass-bg);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    border-radius: 10px;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-radius: 12px;
     box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border: 1px solid rgba(223,230,233,0.6);
+    border: var(--glass-border-subtle);
     min-height: 500px;
+    transition: box-shadow var(--transition-smooth);
 }
 
 .col-game {
@@ -238,10 +246,10 @@ canvas {
     padding: 12px;
     font-weight: bold;
     color: var(--text-main);
-    border-bottom: 2px solid #f0f2f5;
-    background: rgba(250,250,250,0.9);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+    border-bottom: 2px solid rgba(240,242,245,0.8);
+    background: var(--glass-bg);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
     display: flex;
     align-items: center;
     gap: 10px;
@@ -249,15 +257,17 @@ canvas {
 
 /* Flowchart Node Styling */
 .fc-node {
-    background: rgba(255,255,255,0.95);
-    border: 1px solid #dcdcdc;
-    border-radius: 8px;
+    background: var(--glass-bg);
+    border: 1px solid rgba(220,220,220,0.6);
+    border-radius: 10px;
     padding: 8px 12px;
     margin-bottom: 8px;
     position: relative;
-    transition: all 0.3s ease;
+    transition: all var(--transition-smooth);
     border-left: 5px solid #bdc3c7;
     box-shadow: var(--shadow-sm);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .fc-children {
@@ -267,19 +277,19 @@ canvas {
 }
 
 .fc-node.checking {
-    background-color: rgba(255,249,219,0.95);
+    background-color: rgba(255,249,219,0.9);
     border-color: #f1c40f;
     border-left-color: #f1c40f;
     transform: scale(1.02);
-    box-shadow: 0 4px 16px rgba(241, 196, 15, 0.3);
+    box-shadow: 0 4px 20px rgba(241, 196, 15, 0.3);
     z-index: 10;
 }
 
 .fc-node.success {
-    background-color: rgba(232,248,245,0.95);
+    background-color: rgba(232,248,245,0.9);
     border-color: #2ecc71;
     border-left-color: #2ecc71;
-    box-shadow: 0 2px 10px rgba(46, 204, 113, 0.15);
+    box-shadow: 0 2px 12px rgba(46, 204, 113, 0.18);
 }
 
 .fc-node.inactive {
@@ -337,28 +347,34 @@ canvas {
 
 /* Game UI */
 .game-card {
-    background: rgba(255,255,255,0.95);
+    background: var(--glass-bg);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     padding: 10px;
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: var(--shadow-md);
+    border: var(--glass-border-subtle);
     display: flex;
     flex-direction: column;
     align-items: center;
     width: 100%;
-    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    transition: box-shadow var(--transition-smooth), transform var(--transition-smooth);
 }
 
 .game-card:hover {
     box-shadow: var(--shadow-lg);
+    transform: translateY(-3px);
 }
 
 .view-controls {
     display: flex;
     gap: 5px;
     margin-bottom: 10px;
-    background: rgba(236,240,241,0.8);
+    background: rgba(236,240,241,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
     padding: 4px;
-    border-radius: 6px;
+    border-radius: 8px;
 }
 
 .view-btn {
@@ -369,14 +385,14 @@ canvas {
     font-weight: bold;
     font-size: 0.8rem;
     color: var(--text-muted);
-    border-radius: 4px;
-    transition: all 0.2s;
+    border-radius: 6px;
+    transition: all var(--transition-smooth);
 }
 
 .view-btn.active {
-    background: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.9);
     color: var(--accent-blue);
-    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
 }
 
 .log-box {
@@ -384,13 +400,13 @@ canvas {
     color: #ecf0f1;
     width: 100%;
     flex: 1;
-    border-radius: 10px;
+    border-radius: 12px;
     padding: 10px;
     font-family: monospace;
     font-size: 0.85rem;
     overflow-y: auto;
-    border: 1px solid rgba(52,73,94,0.6);
-    box-shadow: inset 0 2px 8px rgba(0,0,0,0.2);
+    border: 1px solid rgba(52,73,94,0.5);
+    box-shadow: inset 0 2px 10px rgba(0,0,0,0.25);
 }
 
 .log-line { 
@@ -429,4 +445,141 @@ canvas {
 
 .hidden {
     display: none !important;
+}
+
+/* Additional utility classes for removing inline styles */
+.mt-auto { margin-top: auto; }
+.mt-10 { margin-top: 10px; }
+.mt-20 { margin-top: 20px; }
+.ml-20 { margin-left: 20px; }
+.gap-10 { gap: 10px; }
+.flex-1 { flex: 1; }
+.flex-grow { flex-grow: 1; }
+
+/* Common sidebar/panel header accents */
+.panel-header-blue { border-left: 5px solid #3498db; }
+.panel-header-red { border-left: 5px solid #e74c3c; }
+
+/* Common link styling for learning back-links */
+.back-link-learning {
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+.back-link-learning:hover {
+    color: #764ba2;
+}
+
+/* Common quick-start box */
+.quick-start-box {
+    background: rgba(231,243,255,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    border-left: 4px solid #2196F3;
+    padding: 20px;
+    margin: 30px 0;
+    border-radius: 10px;
+}
+.quick-start-box h2 {
+    margin-top: 0;
+    color: #2196F3;
+}
+
+/* Footer divider for learning pages */
+.section-footer {
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(224,224,224,0.5);
+    text-align: center;
+}
+.section-footer p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Checkbox labels in sidebar */
+.sidebar-checkbox {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+.sidebar-checkbox span {
+    margin-left: 8px;
+}
+
+/* Input width modifiers */
+.input-narrow { width: 60px; }
+.input-medium { width: 80px; }
+.input-wide { width: 150px; }
+
+/* Color badge styling */
+.color-badge {
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+}
+.color-badge-red { background: #e74c3c; }
+.color-badge-green { background: #2ecc71; }
+
+/* Status info box */
+.status-bar {
+    background: rgba(236,240,241,0.7);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    text-align: center;
+    width: 100%;
+}
+
+/* Section with separator */
+.stat-row-separator {
+    border-top: 1px solid rgba(187,187,187,0.5);
+    margin-top: 6px;
+    padding-top: 6px;
+}
+
+/* Undo button style */
+.btn-undo { background: #95a5a6; color: white; }
+
+/* Game hint text */
+.game-hint {
+    color: #7f8c8d;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+/* Solution reveal container */
+.solution-reveal {
+    display: none;
+    margin-top: 15px;
+}
+.solution-reveal.show {
+    display: block;
+}
+
+/* Slider full-width */
+.slider-full { width: 100%; }
+
+/* Bottom action area in sidebars */
+.sidebar-actions {
+    margin-top: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Flex row with gap */
+.flex-row-gap {
+    display: flex;
+    gap: 10px;
+}
+
+/* AI stats display */
+.ai-stats {
+    margin-top: 10px;
+    font-size: 0.9em;
+    color: #7f8c8d;
 }

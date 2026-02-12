@@ -7,5 +7,5 @@
             flex-direction: column; 
             height: 100vh; 
             overflow: hidden; 
-            background: #f0f3f4;
+            background: linear-gradient(135deg, #e8ecf1 0%, #d5dde5 100%);
         }

@@ -13,6 +13,35 @@ body {
     display: block;
     overflow-y: auto;
     height: auto;
+    background: linear-gradient(135deg, #e8ecf1 0%, #d5dde5 100%);
+    min-height: 100vh;
+}
+
+/* Einheitliche Top-Navigation für Menü-Seiten */
+.menu-nav {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
+    background: var(--glass-bg, rgba(255,255,255,0.65));
+    backdrop-filter: var(--glass-blur, blur(12px));
+    -webkit-backdrop-filter: var(--glass-blur, blur(12px));
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin-bottom: 20px;
+    border-radius: 12px;
+}
+
+.menu-nav .btn-back {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    color: white;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+}
+.menu-nav .btn-back:hover {
+    box-shadow: 0 4px 16px rgba(0,0,0,0.22);
 }
 
 /* Zentrierter Menü-Container */
