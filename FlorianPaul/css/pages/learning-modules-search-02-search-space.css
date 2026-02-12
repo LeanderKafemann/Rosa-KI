@@ -1,0 +1,75 @@
+/* Page-specific styles for learning/modules/search/02-search-space.html */
+/* Gemeinsame Learning-Styles → css/learning-page.css */
+
+/* Seitenspezifisch: breiterer Container */
+.lesson-container {
+    max-width: 1200px;
+}
+
+/* Fortschrittsbalken-Breite */
+.progress-fill {
+    width: 29%;
+}
+
+/* Coding-Übung */
+.coding-exercise {
+    background: #fff9e6;
+    border: 2px solid #ffc107;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 5px;
+}
+
+.exercise-title {
+    font-weight: bold;
+    color: #ff6b6b;
+    margin-bottom: 10px;
+}
+
+textarea {
+    width: 100%;
+    padding: 10px;
+    font-family: 'Monaco', 'Courier New', monospace;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    min-height: 150px;
+    margin: 10px 0;
+}
+
+.output-box {
+    background: #f0f0f0;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: monospace;
+    margin-top: 10px;
+    display: none;
+}
+
+.output-box.show {
+    display: block;
+}
+
+/* Tabellen */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 15px 0;
+}
+
+table, th, td {
+    border: 1px solid #ddd;
+}
+
+th, td {
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background: #667eea;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #f9f9f9;
+}

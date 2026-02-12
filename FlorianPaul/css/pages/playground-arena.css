@@ -1,0 +1,153 @@
+/* Page-specific styles for playground/arena.html */
+.lab-toolbar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar-left,
+        .toolbar-center,
+        .toolbar-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toolbar-center {
+            margin: 0 auto;
+        }
+
+        .toolbar-right {
+            margin-left: auto;
+        }
+
+        /* Spielfeld deutlich verkleinert - nur Deko */
+        .col-game {
+            flex: 0 0 280px; 
+            min-width: 280px;
+            width: 280px;
+        }
+        
+        .canvas-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 5px 0;
+        }
+        
+        canvas {
+            max-width: 100%;
+            height: auto;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+            border-radius: 10px;
+        }
+        
+        /* Stats Bereich */
+        .stats-box {
+            background: rgba(248,249,250,0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 10px;
+            padding: 12px;
+            font-size: 0.9em;
+            line-height: 1.6;
+        }
+        
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .stat-row:last-child {
+            border-bottom: none;
+        }
+        
+        .stat-label {
+            font-weight: 500;
+            color: #555;
+        }
+        
+        .stat-value {
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .stat-value.blue {
+            color: #3498db;
+        }
+        
+        .stat-value.red {
+            color: #e74c3c;
+        }
+        
+        .stat-value.draw {
+            color: #95a5a6;
+        }
+
+        .random-mascot {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 10px;
+            margin: 10px;
+            border: 2px dashed rgba(208,208,208,0.6);
+            border-radius: 14px;
+            background: rgba(250,250,250,0.5);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            color: #666;
+            text-align: center;
+            gap: 8px;
+        }
+
+        .random-emoji {
+            font-size: 40px;
+        }
+
+        .random-text {
+            font-size: 0.95em;
+            font-weight: 600;
+        }
+
+        .minimax-panel {
+            background: rgba(253,253,253,0.7);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border: 1px solid rgba(255,255,255,0.18);
+            border-radius: 12px;
+            margin: 10px;
+        }
+        .desc-box {
+            margin-top: 10px;
+            padding: 10px;
+            background: rgba(238,238,238,0.5);
+            border-radius: 8px;
+            font-size: 0.85em;
+            color: #555;
+            font-style: italic;
+        }
+        .formula-box {
+            margin-top: 5px;
+            font-family: monospace;
+            background: #fff;
+            padding: 4px;
+            border: 1px solid #ccc;
+            font-size: 0.8em;
+        }
+        .warn-msg {
+            color: #d35400;
+            font-weight: bold;
+            font-size: 0.85em;
+            margin-top: 5px;
+        }
+
+        /* 3D Connect 4 Side View - enable pointer if needed */
+        .c4-3d-sideview {
+             /* Handled in JS, just a note */
+        }

@@ -8,6 +8,7 @@
     justify-content: center;
     align-items: center;
     background: #ecf0f1;
+    background-image: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.4) 0%, transparent 70%);
     position: relative;
     overflow: auto; /* Scrollbars wenn nötig */
     cursor: grab;
@@ -19,24 +20,24 @@
 
 .viz-canvas {
     display: block;
-    /* Schatten für bessere Sichtbarkeit auf dem Hintergrund */
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    box-shadow: 0 0 24px rgba(0,0,0,0.12);
     background: white;
+    border-radius: 10px;
 }
 
 /* --- TOOLBAR --- */
 .viz-toolbar {
-    background: #34495e;
+    background: linear-gradient(135deg, #34495e, #2c3e50);
     color: white;
     padding: 10px 20px;
     display: flex;
     align-items: center;
     gap: 15px;
     flex-wrap: wrap;
-    border-bottom: 1px solid #2c3e50;
+    border-bottom: 1px solid rgba(44,62,80,0.6);
     min-height: 50px;
     font-family: 'Segoe UI', sans-serif;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    box-shadow: 0 3px 16px rgba(0,0,0,0.18);
     z-index: 100;
 }
 
@@ -56,13 +57,19 @@
 
 /* Inputs */
 .viz-select, .viz-input {
-    background: rgba(255,255,255,0.9);
+    background: rgba(255,255,255,0.92);
     border: none;
-    border-radius: 4px;
+    border-radius: 6px;
     padding: 6px 10px;
     font-size: 0.9rem;
     color: #2c3e50;
     font-family: inherit;
+    transition: box-shadow 0.3s cubic-bezier(0.4,0,0.2,1);
+}
+
+.viz-select:focus, .viz-input:focus {
+    box-shadow: 0 0 0 2px rgba(52,152,219,0.25);
+    outline: none;
 }
 
 /* Checkbox Gruppen */

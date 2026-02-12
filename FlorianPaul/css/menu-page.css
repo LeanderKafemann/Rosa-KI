@@ -1,0 +1,63 @@
+/* css/menu-page.css */
+
+/**
+ * Gemeinsame Styles für Menü-Seiten (Connect4-Menü, TicTacToe-Menü etc.)
+ * Wird zusammen mit style.css eingebunden.
+ *
+ * Überschreibt das globale Flex-Layout von style.css
+ * für zentrierte Menü-Ansichten mit Scrollbar.
+ */
+
+/* Body-Override: Block-Layout statt Flex */
+body {
+    display: block;
+    overflow-y: auto;
+    height: auto;
+    background: linear-gradient(135deg, #e8ecf1 0%, #d5dde5 100%);
+    min-height: 100vh;
+}
+
+/* Einheitliche Top-Navigation für Menü-Seiten */
+.menu-nav {
+    display: flex;
+    align-items: center;
+    padding: 14px 24px;
+    background: var(--glass-bg, rgba(255,255,255,0.65));
+    backdrop-filter: var(--glass-blur, blur(12px));
+    -webkit-backdrop-filter: var(--glass-blur, blur(12px));
+    border-bottom: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 2px 16px rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    margin-bottom: 20px;
+    border-radius: 12px;
+}
+
+.menu-nav .btn-back {
+    background: linear-gradient(135deg, #34495e, #2c3e50);
+    color: white;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    transition: box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.35s cubic-bezier(0.4, 0, 0.2, 1),
+                filter 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.menu-nav .btn-back:hover {
+    box-shadow: 0 6px 24px rgba(0,0,0,0.22);
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+}
+
+/* Zentrierter Menü-Container */
+.menu-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.menu-container h1 {
+    color: var(--text-main, #2c3e50);
+    margin-bottom: 40px;
+}

@@ -1,0 +1,92 @@
+/* Page-specific styles for playground/rules-lab.html */
+/* Spezifische Overrides für das Lab Layout */
+        .col-game {
+            /* Fixe Breite etwas verkleinert, damit Platz für Regeln bleibt */
+            flex: 0 0 420px; 
+            min-width: 420px;
+            width: 420px; /* Explizit setzen */
+        }
+        
+        /* Damit Canvas nicht ausbricht */
+        .canvas-container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            padding: 10px 0;
+        }
+        
+        canvas {
+            max-width: 100%;
+            height: auto; /* Aspect Ratio erhalten */
+            box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+            border-radius: 10px;
+        }
+        
+        /* Tree Container Styles */
+        .tree-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 15px;
+            background: rgba(245,245,245,0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 8px;
+        }
+        
+        /* Flowchart Styles */
+        .fc-node {
+            margin-bottom: 12px;
+            padding: 12px;
+            border: 1px solid rgba(221,221,221,0.5);
+            border-left: 4px solid #3498db;
+            border-radius: 10px;
+            background: var(--glass-bg, rgba(255,255,255,0.65));
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        
+        .fc-node:hover {
+            box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+            transform: translateY(-2px);
+        }
+        
+        .fc-node.checking {
+            background: rgba(255,250,205,0.7);
+            border-left-color: #f39c12;
+            box-shadow: 0 0 12px rgba(243,156,18,0.25);
+        }
+        
+        .fc-node.success {
+            background: rgba(212,237,218,0.7);
+            border-left-color: #28a745;
+            box-shadow: 0 0 8px rgba(40,167,69,0.15);
+        }
+        
+        .fc-node.fc-type-group {
+            border-left-color: #9b59b6;
+        }
+        
+        .fc-node.fc-type-cond {
+            border-left-color: #e74c3c;
+        }
+        
+        .fc-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 500;
+        }
+        
+        .fc-children {
+            margin-left: 20px;
+            margin-top: 8px;
+        }
+        
+        .fc-node.inactive {
+            opacity: 0.6;
+            filter: grayscale(50%);
+        }

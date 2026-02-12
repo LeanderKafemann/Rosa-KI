@@ -1,0 +1,20 @@
+/* Page-specific styles for playground/minimax-viz.html */
+body { 
+            margin: 0; 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            flex-direction: column; 
+            height: 100vh; 
+            overflow: hidden; 
+            background: linear-gradient(135deg, #e8ecf1 0%, #d5dde5 100%);
+        }
+        /* Slider Styling */
+        input[type=range] {
+            width: 200px;
+        }
+        .step-display {
+            font-family: monospace;
+            background: rgba(0,0,0,0.2);
+            padding: 2px 6px;
+            border-radius: 6px;
+        }
