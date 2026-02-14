@@ -1,14 +1,22 @@
 /**
- * Renderer-Sammlung für Connect 4 Varianten.
- * @fileoverview
+ * @fileoverview Renderer für Connect4 Varianten
+ * 
+ * Bietet Render-Funktionen für Connect4 in 2D und 3D:
+ * - drawRegular: Klassisches 6x7 Connect4 Board
+ * - draw3D: 4x4x4 3D Connect4 mit Multi-View Rendering
+ * 
+ * @namespace Connect4Renderer
+ * @author Alexander Wolf
+ * @version 2.0
  */
 
 const Connect4Renderer = {
     
     /**
-     * Draws standard Connect 4 board.
-     * @param {HTMLCanvasElement} canvas 
-     * @param {Connect4Regular} game 
+     * Zeichnet das Standard Connect4 Board.
+     * @param {HTMLCanvasElement} canvas - Canvas-Element zum Zeichnen
+     * @param {Connect4Regular} game - Spiel mit rows, cols und grid
+     * @returns {void}
      */
     drawRegular(canvas, game) {
         if (!canvas) return;
@@ -57,10 +65,10 @@ const Connect4Renderer = {
     },
 
     /**
-     * Draws standard 3D Connect 4 board (slices).
-     * Includes Top View (Z-Slices) and Side View (X-Slices).
-     * @param {HTMLCanvasElement} canvas 
-     * @param {Connect43D} game 
+     * Zeichnet das 3D Connect4 Board mit Multi-View (Slices).
+     * @param {HTMLCanvasElement} canvas - Canvas-Element zum Zeichnen  
+     * @param {Connect43D} game - 3D-Spiel mit 4x4x4 Grid
+     * @returns {void}
      */
     draw3D(canvas, game) {
         if (!canvas) return;

@@ -1,6 +1,14 @@
 /**
  * @fileoverview Minimax Tree Adapter - Visualisierung des Minimax Algorithmus
- * ...
+ * 
+ * Extends BaseTreeAdapter mit Minimax-spezifischen Features:
+ * - Value-basierte Node-Färbung (Min/Max-Nodes)
+ * - Best-Move Tracking und Visualisierung
+ * - Performance-Statistiken (visited nodes, iterations)
+ * 
+ * @class MinimaxTreeAdapter
+ * @author Alexander Wolf  
+ * @version 2.3
  */
 
 // Spieler- und Bewertungs-Konstanten

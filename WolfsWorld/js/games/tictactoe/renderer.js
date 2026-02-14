@@ -1,21 +1,42 @@
 /**
- * @fileoverview Renderer-Sammlung für alle Tic-Tac-Toe Varianten.
- * Enthält 2D, Ultimate und 3D Visualisierungen.
+ * @fileoverview Renderer-Sammlung für alle Tic-Tac-Toe Varianten
+ * 
+ * Bietet spezialierte Render-Funktionen für die 3 TTT-Varianten:
+ * - drawRegular: Klassisches 3x3 Board
+ * - drawUltimate: 9x9 Board mit Makro/Mikro-Struktur  
+ * - draw3DSlices: 3D Board als Schicht-Views
+ * - drawIsoView: Isometrische 3D-Projektion
+ * 
+ * @namespace TTTRenderer
+ * @author Alexander Wolf
+ * @version 2.0
  */
 
 const TTTRenderer = {
     
     /**
      * Zeichnet das klassische 3x3 Board.
-     * @param {HTMLCanvasElement} canvas 
-     * @param {TTTRegularBoard} game 
+     * @param {HTMLCanvasElement} canvas - Canvas-Element zum Zeichnen
+     * @param {TTTRegularBoard} game - Spiel-Zustand mit Grid und Winner
+     * @returns {void}
      */
     drawRegular(canvas, game) {
+        console.log('🖌️ TTTRenderer.drawRegular() aufgerufen');
+        console.log('   - Canvas:', canvas.width, 'x', canvas.height);
+        console.log('   - game:', game);
+        console.log('   - game.grid:', game?.grid);
+        
+        if (!canvas || !game) {
+            console.error('❌ FEH LER: Canvas oder game ist null/undefined!');
+            return;
+        }
+        
         const ctx = canvas.getContext('2d');
         const w = canvas.width, h = canvas.height;
         const s = w / 3;
 
         ctx.clearRect(0, 0, w, h);
+        console.log('✅ Canvas gelöscht');
         
         // Gitterlinien
         ctx.strokeStyle = "#2c3e50"; 
@@ -28,20 +49,24 @@ const TTTRenderer = {
         ctx.moveTo(10, s); ctx.lineTo(w-10, s); 
         ctx.moveTo(10, s*2); ctx.lineTo(w-10, s*2);
         ctx.stroke();
+        console.log('✅ Gitterlinien gezeichnet');
 
         // Symbole
         for(let i=0; i<9; i++) {
             if(game.grid[i] === 0) continue;
             const cx = (i % 3) * s + s/2;
             const cy = Math.floor(i / 3) * s + s/2;
+            console.log(`   - Zeichne Symbol an Position ${i}: (${cx}, ${cy}) für Wert ${game.grid[i]}`);
             this._drawSymbol(ctx, cx, cy, s/3.5, game.grid[i]);
         }
+        console.log('✅ Symbole gezeichnet');
     },
 
     /**
-     * Zeichnet das Ultimate TTT Board.
-     * @param {HTMLCanvasElement} canvas 
-     * @param {UltimateBoard} game 
+     * Zeichnet das Ultimate TTT Board (9x9 mit Makro/Mikro-Struktur).
+     * @param {HTMLCanvasElement} canvas - Canvas-Element zum Zeichnen
+     * @param {UltimateBoard} game - Ultimates Spiel mit macroBoard und grids Array
+     * @returns {void}
      */
     drawUltimate(canvas, game) {
         const ctx = canvas.getContext('2d');

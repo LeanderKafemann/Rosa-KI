@@ -1,6 +1,11 @@
 /**
- * Controller für Standard Connect 4.
- * @fileoverview
+ * @fileoverview Controller für Standard Connect4 (konfigurierbare Größe)
+ * 
+ * Extends BaseGameController mit Connect4-Support und dynamischer Board-Skalierung.
+ * Unterstützt variable Reihen/Spalten-Konfiguration.
+ * 
+ * @class Connect4RegularController
+ * @extends BaseGameController
  */
 class Connect4RegularController extends BaseGameController {
     constructor() {

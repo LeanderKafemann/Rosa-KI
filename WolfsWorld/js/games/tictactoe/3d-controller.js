@@ -1,7 +1,12 @@
 /* --- FILE: js/games/tictactoe/3d-controller.js --- */
 /**
- * @fileoverview Controller für 3D Tic-Tac-Toe.
- * Nutzt die BaseGameController für standardisierte Logik.
+ * @fileoverview Controller für 3D Tic-Tac-Toe (3x3x3)
+ * 
+ * Extends BaseGameController mit 3D Board-Support und Multi-View Rendering.
+ * Verwaltet Slice-Views (XY-Ebenen) und isometrische Projektion.
+ * 
+ * @class ThreeDGameController
+ * @extends BaseGameController
  */
 class ThreeDGameController extends BaseGameController {
     constructor() {

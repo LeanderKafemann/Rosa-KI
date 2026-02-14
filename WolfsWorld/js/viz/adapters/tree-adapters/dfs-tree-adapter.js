@@ -1,8 +1,10 @@
 /**
- * Adapter für Tiefensuche (DFS) mit Suchbaum-Visualisierung.
+ * @fileoverview Adapter für Tiefensuche (DFS) mit Suchbaum-Visualisierung
+ * 
  * Konvertiert Spielzustände in TreeVizEngine-Kommandos via postMessage.
- * Unterstützt Backtracking-Visualisierung.
- * @class
+ * Unterstützt Backtracking-Visualisierung und State-Tracking.
+ * 
+ * @class DFSTreeAdapter
  * @author Alexander Wolf
  * @version 2.3
  */

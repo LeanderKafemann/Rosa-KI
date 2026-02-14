@@ -1,7 +1,12 @@
 /* --- FILE: js/games/tictactoe/ultimate-controller.js --- */
 /**
- * @fileoverview Controller für Ultimate Tic-Tac-Toe.
- * Nutzt die BaseGameController für standardisierte Logik.
+ * @fileoverview Controller für Ultimate Tic-Tac-Toe (9x9 mit Subboards)
+ * 
+ * Extends BaseGameController mit Ultimate TTT Board-Support.
+ * Verwaltet Sperr-Logik für deaktivierte Subboards und 2-Level Navigation.
+ * 
+ * @class UltimateGameController
+ * @extends BaseGameController
  */
 class UltimateGameController extends BaseGameController {
     constructor() {

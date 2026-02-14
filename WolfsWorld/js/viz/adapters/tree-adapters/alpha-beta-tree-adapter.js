@@ -1,7 +1,15 @@
 /**
  * @fileoverview Alpha-Beta Tree Adapter - Visualisierung mit Pruning
  * 
- * Basiert auf MinimaxTreeAdapter, fügt Alpha-Beta Pruning hinzu.
+ * Extends MinimaxTreeAdapter mit Alpha-Beta Pruning Features:
+ * - Pruned-Node Visualisierung und Tracking
+ * - Alpha/Beta Threshold Anzeige
+ * - Performance-Verbesserungen durch Cut-Off-Highlighting
+ * 
+ * @class AlphaBetaTreeAdapter
+ * @extends MinimaxTreeAdapter
+ * @author Alexander Wolf
+ * @version 2.3
  */
 
 /**

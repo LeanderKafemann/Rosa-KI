@@ -1,6 +1,11 @@
 /**
- * Controller für 3D Connect 4.
- * @fileoverview
+ * @fileoverview Controller für 3D Connect4 (4x4x4 Cube)
+ * 
+ * Extends BaseGameController mit 3D Connect4-Support und Multi-Panel Rendering.
+ * Visualisiert 4 unterschiedliche Perspektiven des Spielwürfels.
+ * 
+ * @class Connect43DController
+ * @extends BaseGameController
  */
 class Connect43DController extends BaseGameController {
     constructor() {
