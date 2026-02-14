@@ -5,6 +5,7 @@
  * @fileoverview
  * @class
  */
+
 class MinimaxEngine {
     /**
      * Erstellt eine neue Engine-Instanz.
@@ -25,7 +26,7 @@ class MinimaxEngine {
          * Die maximale Suchtiefe.
          * @type {number}
          */
-        this.maxDepth = config.maxDepth || 3;
+        this.maxDepth = config.maxDepth || DEFAULT_MAX_DEPTH;
 
         /**
          * Flag für Alpha-Beta Pruning.
@@ -101,7 +102,7 @@ class MinimaxEngine {
         // 1. Blatt-Prüfung (Sieg, Remis oder Max-Tiefe)
         // Prüfe auf Spielende: winner !== 0 oder keine gültigen Züge
         const hasValidMoves = state.getAllValidMoves && state.getAllValidMoves().length > 0;
-        const isTerminal = (state.winner !== undefined && state.winner !== 0) || !hasValidMoves;
+        const isTerminal = (state.winner !== undefined && state.winner !== NONE) || !hasValidMoves;
         
         if (depth === 0 || isTerminal) {
             const score = this.heuristicFn(state, rootPlayer);

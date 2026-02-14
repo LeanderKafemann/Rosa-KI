@@ -1,3 +1,4 @@
+
 /**
  * Regel-Definitionen für Connect 4 (Standard und 3D).
  * Implementiert "Simple" und "Complex" Strategien.
@@ -31,7 +32,7 @@ const Connect4RulesLibrary = {
             sim.currentPlayer = me;
             sim.makeMove(myMove);
             
-            if (sim.winner !== 0) return false; // Is a win for us (or draw)
+            if (sim.winner !== NONE) return false; // Is a win for us (or draw)
 
             const opp = sim.currentPlayer; // Now opponent
             const oppMoves = sim.getAllValidMoves();
@@ -55,7 +56,7 @@ const Connect4RulesLibrary = {
         }),
 
         block: new AtomicRule("Blocken", "Verhindere Sieg des Gegners", (game) => {
-            const opp = game.currentPlayer === 1 ? 2 : 1;
+            const opp = game.currentPlayer === PLAYER1 ? PLAYER2 : PLAYER1;
             for (let m of game.getAllValidMoves()) {
                 if (Connect4RulesLibrary.utils.canWin(game, m, opp)) return m;
             }

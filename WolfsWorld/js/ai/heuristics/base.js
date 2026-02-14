@@ -13,7 +13,7 @@ const HeuristicsLibrary = {
      */
     winLoss: (gameState, player) => {
         if (gameState.winner === player) return 1000;
-        if (gameState.winner !== 0 && gameState.winner !== 3) return -1000;
+        if (gameState.winner !== NONE && gameState.winner !== DRAW) return -1000;
         return 0; // Remis oder offen
     }
 };

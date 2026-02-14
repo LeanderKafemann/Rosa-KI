@@ -1,4 +1,19 @@
 /**
+ * Suchtiefe für einfaches Profil
+ * @constant {number}
+ */
+const PROFILE_DEPTH_EASY = 2;
+/**
+ * Suchtiefe für mittleres Profil
+ * @constant {number}
+ */
+const PROFILE_DEPTH_MEDIUM = 3;
+/**
+ * Suchtiefe für schweres Profil
+ * @constant {number}
+ */
+const PROFILE_DEPTH_HARD = 4;
+/**
  * @fileoverview Vorkonfigurierte Agent-Profile für die Arena.
  * Definiert verschiedene Konfigurationen für MiniMax, RuleBased und Random Agenten.
  */
@@ -11,7 +26,7 @@ const AgentProfiles = {
         description: "Minimax mit Suchtiefe 2 - schnell aber weniger optimal",
         type: "minimax",
         config: {
-            maxDepth: 2,
+            maxDepth: PROFILE_DEPTH_EASY,
             useAlphaBeta: true,
             heuristic: "winLoss"
         }
@@ -22,7 +37,7 @@ const AgentProfiles = {
         description: "Minimax mit Suchtiefe 3 - gutes Gleichgewicht",
         type: "minimax",
         config: {
-            maxDepth: 3,
+            maxDepth: PROFILE_DEPTH_MEDIUM,
             useAlphaBeta: true,
             heuristic: "winLoss"
         }
@@ -33,7 +48,7 @@ const AgentProfiles = {
         description: "Minimax mit Suchtiefe 4 - sehr stark aber langsam",
         type: "minimax",
         config: {
-            maxDepth: 4,
+            maxDepth: PROFILE_DEPTH_HARD,
             useAlphaBeta: true,
             heuristic: "winLoss"
         }
@@ -44,7 +59,7 @@ const AgentProfiles = {
         description: "Minimax Tiefe 3 mit Zentralitäts-Heuristik",
         type: "minimax",
         config: {
-            maxDepth: 3,
+            maxDepth: PROFILE_DEPTH_MEDIUM,
             useAlphaBeta: true,
             heuristic: "centerControl"
         }
@@ -55,7 +70,7 @@ const AgentProfiles = {
         description: "Minimax Tiefe 3 mit Beweglichkeits-Heuristik",
         type: "minimax",
         config: {
-            maxDepth: 3,
+            maxDepth: PROFILE_DEPTH_MEDIUM,
             useAlphaBeta: true,
             heuristic: "mobility"
         }
@@ -106,7 +121,7 @@ const AgentProfiles = {
         description: "Minimax mit Trace-Ausgabe (nur für Analyze)",
         type: "minimax",
         config: {
-            maxDepth: 2,
+            maxDepth: PROFILE_DEPTH_EASY,
             useAlphaBeta: true,
             heuristic: "winLoss",
             captureTrace: true
@@ -181,7 +196,7 @@ function createMinimaxAgent(name, config) {
 
         const agent = new MinimaxAgent({
             name: name,
-            maxDepth: config.maxDepth || 3,
+            maxDepth: config.maxDepth || PROFILE_DEPTH_MEDIUM,
             useAlphaBeta: config.useAlphaBeta !== false,
             heuristicFn: heuristicFn,
             captureTrace: config.captureTrace || false

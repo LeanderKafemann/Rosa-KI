@@ -26,7 +26,7 @@ const TTTRulesLibrary = {
             let empty = 0;
             for(let idx of lineIndices) {
                 if (game.grid[idx] === player) count++;
-                else if (game.grid[idx] === 0) empty++;
+                else if (game.grid[idx] === NONE) empty++;
                 else return -1; // Blockiert durch Gegner
             }
             return { count, empty };
@@ -49,7 +49,7 @@ const TTTRulesLibrary = {
             return null;
         }),
         block: new AtomicRule("Blocken", "Verhindere Niederlage", (game) => {
-            const opponent = (game.currentPlayer === 1) ? 2 : 1;
+            const opponent = (game.currentPlayer === PLAYER1) ? PLAYER2 : PLAYER1;
             for(let m of game.getAllValidMoves()) {
                 if(TTTRulesLibrary.utils.canWin(game, m, opponent)) return m;
             }

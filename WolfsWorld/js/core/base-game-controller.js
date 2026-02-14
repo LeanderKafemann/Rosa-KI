@@ -14,8 +14,20 @@ class BaseGameController {
      * @param {string} canvasId - HTML Canvas Element ID
      */
     constructor(gameType, canvasId) {
+        console.log('🎮 BaseGameController.constructor() aufgerufen');
+        console.log('   - gameType:', gameType);
+        console.log('   - canvasId:', canvasId);
+        
         this.gameType = gameType;
         this.canvas = document.getElementById(canvasId);
+        
+        console.log('   - Canvas gefunden?', this.canvas !== null);
+        if (this.canvas) {
+            console.log('   - Canvas Dimensionen:', this.canvas.width, 'x', this.canvas.height);
+        } else {
+            console.error('❌ FEHLER: Canvas nicht gefunden! ID:', canvasId);
+        }
+        
         this.game = null;
         this.adapter = null;
         this.isProcessing = false;
@@ -53,6 +65,9 @@ class BaseGameController {
      * Initialisiert den Controller (aufgerufen von onload).
      */
     init() {
+        console.log('🎮 BaseGameController.init() - Initialisierung startet');
+        console.log('🔍 Überprüfung der Konstanten:', { NONE, PLAYER1, PLAYER2, DRAW });
+        
         this.canvas.addEventListener('mousedown', (e) => this.handleCanvasClick(e));
         
         const p1Sel = document.getElementById('p1Type');
@@ -67,12 +82,46 @@ class BaseGameController {
      * Setzt das Spiel zurück.
      */
     reset() {
-        this.game = this.createGame();
-        this.adapter = new GameAdapter(this.game, this.gameType);
+        console.log('🔄 BaseGameController.reset() wird aufgerufen');
+        
+        try {
+            this.game = this.createGame();
+            console.log('✅ Game-Objekt erstellt:', this.game);
+            console.log('   - game.grid:', this.game.grid?.slice(0, 3), '...');
+            console.log('   - game.winner:', this.game.winner);
+            console.log('   - game.currentPlayer:', this.game.currentPlayer);
+            console.log('   - game.getAllValidMoves:', typeof this.game.getAllValidMoves);
+        } catch (error) {
+            console.error('❌ FEHLER beim Erstellen des Game-Objekts:', error);
+            console.error('   Stack:', error.stack);
+            return;
+        }
+        
+        try {
+            this.adapter = new GameAdapter(this.game, this.gameType);
+            console.log('✅ GameAdapter erstellt');
+        } catch (error) {
+            console.error('❌ FEHLER beim Erstellen des GameAdapter:', error);
+            console.error('   Stack:', error.stack);
+            return;
+        }
+        
         this.isProcessing = false;
         this.updateUI();
-        this.drawGame();
-        this.checkTurn();
+        
+        try {
+            this.drawGame();
+        } catch (error) {
+            console.error('❌ FEHLER beim drawGame():', error);
+            console.error('   Stack:', error.stack);
+        }
+        
+        try {
+            this.checkTurn();
+        } catch (error) {
+            console.error('❌ FEHLER beim checkTurn():', error);
+            console.error('   Stack:', error.stack);
+        }
     }
 
     /**
@@ -129,8 +178,10 @@ class BaseGameController {
 
             setTimeout(() => {
                 try {
+                    console.log(`🤖 Versuche AI ${currentType} zu erstellen...`);
                     const agent = this.createAIAgent(currentType);
                     if (agent) {
+                        console.log('🤖 Agent erstellt, rufe getAction() auf...');
                         const action = agent.getAction(this.game);
                         console.log(`🤖 KI ${this.adapter.getCurrentPlayer()} Aktion:`, action);
 
@@ -140,7 +191,12 @@ class BaseGameController {
                         } else {
                             console.warn('❌ KI findet keinen gültigen Zug!');
                         }
+                    } else {
+                        console.warn('⚠️ Agent war null!');
                     }
+                } catch (error) {
+                    console.error('❌ FEHLER im AI-Timeout:', error);
+                    console.error('   Stack:', error.stack);
                 } finally {
                     this.isProcessing = false;
                     this.drawGame();

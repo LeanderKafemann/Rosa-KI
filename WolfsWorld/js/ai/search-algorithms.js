@@ -10,6 +10,12 @@
  */
 
 /**
+ * Minimale Suchtiefe
+ * @constant {number}
+ */
+const MIN_DEPTH = 0;
+
+/**
  * Führt Suchalgorithmen auf Zustandsräumen aus.
  * @class SearchEngine
  */
@@ -19,7 +25,7 @@ class SearchEngine {
      */
     constructor(config = {}) {
         this.strategy = config.strategy || 'BFS'; 
-        this.maxDepth = config.maxDepth || 1000;
+        this.maxDepth = config.maxDepth || DEFAULT_MAX_DEPTH;
         this.checkDuplicates = config.checkDuplicates !== false;
         this.onStep = config.onStep || null;
         this.sortSuccessors = config.sortSuccessors || null;
@@ -33,7 +39,7 @@ class SearchEngine {
     async solve(startState) {
         let openList = [];
         // Root Node
-        let root = { state: startState, path: [], depth: 0 };
+        let root = { state: startState, path: [], depth: MIN_DEPTH };
         openList.push(root);
 
         let visited = new Set();

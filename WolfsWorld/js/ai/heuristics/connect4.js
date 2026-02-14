@@ -1,3 +1,4 @@
+
 /**
  * Connect-4-spezifische Heuristiken.
  * Erweitert die HeuristicsLibrary.
@@ -11,11 +12,11 @@ HeuristicsLibrary.connect4 = {
     evaluate: (game, player) => {
         // 1. Terminal Check
         if (game.winner === player) return 100000;
-        if (game.winner !== 0 && game.winner !== 3) return -100000;
-        if (game.winner === 3) return 0; // Draw
+        if (game.winner !== NONE && game.winner !== DRAW) return -100000;
+        if (game.winner === DRAW) return 0; // Draw
 
         let score = 0;
-        const opponent = player === 1 ? 2 : 1;
+        const opponent = player === PLAYER1 ? PLAYER2 : PLAYER1;
 
         // 2. Center Control
         const centerCol = Math.floor(game.cols / 2);
@@ -40,7 +41,7 @@ HeuristicsLibrary.connect4 = {
     evaluateLines: (game, player) => {
         let score = 0;
         const curr = player;
-        const opp = player === 1 ? 2 : 1;
+        const opp = player === PLAYER1 ? PLAYER2 : PLAYER1;
 
         // Helper
         const evaluateWindow = (cells) => {
@@ -107,24 +108,24 @@ HeuristicsLibrary.connect4 = {
 
     evaluate3D: (game, player) => {
         if (game.winner === player) return 100000;
-        if (game.winner !== 0 && game.winner !== 3) return -100000;
-        if (game.winner === 3) return 0;
+        if (game.winner !== NONE && game.winner !== DRAW) return -100000;
+        if (game.winner === DRAW) return 0;
 
         let score = 0;
         const s = game.size;
 
         for (let idx = 0; idx < game.grid.length; idx++) {
-             const cell = game.grid[idx];
-             if (cell === 0) continue;
-             const x = idx % s;
-             const z = Math.floor((idx / s)) % s;
-             const y = Math.floor(idx / (s*s));
-             
-             const dist = Math.abs(x - 1.5) + Math.abs(y - 1.5) + Math.abs(z - 1.5);
-             const val = (5 - dist) * 2; 
-             
-             if (cell === player) score += val;
-             else score -= val;
+            const cell = game.grid[idx];
+            if (cell === NONE) continue;
+            const x = idx % s;
+            const z = Math.floor((idx / s)) % s;
+            const y = Math.floor(idx / (s*s));
+            
+            const dist = Math.abs(x - 1.5) + Math.abs(y - 1.5) + Math.abs(z - 1.5);
+            const val = (5 - dist) * 2; 
+            
+            if (cell === player) score += val;
+            else score -= val;
         }
 
         const directions = [
@@ -133,24 +134,25 @@ HeuristicsLibrary.connect4 = {
             [1,1,1], [1,1,-1], [1,-1,1], [1,-1,-1]
         ];
 
+        const opponent = player === PLAYER1 ? PLAYER2 : PLAYER1;
         for (let x=0; x<s; x++) {
             for (let y=0; y<s; y++) {
                 for (let z=0; z<s; z++) {
                     for (const [dx, dy, dz] of directions) {
                         const ex = x + 3*dx, ey = y + 3*dy, ez = z + 3*dz;
                         if (ex >= 0 && ex < s && ey >= 0 && ey < s && ez >= 0 && ez < s) {
-                             let myCount = 0;
-                             let oppCount = 0;
-                             let emptyCount = 0;
-                             for (let k=0; k<4; k++) {
-                                 const idx = game.getIdx(x + k*dx, y + k*dy, z + k*dz);
-                                 const val = game.grid[idx];
-                                 if (val === player) myCount++;
-                                 else if (val === ((player===1)?2:1)) oppCount++;
-                                 else emptyCount++;
-                             }
-                             if (myCount === 3 && emptyCount === 1) score += 100;
-                             if (oppCount === 3 && emptyCount === 1) score -= 90;
+                            let myCount = 0;
+                            let oppCount = 0;
+                            let emptyCount = 0;
+                            for (let k=0; k<4; k++) {
+                                const idx = game.getIdx(x + k*dx, y + k*dy, z + k*dz);
+                                const val = game.grid[idx];
+                                if (val === player) myCount++;
+                                else if (val === opponent) oppCount++;
+                                else emptyCount++;
+                            }
+                            if (myCount === 3 && emptyCount === 1) score += 100;
+                            if (oppCount === 3 && emptyCount === 1) score -= 90;
                         }
                     }
                 }

@@ -1,29 +1,28 @@
+
 /**
  * Tic-Tac-Toe-spezifische Heuristiken (Standard, 3D, Ultimate, KnightsTour).
  * Erweitert die HeuristicsLibrary.
  * @fileoverview
  */
 
+// WIN_CONDITIONS nutzen die zentralen Konstanten
+const WIN_CONDITIONS = GAME_CONSTANTS.TTT_WIN_CONDITIONS;
+
 /**
  * Heuristic for Standard 3x3 Tic-Tac-Toe.
  */
+
 HeuristicsLibrary.regularTTT = (game, player) => {
     // 1. Direct Terminal
     if (game.winner === player) return 1000;
-    if (game.winner !== 0 && game.winner !== 3) return -1000;
-    if (game.winner === 3) return 0; // Remis
+    if (game.winner !== NONE && game.winner !== DRAW) return -1000;
+    if (game.winner === DRAW) return 0; // Remis
 
     let score = 0;
-    const opponent = player === 1 ? 2 : 1;
+    const opponent = player === PLAYER1 ? PLAYER2 : PLAYER1;
 
     // 2. Open Lines (Win Opportunities)
-    const lines = [
-        [0,1,2], [3,4,5], [6,7,8], 
-        [0,3,6], [1,4,7], [2,5,8], 
-        [0,4,8], [2,4,6]
-    ];
-
-    for (const line of lines) {
+    for (const line of WIN_CONDITIONS) {
         let myCount = 0;
         let oppCount = 0;
         let emptyCount = 0;
@@ -49,15 +48,15 @@ HeuristicsLibrary.regularTTT = (game, player) => {
  * Bewertet Linien (2-in-Reihe, Zentrum).
  */
 HeuristicsLibrary.ttt3d = (game, player) => {
-   if (game.winner === player) return 10000;
-   if (game.winner !== 0 && game.winner !== 3) return -10000;
-   if (game.winner === 3) return 0;
+    if (game.winner === player) return 10000;
+    if (game.winner !== NONE && game.winner !== DRAW) return -10000;
+    if (game.winner === DRAW) return 0;
 
-   // 2. Center Control (Middle of the cube 1,1,1 is best)
-   const center = 13; // 4 + 3*3 = 13? (1,1,1) -> 1 + 1*3 + 1*9 = 1+3+9 = 13.
-   let score = 0;
-   if (game.grid[center] === player) score += 20;
-   else if (game.grid[center] === ((player===1)?2:1)) score -= 20;
+    // 2. Center Control (Middle of the cube 1,1,1 is best)
+    const center = 13; // 4 + 3*3 = 13? (1,1,1) -> 1 + 1*3 + 1*9 = 1+3+9 = 13.
+    let score = 0;
+    if (game.grid[center] === player) score += 20;
+    else if (game.grid[center] === (player === PLAYER1 ? PLAYER2 : PLAYER1)) score -= 20;
 
    // 3. Line Evaluation
    // Helper to check lines

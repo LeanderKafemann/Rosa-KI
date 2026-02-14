@@ -1,41 +1,22 @@
 
-// Spieler- und Status-Konstanten
-/**
- * Kein Gewinner / Spiel läuft
- * @constant {number}
- */
-const NONE = 0;
-/**
- * Spieler 1 (Blau/Kreis)
- * @constant {number}
- */
-const PLAYER1 = 1;
-/**
- * Spieler 2 (Rot/Kreuz)
- * @constant {number}
- */
-const PLAYER2 = 2;
-/**
- * Unentschieden
- * @constant {number}
- */
-const DRAW = 3;
-/**
- * Leeres Feld
- * @constant {number}
- */
-const CELL_EMPTY = 0;
-/**
- * Ungültiger Index
- * @constant {number}
- */
-const INVALID_INDEX = -1;
-
 /**
  * @fileoverview Zentrale Spiellogik für die Tic-Tac-Toe Varianten.
  * Beinhaltet die Klassen für Regular (3x3), 3D (NxNxN) und Ultimate.
  * Implementiert das GameState Interface.
  */
+
+// Verwende zentrale Konstanten aus config/constants.js
+if (typeof GAME_CONSTANTS === 'undefined') {
+    console.error('❌ FEHLER: GAME_CONSTANTS ist nicht geladen! Stelle sicher, dass js/config/constants.js vor dieser Datei geladen wird.');
+}
+
+// Lokale Referenzen zu zentralen Konstanten (für Rückwärtskompatibilität)
+const NONE = GAME_CONSTANTS.NONE;
+const PLAYER1 = GAME_CONSTANTS.PLAYER1;
+const PLAYER2 = GAME_CONSTANTS.PLAYER2;
+const DRAW = GAME_CONSTANTS.DRAW;
+const CELL_EMPTY = GAME_CONSTANTS.CELL_EMPTY;
+const INVALID_INDEX = GAME_CONSTANTS.INVALID_INDEX;
 
 /**
  * Abstrakte Basisklasse für Tic-Tac-Toe Spiele.

@@ -1,4 +1,29 @@
 /**
+ * Minimaler Wert für den Speed-Slider
+ * @constant {number}
+ */
+const SPEED_SLIDER_MIN = 0;
+/**
+ * Maximaler Wert für den Speed-Slider
+ * @constant {number}
+ */
+const SPEED_SLIDER_MAX = 6;
+/**
+ * Wert für manuellen Modus
+ * @constant {number}
+ */
+const SPEED_SLIDER_MANUAL = 6;
+/**
+ * Delay-Stufen für Animationen (ms)
+ * @constant {number[]}
+ */
+const SPEED_DELAYS = [0, 20, 100, 300, 600, 1000];
+/**
+ * Default-Delay (ms)
+ * @constant {number}
+ */
+const DEFAULT_SPEED_DELAY = 100;
+/**
  * Wrapper um die SearchEngine, der "Schritt-für-Schritt" Ausführung
  * und manuelle Steuerung (Play/Pause/Step) ermöglicht.
  * @fileoverview
@@ -19,7 +44,7 @@ class AlgorithmRunner {
         this.isRunning = false;
         this.stopRequested = false;
         this.isManual = false;
-        this.speedDelay = 100;
+        this.speedDelay = DEFAULT_SPEED_DELAY;
         
         this.manualResolver = null;
         this.stepCount = 0;
@@ -89,15 +114,14 @@ class AlgorithmRunner {
      */
     setSpeed(val) {
         const intVal = parseInt(val);
-        const maxRange = 6;
+        const maxRange = SPEED_SLIDER_MAX;
         
         if (intVal >= maxRange) {
             this.isManual = true;
         } else {
             this.isManual = false;
             // Mapping: Slider -> Millisekunden
-            const delays = [0, 20, 100, 300, 600, 1000];
-            this.speedDelay = delays[intVal] !== undefined ? delays[intVal] : 100;
+            this.speedDelay = SPEED_DELAYS[intVal] !== undefined ? SPEED_DELAYS[intVal] : DEFAULT_SPEED_DELAY;
             
             // Falls wir im manuellen Modus hingen, weitermachen
             this.triggerStep();

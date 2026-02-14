@@ -1,4 +1,5 @@
 /* --- FILE: js/ai/agents/minimax-agent.js --- */
+
 /**
  * @fileoverview
  * Agent für Minimax-Algorithmus mit Alpha-Beta Pruning.
@@ -26,7 +27,7 @@ class MinimaxAgent extends Agent {
          * Maximale Suchtiefe.
          * @type {number}
          */
-        this.maxDepth = config.maxDepth || 3;
+        this.maxDepth = config.maxDepth || DEFAULT_MAX_DEPTH;
 
         /**
          * Flag für Alpha-Beta Pruning.
@@ -59,7 +60,7 @@ class MinimaxAgent extends Agent {
      */
     getAction(gameState) {
         // Safety: Wenn Spiel schon vorbei, null
-        if (gameState.winner !== 0) return null;
+        if (gameState.winner !== NONE) return null;
         if (gameState.getAllValidMoves().length === 0) return null;
 
         // Engine starten

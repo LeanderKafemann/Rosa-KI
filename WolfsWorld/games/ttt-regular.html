@@ -49,10 +49,18 @@
         <canvas id="gameCanvas" width="500" height="500"></canvas>
     </main>
 
+    <!-- ===== STEP 1: ZENTRALE KONSTANTEN (MÜSSEN ALS ERSTES GELADEN SEIN!) ===== -->
+    <script src="../js/config/constants.js"></script>
+    <script src="../js/ai/heuristics/config/ttt-heuristics-config.js"></script>
+    <script src="../js/ai/heuristics/config/connect4-heuristics-config.js"></script>
+
+    <!-- ===== STEP 2: CORE INFRASTRUCTURE ===== -->
     <script src="../js/core/game-state.js"></script>
     <script src="../js/core/agent.js"></script>
     <script src="../js/core/game-adapter.js"></script>
     <script src="../js/core/base-game-controller.js"></script>
+
+    <!-- ===== STEP 3: AI AGENTS & HEURISTICS ===== -->
     <script src="../js/ai/agents/random-agent.js"></script>
     <script src="../js/ai/agents/rule-based-agent.js"></script>
     <script src="../js/ai/minimax.js"></script>
@@ -62,6 +70,7 @@
     <script src="../js/ai/rules/rule-structure.js"></script>
     <script src="../js/ai/rules/ttt-rules.js"></script>
     
+    <!-- ===== STEP 4: GAME-SPECIFIC LOGIC & RENDERING ===== -->
     <script src="../js/games/tictactoe/logic.js"></script>
     <script src="../js/games/tictactoe/renderer.js"></script>
     <script src="../js/games/tictactoe/regular-controller.js"></script>

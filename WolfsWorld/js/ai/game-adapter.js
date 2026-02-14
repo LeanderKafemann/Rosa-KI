@@ -46,7 +46,7 @@ class TTTGameAdapter {
     // ===== GameState Interface =====
 
     get isGameOver() {
-        return this.board.winner !== 0;
+        return this.board.winner !== NONE;
     }
 
     get winner() {
