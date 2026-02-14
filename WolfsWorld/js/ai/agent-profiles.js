@@ -1,4 +1,9 @@
 /**
+ * @fileoverview Vorkonfigurierte Agent-Profile für die Arena.
+ * Definiert verschiedene Konfigurationen für MiniMax, RuleBased und Random Agenten.
+ */
+
+/**
  * Suchtiefe für einfaches Profil
  * @constant {number}
  */
@@ -13,10 +18,6 @@ const PROFILE_DEPTH_MEDIUM = 3;
  * @constant {number}
  */
 const PROFILE_DEPTH_HARD = 4;
-/**
- * @fileoverview Vorkonfigurierte Agent-Profile für die Arena.
- * Definiert verschiedene Konfigurationen für MiniMax, RuleBased und Random Agenten.
- */
 
 const AgentProfiles = {
     // ============ MINIMAX PROFILE ============

@@ -1,4 +1,11 @@
 /**
+ * Wrapper um die SearchEngine, der "Schritt-für-Schritt" Ausführung
+ * und manuelle Steuerung (Play/Pause/Step) ermöglicht.
+ * @fileoverview
+ * @class AlgorithmRunner
+ */
+
+/**
  * Minimaler Wert für den Speed-Slider
  * @constant {number}
  */
@@ -23,12 +30,7 @@ const SPEED_DELAYS = [0, 20, 100, 300, 600, 1000];
  * @constant {number}
  */
 const DEFAULT_SPEED_DELAY = 100;
-/**
- * Wrapper um die SearchEngine, der "Schritt-für-Schritt" Ausführung
- * und manuelle Steuerung (Play/Pause/Step) ermöglicht.
- * @fileoverview
- * @class AlgorithmRunner
- */
+
 class AlgorithmRunner {
     /**
      * @param {SearchEngine} engine - Die konfigurierte Suchmaschine.
