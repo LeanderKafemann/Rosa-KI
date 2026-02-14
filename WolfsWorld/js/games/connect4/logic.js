@@ -1,3 +1,36 @@
+
+// Spieler- und Status-Konstanten
+/**
+ * Kein Gewinner / Spiel läuft
+ * @constant {number}
+ */
+const NONE = 0;
+/**
+ * Spieler 1 (Blau/Kreis)
+ * @constant {number}
+ */
+const PLAYER1 = 1;
+/**
+ * Spieler 2 (Rot/Kreuz)
+ * @constant {number}
+ */
+const PLAYER2 = 2;
+/**
+ * Unentschieden
+ * @constant {number}
+ */
+const DRAW = 3;
+/**
+ * Leeres Feld
+ * @constant {number}
+ */
+const CELL_EMPTY = 0;
+/**
+ * Ungültiger Index
+ * @constant {number}
+ */
+const INVALID_INDEX = -1;
+
 /**
  * Spiellogik für Connect 4 und Connect 4 3D.
  * Implementiert die GameState-Interface-Konzepte.
@@ -6,12 +39,12 @@
 
 class Connect4Base {
     constructor() {
-        this.currentPlayer = 1;
-        this.winner = 0; // 0 = running, 1 = p1, 2 = p2, 3 = draw
+        this.currentPlayer = PLAYER1;
+        this.winner = NONE; // 0 = running, 1 = p1, 2 = p2, 3 = draw
     }
 
     switchPlayer() {
-        this.currentPlayer = (this.currentPlayer === 1) ? 2 : 1;
+        this.currentPlayer = (this.currentPlayer === PLAYER1) ? PLAYER2 : PLAYER1;
     }
 }
 
@@ -29,7 +62,7 @@ class Connect4Regular extends Connect4Base {
         this.rows = rows;
         this.cols = cols;
         // 0 = empty, 1 = p1, 2 = p2
-        this.grid = Array(rows * cols).fill(0);
+        this.grid = Array(rows * cols).fill(CELL_EMPTY);
     }
 
     /**
@@ -38,11 +71,11 @@ class Connect4Regular extends Connect4Base {
      */
     getAllValidMoves() {
         const moves = [];
-        if (this.winner !== 0) return moves;
+        if (this.winner !== NONE) return moves;
 
         for (let c = 0; c < this.cols; c++) {
             // Check if top cell is empty
-            if (this.grid[c] === 0) {
+            if (this.grid[c] === CELL_EMPTY) {
                 moves.push(c);
             }
         }
@@ -55,28 +88,28 @@ class Connect4Regular extends Connect4Base {
      * @returns {boolean}
      */
     makeMove(col) {
-        if (this.winner !== 0 || col < 0 || col >= this.cols) return false;
+        if (this.winner !== NONE || col < 0 || col >= this.cols) return false;
 
         // Find lowest empty row in col
         // grid index = row * cols + col
-        let foundRow = -1;
+        let foundRow = INVALID_INDEX;
         for (let r = this.rows - 1; r >= 0; r--) {
             const idx = r * this.cols + col;
-            if (this.grid[idx] === 0) {
+            if (this.grid[idx] === CELL_EMPTY) {
                 foundRow = r;
                 break;
             }
         }
 
-        if (foundRow === -1) return false; // Column full
+        if (foundRow === INVALID_INDEX) return false; // Column full
 
         this.grid[foundRow * this.cols + col] = this.currentPlayer;
         this.checkWin(foundRow, col);
         
-        if (this.winner === 0) {
+        if (this.winner === NONE) {
             // Check draw (board full)
-            if (!this.grid.includes(0)) {
-                this.winner = 3;
+            if (!this.grid.includes(CELL_EMPTY)) {
+                this.winner = DRAW;
             } else {
                 this.switchPlayer();
             }
@@ -148,7 +181,7 @@ class Connect43D extends Connect4Base {
         // or x + z*size + y*size*size
         // Let's stick to standard: x, y, z.
         // We want gravity on Y. So we select X and Z.
-        this.grid = Array(size * size * size).fill(0);
+        this.grid = Array(size * size * size).fill(CELL_EMPTY);
     }
 
     getIdx(x, y, z) {
@@ -158,13 +191,13 @@ class Connect43D extends Connect4Base {
 
     getAllValidMoves() {
         const moves = []; // encoded as x + z * size usually?
-        if (this.winner !== 0) return moves;
+        if (this.winner !== NONE) return moves;
 
         for (let x = 0; x < this.size; x++) {
             for (let z = 0; z < this.size; z++) {
                 // Check if top is empty (y=size-1)
                 const topIdx = this.getIdx(x, this.size - 1, z);
-                if (this.grid[topIdx] === 0) {
+                if (this.grid[topIdx] === CELL_EMPTY) {
                     moves.push(x + z * this.size); // Move ID
                 }
             }
@@ -173,30 +206,30 @@ class Connect43D extends Connect4Base {
     }
 
     makeMove(moveId) {
-        if (this.winner !== 0) return false;
+        if (this.winner !== NONE) return false;
 
         const x = moveId % this.size;
         const z = Math.floor(moveId / this.size);
 
         // Find first empty y from bottom (0)
-        let foundY = -1;
+        let foundY = INVALID_INDEX;
         for (let y = 0; y < this.size; y++) {
             const idx = this.getIdx(x, y, z);
-            if (this.grid[idx] === 0) {
+            if (this.grid[idx] === CELL_EMPTY) {
                 foundY = y;
                 break;
             }
         }
 
-        if (foundY === -1) return false;
+        if (foundY === INVALID_INDEX) return false;
 
         const idx = this.getIdx(x, foundY, z);
         this.grid[idx] = this.currentPlayer;
         
         this.checkWin(x, foundY, z);
 
-        if (this.winner === 0) {
-            if (!this.grid.includes(0)) this.winner = 3;
+        if (this.winner === NONE) {
+            if (!this.grid.includes(CELL_EMPTY)) this.winner = DRAW;
             else this.switchPlayer();
         }
         return true;

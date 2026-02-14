@@ -2,6 +2,12 @@
  * @fileoverview Kernlogik für das Springerproblem.
  * Definiert das Brett, die Züge und die Validierung.
  */
+        
+/**
+ * Feldwert für ein leeres Feld
+ * @constant {number}
+ */
+const EMPTY = 0;
 
 /**
  * Repräsentiert das Schachbrett für den Springer.
@@ -35,7 +41,7 @@ class KnightBoard {
 
     /** Initialisiert das leere Grid. */
     initGrid() {
-        this.grid = Array(this.size).fill(null).map(() => Array(this.size).fill(0));
+        this.grid = Array(this.size).fill(null).map(() => Array(this.size).fill(EMPTY));
     }
 
     /**
@@ -56,7 +62,7 @@ class KnightBoard {
      */
     isValidMove(r, c) {
         if (!this.isInside(r, c)) return false;
-        return this.grid[r][c] === 0; 
+        return this.grid[r][c] === EMPTY; 
     }
 
     /**
@@ -103,7 +109,7 @@ class KnightBoard {
     undo() {
         if (this.history.length === 0) return;
         const last = this.history.pop();
-        this.grid[last.r][last.c] = 0;
+        this.grid[last.r][last.c] = EMPTY;
         this.moveCount--;
         
         if (this.history.length > 0) {

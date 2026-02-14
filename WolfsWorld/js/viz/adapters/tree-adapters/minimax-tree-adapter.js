@@ -2,6 +2,43 @@
  * @fileoverview Minimax Tree Adapter - Visualisierung des Minimax Algorithmus
  * ...
  */
+
+// Spieler- und Bewertungs-Konstanten
+/**
+ * Kein Gewinner / Spiel läuft
+ * @constant {number}
+ */
+const WINNER_NONE = 0;
+/**
+ * Spieler Blau
+ * @constant {number}
+ */
+const WINNER_BLUE = 1;
+/**
+ * Spieler Rot
+ * @constant {number}
+ */
+const WINNER_RED = 2;
+/**
+ * Unentschieden
+ * @constant {number}
+ */
+const WINNER_DRAW = 3;
+/**
+ * Gewinnbewertung
+ * @constant {number}
+ */
+const VALUE_WIN = 1;
+/**
+ * Verlustbewertung
+ * @constant {number}
+ */
+const VALUE_LOSS = -1;
+/**
+ * Bewertungswert für Unentschieden
+ * @constant {number}
+ */
+const VALUE_DRAW = 0;
 class MinimaxTreeAdapter extends BaseTreeAdapter {
     constructor(iframeElement) {
         super(iframeElement);
@@ -59,7 +96,7 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
     }
 
     getInitialConfig() {
-        const isRootPlayerRed = this.rootPlayer === 2;
+        const isRootPlayerRed = this.rootPlayer === WINNER_RED;
         return { 
             showLevelIndicators: true,
             levelIndicatorType: 'minimax',
@@ -92,12 +129,12 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
             value: null,
             depth: currentData.depth + 1,
             isMaximizing: !currentData.isMaximizing,
-            isTerminal: (childState.winner !== 0 || childState.getAllValidMoves().length === 0)
+            isTerminal: (childState.winner !== WINNER_NONE || childState.getAllValidMoves().length === 0)
         };
     }
 
     expandNodeChildren(nodeId, state) {
-        if (state.winner !== 0) return; // Terminal
+        if (state.winner !== WINNER_NONE) return; // Terminal
         
         const validMoves = state.getAllValidMoves();
         const currentData = this.treeStructure.get(nodeId);
@@ -149,7 +186,7 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
         
         let newStatus = 'WAIT';
         const state = this.nodeStates.get(nodeId);
-        const isTerminal = state && (state.winner !== 0 || state.getAllValidMoves().length === 0);
+        const isTerminal = state && (state.winner !== WINNER_NONE || state.getAllValidMoves().length === 0);
         
         // 1. Leaf Node (no children expanded or terminal)
         if (data.children.length === 0) {
@@ -223,34 +260,34 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
             // Bewertung RELATIV zum Root-Spieler, nicht absolut zu Blau/Rot
             if (state.winner === this.rootPlayer) {
                 // Root-Spieler gewinnt → +1
-                value = 1;
-                const playerName = this.rootPlayer === 1 ? 'Blue' : 'Red';
-                labelText = `${playerName} Win = +1`;
+                value = VALUE_WIN;
+                const playerName = this.rootPlayer === WINNER_BLUE ? 'Blue' : 'Red';
+                labelText = `${playerName} Win = +${VALUE_WIN}`;
                 // Visuelle Status hängt davon ab, welche Farbe Root-Spieler ist
-                if (this.rootPlayer === 1) {
+                if (this.rootPlayer === WINNER_BLUE) {
                     statusesToAdd.push('WIN_BLUE');
                 } else {
                     statusesToAdd.push('WIN_RED');
                 }
-            } else if (state.winner !== 3 && state.winner !== null && state.winner !== undefined) {
+            } else if (state.winner !== WINNER_DRAW && state.winner !== null && state.winner !== undefined) {
                 // Gegner gewinnt → -1
-                value = -1;
-                const playerName = this.rootPlayer === 1 ? 'Red' : 'Blue';
-                labelText = `${playerName} Wins = -1`;
+                value = VALUE_LOSS;
+                const playerName = this.rootPlayer === WINNER_BLUE ? 'Red' : 'Blue';
+                labelText = `${playerName} Wins = ${VALUE_LOSS}`;
                 // Visuelle Status für Gegner
-                if (this.rootPlayer === 1) {
+                if (this.rootPlayer === WINNER_BLUE) {
                     statusesToAdd.push('WIN_RED');
                 } else {
                     statusesToAdd.push('WIN_BLUE');
                 }
-            } else if (state.winner === 3) {
+            } else if (state.winner === WINNER_DRAW) {
                 // Draw
-                value = 0;
+                value = VALUE_DRAW;
                 labelText = "Remis = 0";
                 statusesToAdd.push('DRAW');
             } else {
                 // Technically shouldn't happen for READY leaves in this logic unless logic gap
-                value = 0;
+                value = VALUE_DRAW;
                 labelText = "Val = 0";
             }
         } 
@@ -263,11 +300,11 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
             
             if (data.isMaximizing) {
                 value = Math.max(...childValues);
-                const sign = value > 0 ? '+' : value < 0 ? '-' : '';
+                const sign = value > 0 ? '+' : value < 0 ? '' : '';
                 labelText = `Max = ${sign}${value}`;
             } else {
                 value = Math.min(...childValues);
-                const sign = value > 0 ? '+' : value < 0 ? '-' : '';
+                const sign = value > 0 ? '+' : value < 0 ? '' : '';
                 labelText = `Min = ${sign}${value}`;
             }
             
@@ -287,16 +324,16 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
             });
 
              // Apply board color for winning positions (propagation) - RELATIV zu Root-Spieler
-            if (value === 1) {
+            if (value === VALUE_WIN) {
                 // Guter Wert für Root-Spieler (Maximierer)
-                if (this.rootPlayer === 1) {
+                if (this.rootPlayer === WINNER_BLUE) {
                     statusesToAdd.push('WIN_BLUE');
                 } else {
                     statusesToAdd.push('WIN_RED');
                 }
-            } else if (value === -1) {
+            } else if (value === VALUE_LOSS) {
                 // Schlechter Wert für Root-Spieler (Gegner gewinnt)
-                if (this.rootPlayer === 1) {
+                if (this.rootPlayer === WINNER_BLUE) {
                     statusesToAdd.push('WIN_RED');
                 } else {
                     statusesToAdd.push('WIN_BLUE');

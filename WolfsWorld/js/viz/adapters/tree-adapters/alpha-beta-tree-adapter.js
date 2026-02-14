@@ -3,6 +3,43 @@
  * 
  * Basiert auf MinimaxTreeAdapter, fügt Alpha-Beta Pruning hinzu.
  */
+
+/**
+ * Kein Gewinner / Spiel läuft
+ * @constant {number}
+ */
+const WINNER_NONE = 0;
+/**
+ * Spieler Blau
+ * @constant {number}
+ */
+const WINNER_BLUE = 1;
+/**
+ * Spieler Rot
+ * @constant {number}
+ */
+const WINNER_RED = 2;
+/**
+ * Unentschieden
+ * @constant {number}
+ */
+const WINNER_DRAW = 3;
+/**
+ * Gewinnbewertung
+ * @constant {number}
+ */
+const VALUE_WIN = 1;
+/**
+ * Verlustbewertung
+ * @constant {number}
+ */
+const VALUE_LOSS = -1;
+/**
+ * Bewertungswert für Unentschieden
+ * @constant {number}
+ */
+const VALUE_DRAW = 0;
+
 class AlphaBetaTreeAdapter extends MinimaxTreeAdapter {
     onTreeReady() {
         super.onTreeReady();
@@ -81,7 +118,7 @@ class AlphaBetaTreeAdapter extends MinimaxTreeAdapter {
             value: null,
             depth: currentData.depth + 1,
             isMaximizing: !currentData.isMaximizing,
-            isTerminal: (childState.winner !== 0 || childState.getAllValidMoves().length === 0),
+            isTerminal: (childState.winner !== WINNER_NONE || childState.getAllValidMoves().length === 0),
             alpha: currentAlpha,
             beta: currentBeta
         };
@@ -102,10 +139,10 @@ class AlphaBetaTreeAdapter extends MinimaxTreeAdapter {
         // --- CALCULATION ---
         if (data.children.length === 0) {
             // Leaf Evaluation
-            if (state.winner === 1) { value = 1; labelText = "Win (+1)"; statusesToAdd.push('WIN_BLUE'); }
-            else if (state.winner === 2) { value = -1; labelText = "Lose (-1)"; statusesToAdd.push('WIN_RED'); }
-            else if (state.winner === 3) { value = 0; labelText = "Remis (0)"; statusesToAdd.push('DRAW'); }
-            else { value = 0; labelText = "0"; }
+            if (state.winner === WINNER_BLUE) { value = VALUE_WIN; labelText = `Win (+${VALUE_WIN})`; statusesToAdd.push('WIN_BLUE'); }
+            else if (state.winner === WINNER_RED) { value = VALUE_LOSS; labelText = `Lose (${VALUE_LOSS})`; statusesToAdd.push('WIN_RED'); }
+            else if (state.winner === WINNER_DRAW) { value = VALUE_DRAW; labelText = `Remis (${VALUE_DRAW})`; statusesToAdd.push('DRAW'); }
+            else { value = VALUE_DRAW; labelText = `${VALUE_DRAW}`; }
         } else {
             // Inner Node Evaluation
             // We only look at EVALUATED children (ignore pruned/wait)
@@ -138,8 +175,8 @@ class AlphaBetaTreeAdapter extends MinimaxTreeAdapter {
                 }
             });
 
-            if (value === 1) statusesToAdd.push('WIN_BLUE');
-            else if (value === -1) statusesToAdd.push('WIN_RED');
+            if (value === VALUE_WIN) statusesToAdd.push('WIN_BLUE');
+            else if (value === VALUE_LOSS) statusesToAdd.push('WIN_RED');
         }
         
         // Update data

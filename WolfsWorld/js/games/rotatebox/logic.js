@@ -5,6 +5,22 @@
  */
 
 /**
+ * Feldtyp: Leeres Feld
+ * @constant {number}
+ */
+const LEER = -1;
+/**
+ * Feldtyp: Wand (nicht begehbar)
+ * @constant {number}
+ */
+const WAND = -2;
+/**
+ * Feldtyp: Ziel (Endpunkt)
+ * @constant {number}
+ */
+const ZIEL = -3;
+
+/**
  * Repräsentiert das Spielbrett und dessen Zustand.
  * Implementiert das GameState Interface für die KI.
  * @implements {GameState}
@@ -40,7 +56,7 @@ class RotateBoard {
         this.rows = 0;
         this.cols = 0;
         /**
-         * Das Spielfeld als 2D-Array (-2=Wand, -1=Leer, -3=Ziel, >=0 BoxID).
+         * Das Spielfeld als 2D-Array (WAND, LEER, ZIEL, >=0 BoxID).
          * @type {number[][]}
          */
         this.grid = [];
@@ -84,17 +100,17 @@ class RotateBoard {
                 const idx = r * this.cols + c;
                 if (idx < content.length) {
                     const char = content[idx];
-                    let val = -1; // Standard: Leer
+                    let val = LEER; // Standard: Leer
                     
-                    if (char === '#') val = -2;      // Wand
-                    else if (char === 'x') val = -3; // Ziel
+                    if (char === '#') val = WAND;
+                    else if (char === 'x') val = ZIEL;
                     else if (char !== ' ') {         // Box (Zahl)
                         const p = parseInt(char);
                         if (!isNaN(p)) val = p;
                     }
                     row.push(val);
                 } else {
-                    row.push(-1);
+                    row.push(LEER);
                 }
             }
             this.grid.push(row);
@@ -107,7 +123,7 @@ class RotateBoard {
      * @param {boolean} [clockwise=true] 
      */
     rotate(clockwise = true) {
-        const newGrid = Array.from({ length: this.cols }, () => Array(this.rows).fill(-1));
+        const newGrid = Array.from({ length: this.cols }, () => Array(this.rows).fill(LEER));
         for (let r = 0; r < this.rows; r++) {
             for (let c = 0; c < this.cols; c++) {
                 if (clockwise) newGrid[c][this.rows - 1 - r] = this.grid[r][c];
@@ -136,7 +152,7 @@ class RotateBoard {
                     
                     const target = this.grid[r + 1][c];
                     // Blockiert, wenn darunter NICHT (Leer ODER Ziel ODER Selbst) ist
-                    if (target !== -1 && target !== -3 && target !== id) return false;
+                    if (target !== LEER && target !== ZIEL && target !== id) return false;
                 }
             }
         }
@@ -155,7 +171,7 @@ class RotateBoard {
             for (let c = 0; c < this.cols; c++) {
                 if (this.grid[r][c] === id) {
                     // Prüfen ob Ziel erreicht (-3)
-                    if (this.grid[r + 1][c] === -3) {
+                    if (this.grid[r + 1][c] === ZIEL) {
                         reachedExit = true;
                         // Block bleibt sichtbar auf der Öffnung stehen
                         this.grid[r + 1][c] = id;
@@ -165,7 +181,7 @@ class RotateBoard {
                     }
                     
                     // Alte Position leeren
-                    this.grid[r][c] = -1;
+                    this.grid[r][c] = LEER;
                 }
             }
         }

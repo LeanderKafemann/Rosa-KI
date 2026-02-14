@@ -1,3 +1,36 @@
+
+// Spieler- und Status-Konstanten
+/**
+ * Kein Gewinner / Spiel läuft
+ * @constant {number}
+ */
+const NONE = 0;
+/**
+ * Spieler 1 (Blau/Kreis)
+ * @constant {number}
+ */
+const PLAYER1 = 1;
+/**
+ * Spieler 2 (Rot/Kreuz)
+ * @constant {number}
+ */
+const PLAYER2 = 2;
+/**
+ * Unentschieden
+ * @constant {number}
+ */
+const DRAW = 3;
+/**
+ * Leeres Feld
+ * @constant {number}
+ */
+const CELL_EMPTY = 0;
+/**
+ * Ungültiger Index
+ * @constant {number}
+ */
+const INVALID_INDEX = -1;
+
 /**
  * @fileoverview Zentrale Spiellogik für die Tic-Tac-Toe Varianten.
  * Beinhaltet die Klassen für Regular (3x3), 3D (NxNxN) und Ultimate.
@@ -14,21 +47,21 @@ class TTTBase {
          * 1 = Spieler 1 (Blau/Kreis), 2 = Spieler 2 (Rot/Kreuz).
          * @type {number} 
          */
-        this.currentPlayer = 1;
+        this.currentPlayer = PLAYER1;
 
         /**
          * Gewinner des Spiels.
          * 0 = Laufend, 1 = Spieler 1, 2 = Spieler 2, 3 = Remis.
          * @type {number}
          */
-        this.winner = 0;
+        this.winner = NONE;
     }
 
     /**
      * Wechselt den aktiven Spieler (1 -> 2 -> 1).
      */
     switchPlayer() {
-        this.currentPlayer = (this.currentPlayer === 1) ? 2 : 1;
+        this.currentPlayer = (this.currentPlayer === PLAYER1) ? PLAYER2 : PLAYER1;
     }
 }
 
@@ -43,7 +76,7 @@ class TTTRegularBoard extends TTTBase {
          * 0 = Leer, 1 = Spieler 1, 2 = Spieler 2.
          * @type {number[]} 
          */
-        this.grid = Array(9).fill(0);
+        this.grid = Array(9).fill(CELL_EMPTY);
     }
 
     /**
@@ -54,7 +87,7 @@ class TTTRegularBoard extends TTTBase {
      */
     getAllValidMoves() {
         // ✅ Gib alle leeren Felder zurück, unabhängig vom winner Status
-        return this.grid.map((val, idx) => val === 0 ? idx : -1).filter(idx => idx !== -1);
+        return this.grid.map((val, idx) => val === CELL_EMPTY ? idx : INVALID_INDEX).filter(idx => idx !== INVALID_INDEX);
     }
 
     /**
@@ -66,7 +99,7 @@ class TTTRegularBoard extends TTTBase {
      */
     makeMove(index) {
         // Validierung: Index im Bereich, Feld leer, Spiel läuft
-        if (index < 0 || index >= 9 || this.grid[index] !== 0 || this.winner !== 0) {
+        if (index < 0 || index >= 9 || this.grid[index] !== CELL_EMPTY || this.winner !== NONE) {
             return false;
         }
 
@@ -77,7 +110,7 @@ class TTTRegularBoard extends TTTBase {
         this.checkWin();
 
         // Spielerwechsel (nur wenn Spiel nicht vorbei)
-        if (this.winner === 0) {
+        if (this.winner === NONE) {
             this.switchPlayer();
         }
         return true;
@@ -96,7 +129,7 @@ class TTTRegularBoard extends TTTBase {
 
         for (const line of lines) {
             const [a, b, c] = line;
-            if (this.grid[a] !== 0 && 
+            if (this.grid[a] !== CELL_EMPTY && 
                 this.grid[a] === this.grid[b] && 
                 this.grid[b] === this.grid[c]) {
                 this.winner = this.grid[a];
@@ -105,8 +138,8 @@ class TTTRegularBoard extends TTTBase {
         }
 
         // Remis Check (Brett voll, kein Gewinner)
-        if (!this.grid.includes(0)) {
-            this.winner = 3;
+        if (!this.grid.includes(CELL_EMPTY)) {
+            this.winner = DRAW;
         }
     }
 
@@ -149,7 +182,7 @@ class TTT3DBoard extends TTTBase {
          * Index = z * size^2 + y * size + x
          * @type {number[]} 
          */
-        this.grid = Array(this.totalCells).fill(0);
+        this.grid = Array(this.totalCells).fill(CELL_EMPTY);
     }
 
     /**
@@ -160,7 +193,7 @@ class TTT3DBoard extends TTTBase {
     getAllValidMoves() {
         const moves = [];
         for (let i = 0; i < this.totalCells; i++) {
-            if (this.grid[i] === 0) moves.push(i);
+            if (this.grid[i] === CELL_EMPTY) moves.push(i);
         }
         return moves;
     }
@@ -172,14 +205,14 @@ class TTT3DBoard extends TTTBase {
      * @returns {boolean}
      */
     makeMove(index) {
-        if (index < 0 || index >= this.totalCells || this.grid[index] !== 0 || this.winner !== 0) {
+        if (index < 0 || index >= this.totalCells || this.grid[index] !== CELL_EMPTY || this.winner !== NONE) {
             return false;
         }
 
         this.grid[index] = this.currentPlayer;
         this.checkWin();
 
-        if (this.winner === 0) {
+        if (this.winner === NONE) {
             this.switchPlayer();
         }
         return true;
@@ -204,7 +237,7 @@ class TTT3DBoard extends TTTBase {
                     const idx = this._getIndex(x, y, z);
                     const player = this.grid[idx];
 
-                    if (player === 0) continue;
+                    if (player === CELL_EMPTY) continue;
 
                     // Von hier aus in alle Richtungen prüfen
                     for (const dir of directions) {
@@ -218,8 +251,8 @@ class TTT3DBoard extends TTTBase {
         }
 
         // Remis
-        if (!this.grid.includes(0)) {
-            this.winner = 3;
+        if (!this.grid.includes(CELL_EMPTY)) {
+            this.winner = DRAW;
         }
     }
 
@@ -281,19 +314,19 @@ class UltimateBoard extends TTTBase {
          * 9 Arrays à 9 Felder.
          * @type {number[][]} 
          */
-        this.boards = Array(9).fill(null).map(() => Array(9).fill(0));
+        this.boards = Array(9).fill(null).map(() => Array(9).fill(CELL_EMPTY));
         
         /** 
          * Status der 9 großen Felder (Makro-Board). 0=Offen, 1/2=Sieg, 3=Remis. 
          * @type {number[]} 
          * */
-        this.macroBoard = Array(9).fill(0);
+        this.macroBoard = Array(9).fill(CELL_EMPTY);
         
         /** 
          * Index des Boards, in das der nächste Spieler setzen MUSS. -1 = Freie Wahl. 
          * @type {number} 
          * */
-        this.nextBoardIdx = -1;
+        this.nextBoardIdx = INVALID_INDEX;
     }
 
     /**
@@ -308,7 +341,7 @@ class UltimateBoard extends TTTBase {
         
         // Regel: Wenn man in ein Board geschickt wird und es noch nicht VOLL ist, MUSS man dort spielen.
         // Ein gewonnenes Board mit freien Feldern ist weiterhin spielbar!
-        if (this.nextBoardIdx !== -1 && !this._isBoardFull(this.nextBoardIdx)) {
+        if (this.nextBoardIdx !== INVALID_INDEX && !this._isBoardFull(this.nextBoardIdx)) {
             targetBoards = [this.nextBoardIdx];
         } else {
             // Sonst: Freie Wahl auf allen nicht vollen Boards
@@ -348,13 +381,13 @@ class UltimateBoard extends TTTBase {
         }
         
         // 1. Basis-Checks
-        if (this.winner !== 0) return false;
+        if (this.winner !== NONE) return false;
         
         // 2. Regel-Check: Darf ich in dieses 'big' Board setzen?
         // Wenn nextBoardIdx aktiv (nicht -1) ist und das Zielboard noch nicht VOLL ist,
         // muss 'big' gleich 'nextBoardIdx' sein.
         // (Ein gewonnenes Board mit freien Feldern ist noch spielbar!)
-        if (this.nextBoardIdx !== -1 && !this._isBoardFull(this.nextBoardIdx)) {
+        if (this.nextBoardIdx !== INVALID_INDEX && !this._isBoardFull(this.nextBoardIdx)) {
             if (big !== this.nextBoardIdx) return false; // Ungültiges Board gewählt!
         }
         
@@ -362,32 +395,32 @@ class UltimateBoard extends TTTBase {
         if (this._isBoardFull(big)) return false;
 
         // 4. Feld belegt?
-        if (this.boards[big][small] !== 0) return false;
+        if (this.boards[big][small] !== CELL_EMPTY) return false;
 
         // --- ZUG AUSFÜHREN ---
         this.boards[big][small] = this.currentPlayer;
 
         // 4. Prüfen, ob das kleine Board gewonnen wurde
         // (Nur wenn es noch nicht entschieden war)
-        if (this.macroBoard[big] === 0) {
+        if (this.macroBoard[big] === CELL_EMPTY) {
             const w = this._checkSmallWin(this.boards[big]);
-            if (w !== 0) {
+            if (w !== CELL_EMPTY) {
                 this.macroBoard[big] = w; // Board gewonnen
-            } else if (!this.boards[big].includes(0)) {
-                this.macroBoard[big] = 3; // Board voll (Remis)
+            } else if (!this.boards[big].includes(CELL_EMPTY)) {
+                this.macroBoard[big] = DRAW; // Board voll (Remis)
             }
         }
 
         // 5. Prüfen, ob das große Board (Spiel) gewonnen wurde
         const gameWin = this._checkSmallWin(this.macroBoard);
-        if (gameWin !== 0) {
+        if (gameWin !== NONE) {
             this.winner = gameWin;
-        } else if (!this.macroBoard.includes(0)) {
+        } else if (!this.macroBoard.includes(CELL_EMPTY)) {
             // Alle großen Felder entschieden, aber keine Reihe -> Remis
-            this.winner = 3; 
+            this.winner = DRAW; 
         }
 
-        if (this.winner === 0) {
+        if (this.winner === NONE) {
             this.switchPlayer();
         }
 
@@ -398,7 +431,7 @@ class UltimateBoard extends TTTBase {
         // Wenn das Zielboard aber schon VOLL ist, hat der nächste Spieler freie Wahl.
         // Ein gewonnenes Board mit freien Feldern ist weiterhin spielbar!
         if (this._isBoardFull(this.nextBoardIdx)) {
-            this.nextBoardIdx = -1;
+            this.nextBoardIdx = INVALID_INDEX;
         }
 
         return true;
@@ -407,7 +440,7 @@ class UltimateBoard extends TTTBase {
     /** Prüft, ob ein kleines Board keine freien Felder mehr hat. */
     _isBoardFull(idx) {
         // Keine Nullen im Grid = Voll
-        return !this.boards[idx].includes(0);
+        return !this.boards[idx].includes(CELL_EMPTY);
     }
 
     /** Hilfsfunktion: 3-in-einer-Reihe auf einem 9er Array. */
@@ -415,13 +448,13 @@ class UltimateBoard extends TTTBase {
         const wins = [[0,1,2],[3,4,5],[6,7,8], [0,3,6],[1,4,7],[2,5,8], [0,4,8],[2,4,6]];
         for (const w of wins) {
             // Ignoriere 0 (leer) und 3 (Remis-Marker) bei der Gewinnprüfung
-            if (grid[w[0]] !== 0 && grid[w[0]] !== 3 &&
+            if (grid[w[0]] !== CELL_EMPTY && grid[w[0]] !== DRAW &&
                 grid[w[0]] === grid[w[1]] && 
                 grid[w[1]] === grid[w[2]]) {
                 return grid[w[0]];
             }
         }
-        return 0;
+        return CELL_EMPTY;
     }
 
     clone() {
