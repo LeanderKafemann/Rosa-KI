@@ -70,6 +70,10 @@
             border-radius: 4px; 
             font-size: 0.95rem; 
         }
+        .viz-toggle {
+            transform: scale(1.1);
+            cursor: pointer;
+        }
         .viz-label { 
             font-size: 0.9rem; 
             font-weight: 600; 
@@ -183,6 +187,21 @@
             justify-content: center;
             margin-top: 10px;
         }
+
+        .abp-help {
+            margin-top: 8px;
+            padding: 8px;
+            background: #f8f9fa;
+            border: 1px solid #dfe6e9;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #4b5563;
+            line-height: 1.35;
+        }
+
+        .abp-help strong {
+            color: #2c3e50;
+        }
     </style>
 </head>
 <body>
@@ -207,8 +226,18 @@
             <label class="viz-label">Algorithmus</label>
             <select id="algoSelect" class="viz-select">
                 <option value="minimax">Minimax (Standard)</option>
-                <option value="alphabeta">Alpha-Beta Pruning</option>
                 <option value="limited">Tiefenbegrenzung</option>
+            </select>
+        </div>
+
+        <div class="toolbar-group">
+            <label class="viz-label" for="abpToggle">AB-Pruning</label>
+            <input type="checkbox" id="abpToggle" class="viz-toggle">
+            <label class="viz-label" for="abOrderMode">Reihenfolge</label>
+            <select id="abOrderMode" class="viz-select">
+                <option value="free">frei</option>
+                <option value="optimal">heuristisch günstig</option>
+                <option value="strict">strikt (erzwingen)</option>
             </select>
         </div>
 
@@ -243,20 +272,40 @@
 
                 <div class="board-info">
                     <div class="info-row">
-                        <span class="info-label">Aktueller Spieler:</span>
-                        <span class="info-value" id="currentPlayer">X</span>
+                        <span class="info-label">Aktiver Knoten α:</span>
+                        <span class="info-value" id="activeAlpha">n/a</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">Züge:</span>
-                        <span class="info-value" id="moveCount">0</span>
+                        <span class="info-label">Aktiver Knoten β:</span>
+                        <span class="info-value" id="activeBeta">n/a</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">Status:</span>
-                        <span class="info-value" id="gameStatus">Laufend</span>
+                        <span class="info-label">αβ-Einfluss:</span>
+                        <span class="info-value" id="abInfluence">n/a</span>
                     </div>
                     <div class="info-row">
-                        <span class="info-label">Bewertung:</span>
-                        <span class="info-value" id="evaluation">0</span>
+                        <span class="info-label">Pruning-Status:</span>
+                        <span class="info-value" id="abPruneStatus">n/a</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Geprunte Knoten:</span>
+                        <span class="info-value" id="resultPruned">0</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Pruning-Quote:</span>
+                        <span class="info-value" id="resultPruneRate">0%</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="info-label">Quote-Basis:</span>
+                        <span class="info-value" id="resultPruneBasis">pruned / (evaluated + pruned)</span>
+                    </div>
+
+                    <div class="abp-help" id="abpHelpText">
+                        <strong>Alpha-Beta kurz erklärt:</strong><br>
+                        α = beste bereits gefundene Untergrenze für MAX, β = beste Obergrenze für MIN.<br>
+                        Pruning bedeutet: ein Ast kann das Ergebnis nicht mehr verbessern und wird nicht weiter bewertet.<br>
+                        Nutzen: gleiche Entscheidung wie Minimax, aber mit weniger berechneten Knoten.<br>
+                        Bounds werden vom Elternknoten an noch offene Kinder weitergegeben.
                     </div>
                 </div>
             </div>
@@ -265,6 +314,7 @@
 
     <!-- Scripts -->
     <!-- ===== STEP 1: ZENTRALE KONSTANTEN (MÜSSEN ALS ERSTES!) ===== -->
+    <script src="../js/config/debug-config.js"></script>
     <script src="../js/config/constants.js"></script>
     <script src="../js/ai/heuristics/config/ttt-heuristics-config.js"></script>
     
@@ -278,6 +328,7 @@
     
     <!-- Tree Visualization Utilities -->
     <script src="../js/viz/tree-viz/utils/node-status-manager.js"></script>
+    <script src="../js/viz/shared/tree-analysis-utils.js"></script>
     
     <!-- Tree Adapter -->
     <script src="../js/viz/adapters/tree-adapters/base-tree-adapter.js"></script>
@@ -294,12 +345,60 @@
         // GLOBALS
         // ============================================================================
         const canvas = document.getElementById('boardCanvas');
-        const ctx = canvas.getContext('2d');
         const iframe = document.getElementById('vizFrame');
+
+        /** @type {{RETRY_DELAY_MS:number, MAX_RETRY_ATTEMPTS:number, RETRY_LOG_INTERVAL:number, PERCENT_BASE:number, STATS_NUMBER_FALLBACK:number}} */
+        const MINIMAX_UI_CONSTANTS =
+            typeof MINIMAX_VIZ_CONSTANTS !== 'undefined' && MINIMAX_VIZ_CONSTANTS.UI
+                ? MINIMAX_VIZ_CONSTANTS.UI
+                : {
+                      RETRY_DELAY_MS: 120,
+                      MAX_RETRY_ATTEMPTS: 30,
+                      RETRY_LOG_INTERVAL: 5,
+                      PERCENT_BASE: 100,
+                      STATS_NUMBER_FALLBACK: 0,
+                  };
+
+        /**
+         * Prüft, ob Viz-UI Logs für diese Stufe ausgegeben werden sollen.
+         * @param {'debug'|'warn'|'error'|'critical'} level
+         * @returns {boolean}
+         */
+        function shouldLogViz(level = 'debug') {
+            if (typeof window === 'undefined' || !window.DebugConfig || !window.DEBUG_DOMAINS) {
+                return level === 'error' || level === 'critical';
+            }
+            return window.DebugConfig.shouldLog(window.DEBUG_DOMAINS.MINIMAX_VIZ_UI, level);
+        }
+
+        /**
+         * Einheitlicher Viz-Logger.
+         * @param {'debug'|'warn'|'error'|'critical'} level
+         * @param {string} message
+         * @param {Object} [payload]
+         */
+        function logViz(level, message, payload) {
+            if (!shouldLogViz(level)) return;
+
+            if (level === 'warn') {
+                payload !== undefined ? console.warn(message, payload) : console.warn(message);
+                return;
+            }
+
+            if (level === 'error' || level === 'critical') {
+                payload !== undefined ? console.error(message, payload) : console.error(message);
+                return;
+            }
+
+            payload !== undefined ? console.log(message, payload) : console.log(message);
+        }
         
         let adapter = null;
         let currentBoard = null;
         let gameType = 'regular';
+        let retryCount = 0;
+        let lastVisualizationResult = null;
+        let activeNodeInfo = null;
 
         // ============================================================================
         // INITIALIZATION
@@ -311,14 +410,72 @@
         function init() {
             // Create adapter
             adapter = new MinimaxTreeAdapter(iframe);
+            bindAdapterCallbacks();
             
             // Initialize board
             resetBoard();
             
             // Setup event listeners
             setupEventListeners();
+
+            // Initial UI state for AB controls
+            syncAlgorithmControls();
+            applyABOrderingFlags();
             
-            console.log('Minimax-Viz: Initialized');
+            logViz('debug', 'Minimax-Viz: Initialized');
+        }
+
+        /**
+         * Bindet Callback-Hooks an den aktiven Adapter.
+         */
+        function bindAdapterCallbacks() {
+            if (!adapter) return;
+            adapter.onActiveNodeChanged = (nodeId, nodeData) => {
+                activeNodeInfo = {
+                    nodeId,
+                    alpha: nodeData && nodeData.alpha !== undefined ? nodeData.alpha : null,
+                    beta: nodeData && nodeData.beta !== undefined ? nodeData.beta : null,
+                    canPrune: !!(nodeData && nodeData.alpha !== undefined && nodeData.beta !== undefined && nodeData.alpha >= nodeData.beta),
+                };
+                updateDidacticPanel(lastVisualizationResult);
+            };
+
+            adapter.onStatsChanged = (stats) => {
+                const nodesVisited = stats && typeof stats.nodesVisited === 'number' ? stats.nodesVisited : MINIMAX_UI_CONSTANTS.STATS_NUMBER_FALLBACK;
+                const nodesPruned = stats && typeof stats.nodesPruned === 'number' ? stats.nodesPruned : MINIMAX_UI_CONSTANTS.STATS_NUMBER_FALLBACK;
+                const bestValue =
+                    lastVisualizationResult && lastVisualizationResult.bestValue !== undefined
+                        ? lastVisualizationResult.bestValue
+                        : null;
+
+                lastVisualizationResult = {
+                    ...(lastVisualizationResult || {}),
+                    nodesVisited,
+                    nodesPruned,
+                    evaluatedNodes: stats && typeof stats.evaluatedNodes === 'number' ? stats.evaluatedNodes : MINIMAX_UI_CONSTANTS.STATS_NUMBER_FALLBACK,
+                    bestValue,
+                };
+
+                updateDidacticPanel(lastVisualizationResult);
+            };
+        }
+
+        /**
+         * Setzt aktive Knotendaten aus der aktuellen Adapter-Struktur.
+         * @param {number} nodeId
+         */
+        function updateActiveNodeInfoFromTree(nodeId) {
+            if (!adapter || !adapter.treeStructure || !adapter.treeStructure.has(nodeId)) return;
+
+            const nodeData = adapter.treeStructure.get(nodeId);
+            activeNodeInfo = {
+                nodeId,
+                alpha: nodeData && nodeData.alpha !== undefined ? nodeData.alpha : null,
+                beta: nodeData && nodeData.beta !== undefined ? nodeData.beta : null,
+                canPrune: !!(nodeData && nodeData.alpha !== undefined && nodeData.beta !== undefined && nodeData.alpha >= nodeData.beta),
+            };
+
+            updateDidacticPanel(lastVisualizationResult);
         }
 
         /**
@@ -358,22 +515,98 @@
          * Aktualisiert die Board-Informationen
          */
         function updateBoardInfo() {
-            const player = currentBoard.currentPlayer === 1 ? 'X' : 'O';
-            document.getElementById('currentPlayer').textContent = player;
-            
-            const moveCount = currentBoard.grid.filter(x => x !== 0).length;
-            document.getElementById('moveCount').textContent = moveCount;
-            
-            const winner = currentBoard.winner;
-            let status = 'Laufend';
-            if (winner === 1) status = 'X gewinnt';
-            else if (winner === 2) status = 'O gewinnt';
-            else if (winner === 3) status = 'Unentschieden';
-            document.getElementById('gameStatus').textContent = status;
-            
-            // Evaluation (winner property: 0=laufend, 1=X, 2=O, 3=unentschieden)
-            const eval = winner === 1 ? '+1' : winner === 2 ? '-1' : '0';
-            document.getElementById('evaluation').textContent = eval;
+            updateDidacticPanel(lastVisualizationResult);
+        }
+
+        /**
+         * Anzahl gesetzter Züge.
+         * @returns {number}
+         */
+        function getMoveCount() {
+            if (!currentBoard || !Array.isArray(currentBoard.grid)) return 0;
+            return currentBoard.grid.filter((value) => value !== 0).length;
+        }
+
+        /**
+         * Liest den effektiven Algorithmus aus UI-Zustand.
+         * @returns {string}
+         */
+        function getEffectiveAlgorithm() {
+            const selectedAlgo = document.getElementById('algoSelect').value;
+            const abEnabled = document.getElementById('abpToggle').checked;
+
+            if (selectedAlgo === 'limited') return 'limited';
+            return abEnabled ? 'alphabeta' : 'minimax';
+        }
+
+        /**
+         * Synchronisiert AB-Controls mit Algorithmus-Auswahl.
+         */
+        function syncAlgorithmControls() {
+            const selectedAlgo = document.getElementById('algoSelect').value;
+            const abpToggle = document.getElementById('abpToggle');
+            const abOrderMode = document.getElementById('abOrderMode');
+
+            const isLimited = selectedAlgo === 'limited';
+            if (isLimited) {
+                abpToggle.checked = false;
+            }
+
+            abpToggle.disabled = isLimited;
+            abOrderMode.disabled = isLimited || !abpToggle.checked;
+        }
+
+        /**
+         * Schreibt Reihenfolge-Modus in zentrale Flags.
+         */
+        function applyABOrderingFlags() {
+            const abMode = document.getElementById('abOrderMode').value;
+
+            if (typeof MINIMAX_VIZ_CONSTANTS === 'undefined' || !MINIMAX_VIZ_CONSTANTS.FLAGS) return;
+
+            MINIMAX_VIZ_CONSTANTS.FLAGS.USE_ALPHABETA_MOVE_ORDERING = abMode === 'optimal' || abMode === 'strict';
+            MINIMAX_VIZ_CONSTANTS.FLAGS.ENFORCE_ALPHABETA_EVAL_ORDER = abMode === 'strict';
+        }
+
+        /**
+         * Aktualisiert didaktische Kontextinfos unter dem Brett.
+         * @param {Object|null} result
+         */
+        function updateDidacticPanel(result = null) {
+                const visited = result && typeof result.nodesVisited === 'number' ? result.nodesVisited : MINIMAX_UI_CONSTANTS.STATS_NUMBER_FALLBACK;
+                const pruned = result && typeof result.nodesPruned === 'number' ? result.nodesPruned : MINIMAX_UI_CONSTANTS.STATS_NUMBER_FALLBACK;
+            const evaluated =
+                result && typeof result.evaluatedNodes === 'number'
+                    ? result.evaluatedNodes
+                    : Math.max(visited - pruned, MINIMAX_UI_CONSTANTS.STATS_NUMBER_FALLBACK);
+            const pruneDenominator = evaluated + pruned;
+                const pruneRate = pruneDenominator > 0 ? ((pruned / pruneDenominator) * MINIMAX_UI_CONSTANTS.PERCENT_BASE).toFixed(1) : '0.0';
+
+            const alphaText =
+                activeNodeInfo && activeNodeInfo.alpha !== null
+                    ? (activeNodeInfo.alpha === -Infinity ? '-∞' : Number(activeNodeInfo.alpha).toFixed(2))
+                    : 'n/a';
+            const betaText =
+                activeNodeInfo && activeNodeInfo.beta !== null
+                    ? (activeNodeInfo.beta === Infinity ? '∞' : Number(activeNodeInfo.beta).toFixed(2))
+                    : 'n/a';
+
+            let influenceText = 'n/a';
+            let pruneStatusText = 'n/a';
+            if (activeNodeInfo) {
+                influenceText = activeNodeInfo.canPrune
+                    ? 'Schranke eng genug: Cut-off möglich'
+                    : 'Schranke noch offen';
+                pruneStatusText = activeNodeInfo.canPrune ? 'Bedingung erfüllt: α ≥ β' : 'Bedingung nicht erfüllt: α < β';
+            }
+
+            document.getElementById('activeAlpha').textContent = alphaText;
+            document.getElementById('activeBeta').textContent = betaText;
+            document.getElementById('abInfluence').textContent = influenceText;
+            document.getElementById('abPruneStatus').textContent = pruneStatusText;
+            document.getElementById('resultPruned').textContent = String(pruned);
+            document.getElementById('resultPruneRate').textContent = `${pruneRate}%`;
+            document.getElementById('resultPruneBasis').textContent = `pruned / (evaluated + pruned) = ${pruned} / (${evaluated} + ${pruned})`;
         }
 
         // ============================================================================
@@ -389,26 +622,61 @@
             
             // Button clicks
             document.getElementById('btnReset').addEventListener('click', resetVisualization);
-            document.getElementById('btnNewGame').addEventListener('click', resetBoard);
+            document.getElementById('btnNewGame').addEventListener('click', () => {
+                resetBoard();
+                resetVisualization();
+            });
             
             // Game type change
             document.getElementById('gameSelect').addEventListener('change', resetBoard);
             
             // Algorithm/Depth change - trigger re-visualization if game is active
             document.getElementById('algoSelect').addEventListener('change', () => {
-                if (currentBoard && currentBoard.winner === 0) {
+                syncAlgorithmControls();
+                applyABOrderingFlags();
+                updateDidacticPanel(lastVisualizationResult);
+                if (currentBoard && currentBoard.winner === 0 && getMoveCount() > 0) {
+                    visualizeMinimax();
+                }
+            });
+            document.getElementById('abpToggle').addEventListener('change', () => {
+                syncAlgorithmControls();
+                applyABOrderingFlags();
+
+                resetBoard();
+                updateAdapter(getEffectiveAlgorithm());
+                resetVisualization();
+            });
+            document.getElementById('abOrderMode').addEventListener('change', () => {
+                applyABOrderingFlags();
+                if (getEffectiveAlgorithm() === 'alphabeta') {
+                    resetBoard();
+                    updateAdapter(getEffectiveAlgorithm());
+                    resetVisualization();
+                    return;
+                }
+
+                updateDidacticPanel(lastVisualizationResult);
+                if (currentBoard && currentBoard.winner === 0 && getMoveCount() > 0) {
                     visualizeMinimax();
                 }
             });
             document.getElementById('depthInput').addEventListener('change', () => {
-                if (currentBoard && currentBoard.winner === 0) {
+                if (currentBoard && currentBoard.winner === 0 && getMoveCount() > 0) {
                     visualizeMinimax();
                 }
             });
             
             // Iframe load
             iframe.addEventListener('load', () => {
-                console.log('Minimax-Viz: Tree iframe loaded');
+                logViz('debug', 'Minimax-Viz: Tree iframe loaded');
+            });
+
+            // Node click events from TreeViz frame (for side panel sync)
+            window.addEventListener('message', (event) => {
+                if (!event.data || (event.data.type !== 'NODE_CLICKED' && event.data.type !== 'NODE_FOCUSED')) return;
+                if (event.data.nodeId === undefined || event.data.nodeId === null) return;
+                updateActiveNodeInfoFromTree(event.data.nodeId);
             });
         }
 
@@ -443,7 +711,7 @@
                     drawBoard();
                     updateBoardInfo();
                     
-                    console.log('Move played:', move);
+                    logViz('debug', 'Move played:', { move });
                     
                     // LIVE VISUALIZATION: Trigger tree update after move
                     if (currentBoard.winner === 0) {
@@ -483,9 +751,11 @@
             // Note: 'limited' uses MinimaxTreeAdapter with depth limit
             
             if (!adapter || !(adapter instanceof requiredClass)) {
-                console.log(`Switching adapter to ${requiredClass.name}`);
+                logViz('debug', `Switching adapter to ${requiredClass.name}`);
                 if (adapter && adapter.destroy) adapter.destroy();
                 adapter = new requiredClass(iframe);
+                bindAdapterCallbacks();
+                retryCount = 0;
             }
         }
 
@@ -493,14 +763,26 @@
          * Startet Minimax-Visualisierung (LIVE nach jedem Zug)
          */
         async function visualizeMinimax() {
-            const algo = document.getElementById('algoSelect').value;
+            const algo = getEffectiveAlgorithm();
             updateAdapter(algo);
             
             if (!adapter || !adapter.ready) {
-                console.warn('Adapter not ready yet, retrying...');
-                setTimeout(visualizeMinimax, 100);
+                retryCount += 1;
+                if (retryCount > MINIMAX_UI_CONSTANTS.MAX_RETRY_ATTEMPTS) {
+                    logViz('error', 'Adapter not ready after retry limit', { algo, retryCount });
+                    document.getElementById('stats').textContent = 'Fehler: Adapter nicht bereit (Timeout).';
+                    retryCount = 0;
+                    return;
+                }
+
+                if (retryCount === 1 || retryCount % MINIMAX_UI_CONSTANTS.RETRY_LOG_INTERVAL === 0) {
+                    logViz('warn', 'Adapter not ready yet, retrying...', { retryCount, algo });
+                }
+                setTimeout(visualizeMinimax, MINIMAX_UI_CONSTANTS.RETRY_DELAY_MS);
                 return;
             }
+
+            retryCount = 0;
             
             const maxDepth = parseInt(document.getElementById('depthInput').value);
             document.getElementById('stats').textContent = 'Berechne Minimax-Baum...';
@@ -513,11 +795,16 @@
                 });
                 const endTime = performance.now();
                 const duration = (endTime - startTime).toFixed(1);
+                const nodesVisited = result && typeof result.nodesVisited === 'number' ? result.nodesVisited : MINIMAX_UI_CONSTANTS.STATS_NUMBER_FALLBACK;
+                const nodesPruned = result && typeof result.nodesPruned === 'number' ? result.nodesPruned : MINIMAX_UI_CONSTANTS.STATS_NUMBER_FALLBACK;
+                const bestValue = result && result.bestValue !== undefined && result.bestValue !== null ? result.bestValue : 'n/a';
                 document.getElementById('stats').textContent = 
-                    `Knoten: ${result.nodesVisited} | Geprunt: ${result.nodesPruned || 0} | Zeit: ${duration}ms | Beste Bewertung: ${result.bestValue}`;
-                console.log('Minimax visualization complete:', result);
+                    `Knoten: ${nodesVisited} | Geprunt: ${nodesPruned} | Zeit: ${duration}ms | Beste Bewertung: ${bestValue}`;
+                lastVisualizationResult = result;
+                updateDidacticPanel(result);
+                logViz('debug', 'Minimax visualization complete:', result);
             } catch (err) {
-                console.error('Visualization error:', err);
+                logViz('error', 'Visualization error:', err);
                 document.getElementById('stats').textContent = 'Fehler: ' + err.message;
             }
         }
@@ -529,6 +816,9 @@
             if (adapter && adapter.ready) {
                 adapter.sendCommand({ action: 'CLEAR' });
             }
+            lastVisualizationResult = null;
+            activeNodeInfo = null;
+            updateDidacticPanel(null);
             document.getElementById('stats').textContent = 'Baum gelöscht. Klicke auf das Board um zu spielen.';
         }
 

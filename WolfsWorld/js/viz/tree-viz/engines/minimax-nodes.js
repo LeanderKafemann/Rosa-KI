@@ -138,28 +138,28 @@ var MinimaxNodeRenderer = {
 
         const textY = centerY + size / 2 + 5;
         
-        // Value
+        // Value (einheitlich wie Minimax ohne ABP: Min/Max statt generischem V)
         if (metadata.value !== null && metadata.value !== undefined) {
+            const rolePrefix = metadata.isMaximizing === true
+                ? 'Max'
+                : metadata.isMaximizing === false
+                    ? 'Min'
+                    : 'V';
             ctx.fillStyle = '#2c3e50';
-            ctx.fillText(`V: ${metadata.value.toFixed(2)}`, centerX, textY);
+            ctx.fillText(`${rolePrefix}: ${metadata.value.toFixed(2)}`, centerX, textY);
         }
         
         // Alpha/Beta (nur bei Alpha-Beta Algorithmus)
         if (metadata.alpha !== undefined && metadata.beta !== undefined) {
             const alphaBetaY = textY + fontSize + 2;
             ctx.fillStyle = '#7f8c8d';
-            ctx.font = `${fontSize * 0.8}px monospace`;
-            ctx.fillText(`α: ${metadata.alpha === -Infinity ? '-∞' : metadata.alpha.toFixed(1)}`, centerX - 20, alphaBetaY);
-            ctx.fillText(`β: ${metadata.beta === Infinity ? '∞' : metadata.beta.toFixed(1)}`, centerX + 20, alphaBetaY);
+            ctx.font = `${fontSize * 0.95}px monospace`;
+            const alphaValue = metadata.alpha === -Infinity ? '-∞' : metadata.alpha.toFixed(1);
+            const betaValue = metadata.beta === Infinity ? '∞' : metadata.beta.toFixed(1);
+            ctx.fillText(`α:${alphaValue}|β:${betaValue}`, centerX, alphaBetaY);
         }
-        
-        // Depth indicator
-        if (metadata.depth !== undefined) {
-            ctx.fillStyle = '#95a5a6';
-            ctx.font = `${fontSize * 0.7}px monospace`;
-            const depthY = centerY - size / 2 - 8;
-            ctx.fillText(`D${metadata.depth}`, centerX, depthY);
-        }
+
+        // MIN/MAX Überschrift bewusst entfernt (redundant zu Level-Visualisierung)
     }
 };
 

@@ -85,7 +85,7 @@ const DEFAULT_STATUS_CONFIG = {
   
   PRUNED: {
     priority: 40,
-    color: '#95a5a6', border: '#7f8c8d', width: 2,
+    color: '#f2f2f2', border: '#000000', width: 2,
     glow: null, enableGlow: false, dash: [5, 5], enableDash: true
   },
   
@@ -158,6 +158,12 @@ const DEFAULT_STATUS_CONFIG = {
     priority: 30,
     color: '#ffffff', border: '#20ca42', width: 3,
     glow: '#e67e22', enableGlow: true, dash: [], enableDash: false
+  },
+
+  NEXT_TO_EVALUATE: {
+    priority: 99,
+    color: '#ffffff', border: '#8e44ad', width: 4,
+    glow: '#8e44ad', enableGlow: true, dash: [3, 3], enableDash: true
   },
 
   EVALUATED: {

@@ -110,3 +110,57 @@ const DEBUG_CONSTANTS = {
     LOG_SCORING: false,        // Scoring Details loggen
     LOG_AI_DECISIONS: false,   // AI Entscheidungen loggen
 };
+
+// ===== MINIMAX-VISUALIZER KONSTANTEN =====
+/**
+ * Konfiguration für Minimax-/Alpha-Beta-Visualisierung.
+ *
+ * Enthält bewusst zentrale Schalter für boolesche Features,
+ * damit Adapter und UI konsistent konfiguriert werden.
+ * @type {Object}
+ */
+const MINIMAX_VIZ_CONSTANTS = {
+    FLAGS: {
+        ENABLE_TREE_EXPANSION_MINIMAX: true,
+        ENABLE_TREE_EXPANSION_ALPHABETA: true,
+        ENABLE_PRUNING_HIGHLIGHT: true,
+        USE_ALPHABETA_MOVE_ORDERING: false,
+        ENFORCE_ALPHABETA_EVAL_ORDER: false,
+        DEBUG_MINIMAX_ADAPTER: false,
+        DEBUG_ALPHABETA_ADAPTER: false,
+    },
+
+    VALUES: {
+        WIN: 1,
+        LOSS: -1,
+        DRAW: 0,
+    },
+
+    TREE: {
+        ROOT_DEPTH: 0,
+        HIGHLIGHT_EDGE_WIDTH: 2,
+    },
+
+    UI: {
+        RETRY_DELAY_MS: 120,
+        MAX_RETRY_ATTEMPTS: 30,
+        RETRY_LOG_INTERVAL: 5,
+        PERCENT_BASE: 100,
+        STATS_NUMBER_FALLBACK: 0,
+    },
+
+    RENDER: {
+        VALUE_DECIMALS: 2,
+        ALPHA_BETA_DECIMALS: 1,
+        ALPHA_BETA_FONT_SCALE: 0.95,
+    },
+
+    COLORS: {
+        ROOT_PLAYER_1: '#3498db',
+        ROOT_PLAYER_2: '#e74c3c',
+        EDGE_POSITIVE: '#2730ae',
+        EDGE_NEGATIVE: '#c0392b',
+        EDGE_NEUTRAL: '#a4ae1c',
+        EDGE_PRUNED: '#7f8c8d',
+    },
+};

@@ -59,11 +59,26 @@ var TreeRenderer = {
             
             if (!fromNode || !toNode) continue;
 
-            ctx.strokeStyle = edge.color || '#888';
-            ctx.lineWidth = 2;
+            const dx = toNode.x - fromNode.x;
+            const dy = toNode.y - fromNode.y;
+            const len = Math.sqrt((dx * dx) + (dy * dy));
+            if (len === 0) continue;
+
+            const ux = dx / len;
+            const uy = dy / len;
+            const nodeGap = Math.max((fromNode.radius || 15), (toNode.radius || 15)) + 6;
+
+            const startX = fromNode.x + (ux * nodeGap);
+            const startY = fromNode.y + (uy * nodeGap);
+            const endX = toNode.x - (ux * nodeGap);
+            const endY = toNode.y - (uy * nodeGap);
+
+            const isHighlighted = edge.highlighted === true;
+            ctx.strokeStyle = edge.color || (isHighlighted ? '#888' : 'rgba(136, 136, 136, 0.55)');
+            ctx.lineWidth = isHighlighted ? (edge.width || 2) : 1.25;
             ctx.beginPath();
-            ctx.moveTo(fromNode.x, fromNode.y);
-            ctx.lineTo(toNode.x, toNode.y);
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
             ctx.stroke();
 
             // Edge label
@@ -234,9 +249,9 @@ var TreeRenderer = {
         ctx.shadowBlur = 0;
         
         // Draw Label below the board (if present)
-        // HINWEIS: Für KnightsTour und RotateBox verstecken wir Labels, um Überlappungen zu vermeiden.
-        // Für Minimax zeigen wir sie an, da sie wichtige Infos (Max/Min) enthalten können.
-        const shouldShowLabel = !node.boardData || node.boardType === 'minimax';
+        // Für Minimax-Boards werden Label nicht gezeichnet, da Metadaten (V, α, β)
+        // bereits unterhalb gerendert werden und sonst überlagern.
+        const shouldShowLabel = !node.boardData;
 
         if (node.label && node.label !== node.id && shouldShowLabel) {
              // Check if this is a placeholder label that should only show when READY
@@ -247,7 +262,7 @@ var TreeRenderer = {
              const shouldDrawLabel = !isPlaceholderLabel || hasReadyStatus;
              
              if (shouldDrawLabel) {
-                 ctx.fillStyle = '#000';
+                ctx.fillStyle = '#000';
                  // Fixed font size in world space so it shrinks when zooming out (nodes get small)
                  ctx.font = '10px Arial';
                  ctx.textAlign = 'center';

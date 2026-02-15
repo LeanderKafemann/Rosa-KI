@@ -211,7 +211,7 @@ var TreeFeaturesEngine = window.TreeFeaturesEngine || {
         // EXPLICITLY ADD INTERACTIVE STATUSES (READY, WAIT, EVALUATED)
         // Single status (pick first by priority order)
         // EXPLICITLY ADD INTERACTIVE STATUSES (READY, WAIT, EVALUATED, WIN_BLUE, WIN_RED)
-        const priorityOrder = ['ACTIVE', 'READY', 'WIN_BLUE', 'WIN_RED', 'WIN', 'LOSS', 'SOLUTION', 'DEAD_END', 'DRAW', 'PRUNED', 'EVALUATED', 'WAIT', 'NONE'];
+        const priorityOrder = ['ACTIVE', 'NEXT_TO_EVALUATE', 'READY', 'WIN_BLUE', 'WIN_RED', 'WIN', 'LOSS', 'SOLUTION', 'DEAD_END', 'DRAW', 'PRUNED', 'EVALUATED', 'WAIT', 'NONE'];
         let selectedStyle = STYLE_CONFIG.DEFAULT;
         
         for (const statusName of priorityOrder) {

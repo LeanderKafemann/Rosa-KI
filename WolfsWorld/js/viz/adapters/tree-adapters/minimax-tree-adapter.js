@@ -10,47 +10,118 @@
  * @author Alexander Wolf  
  * @version 2.3
  */
-
-// Spieler- und Bewertungs-Konstanten
-/**
- * Kein Gewinner / Spiel läuft
- * @constant {number}
- */
-const WINNER_NONE = 0;
-/**
- * Spieler Blau
- * @constant {number}
- */
-const WINNER_BLUE = 1;
-/**
- * Spieler Rot
- * @constant {number}
- */
-const WINNER_RED = 2;
-/**
- * Unentschieden
- * @constant {number}
- */
-const WINNER_DRAW = 3;
-/**
- * Gewinnbewertung
- * @constant {number}
- */
-const VALUE_WIN = 1;
-/**
- * Verlustbewertung
- * @constant {number}
- */
-const VALUE_LOSS = -1;
-/**
- * Bewertungswert für Unentschieden
- * @constant {number}
- */
-const VALUE_DRAW = 0;
 class MinimaxTreeAdapter extends BaseTreeAdapter {
+    /**
+     * @param {HTMLIFrameElement} iframeElement
+     */
     constructor(iframeElement) {
         super(iframeElement);
-        this.stats = { nodesVisited: 0, nodesPruned: 0 };
+        this.stats = {
+            nodesVisited: 0,
+            nodesPruned: 0,
+            evaluatedNodes: 0,
+        };
+        this.constants = this._resolveConstants();
+    }
+
+    /**
+     * Lädt zentrale Konstanten mit robusten Fallbacks.
+     * @returns {Object}
+     */
+    _resolveConstants() {
+        const game = typeof GAME_CONSTANTS !== 'undefined' ? GAME_CONSTANTS : {};
+        const viz = typeof MINIMAX_VIZ_CONSTANTS !== 'undefined' ? MINIMAX_VIZ_CONSTANTS : {};
+        const flags = viz.FLAGS || {};
+        const values = viz.VALUES || {};
+        const tree = viz.TREE || {};
+        const colors = viz.COLORS || {};
+
+        return {
+            winnerNone: game.NONE !== undefined ? game.NONE : 0,
+            winnerDraw: game.DRAW !== undefined ? game.DRAW : 3,
+            player1: game.PLAYER1 !== undefined ? game.PLAYER1 : 1,
+            player2: game.PLAYER2 !== undefined ? game.PLAYER2 : 2,
+
+            valueWin: values.WIN !== undefined ? values.WIN : 1,
+            valueLoss: values.LOSS !== undefined ? values.LOSS : -1,
+            valueDraw: values.DRAW !== undefined ? values.DRAW : 0,
+
+            rootDepth: tree.ROOT_DEPTH !== undefined ? tree.ROOT_DEPTH : 0,
+            edgeWidth: tree.HIGHLIGHT_EDGE_WIDTH !== undefined ? tree.HIGHLIGHT_EDGE_WIDTH : 4,
+
+            enableTreeExpansionMinimax: flags.ENABLE_TREE_EXPANSION_MINIMAX !== false,
+            debugMinimaxAdapter: flags.DEBUG_MINIMAX_ADAPTER === true,
+
+            rootPlayer1Color: colors.ROOT_PLAYER_1 || '#3498db',
+            rootPlayer2Color: colors.ROOT_PLAYER_2 || '#e74c3c',
+            edgePositiveColor: colors.EDGE_POSITIVE || '#2730ae',
+            edgeNegativeColor: colors.EDGE_NEGATIVE || '#c0392b',
+            edgeNeutralColor: colors.EDGE_NEUTRAL || '#a4ae1c',
+            edgePrunedColor: colors.EDGE_PRUNED || '#7f8c8d',
+        };
+    }
+
+    /**
+     * Einheitlicher Debug-Logger.
+     * @param {string} message
+     * @param {Object} [payload]
+     */
+    _debugLog(message, payload) {
+        const hasDebugConfig = typeof window !== 'undefined' && window.DebugConfig && window.DEBUG_DOMAINS;
+        const allowByCentralConfig = hasDebugConfig
+            ? window.DebugConfig.shouldLog(window.DEBUG_DOMAINS.MINIMAX, 'debug')
+            : false;
+
+        if (!this.constants.debugMinimaxAdapter && !allowByCentralConfig) return;
+
+        const debugApi = typeof window !== 'undefined' ? window.DebugConfig : null;
+        if (payload !== undefined) {
+            if (debugApi && typeof debugApi.log === 'function' && window.DEBUG_DOMAINS) {
+                debugApi.log(window.DEBUG_DOMAINS.MINIMAX, 'debug', `[MinimaxTreeAdapter] ${message}`, payload);
+            } else {
+                console.log(`[MinimaxTreeAdapter] ${message}`, payload);
+            }
+            return;
+        }
+        if (debugApi && typeof debugApi.log === 'function' && window.DEBUG_DOMAINS) {
+            debugApi.log(window.DEBUG_DOMAINS.MINIMAX, 'debug', `[MinimaxTreeAdapter] ${message}`);
+            return;
+        }
+        console.log(`[MinimaxTreeAdapter] ${message}`);
+    }
+
+    /**
+     * Meldet aktuelle Statistik an den UI-Host.
+     */
+    _notifyStatsChanged() {
+        if (typeof this.onStatsChanged !== 'function') return;
+        this.onStatsChanged({ ...this.stats });
+    }
+
+    /**
+     * Prüft, ob ein Zustand terminal ist.
+     * @param {GameState} state
+     * @returns {boolean}
+     */
+    _isTerminalState(state) {
+        if (!state) return false;
+        return state.winner !== this.constants.winnerNone || state.getAllValidMoves().length === 0;
+    }
+
+    /**
+     * Erzeugt ein Standard-Resultat für die UI.
+     * @param {number} rootId
+     * @returns {Object}
+     */
+    _buildResult(rootId) {
+        const rootData = this.treeStructure.get(rootId);
+        return {
+            bestMove: null,
+            bestValue: rootData ? rootData.value : null,
+            nodesVisited: this.stats.nodesVisited,
+            nodesPruned: this.stats.nodesPruned,
+            evaluatedNodes: this.stats.evaluatedNodes,
+        };
     }
 
     onTreeReady() {
@@ -59,7 +130,7 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
         // Enable tree expansion for Minimax
         this.sendCommand({
             action: 'UPDATE_CONFIG',
-            config: { enableTreeExpansion: true }
+            config: { enableTreeExpansion: this.constants.enableTreeExpansionMinimax }
         });
     }
 
@@ -69,15 +140,24 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
     async visualizeSearch(gameState, config) {
         this.currentGameState = gameState;
         this.currentConfig = config;
+        this.stats.nodesVisited = 0;
+        this.stats.nodesPruned = 0;
+        this.stats.evaluatedNodes = 0;
+        this._notifyStatsChanged();
         
         // Speichere den Root-Spieler für relative Bewertung
         this.rootPlayer = gameState.currentPlayer;
+        this._debugLog('visualizeSearch:start', {
+            algorithm: config && config.algorithm,
+            rootPlayer: this.rootPlayer,
+            maxDepth: config && config.maxDepth,
+        });
         
         this.reset();
         
         // Root Node erstellen
         const rootId = this.createNode(gameState, null, {
-            depth: 0,
+            depth: this.constants.rootDepth,
             isMaximizing: true,
             value: null
         });
@@ -88,7 +168,7 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
             children: [], 
             status: 'WAIT',
             value: null, 
-            depth: 0,
+            depth: this.constants.rootDepth,
             isMaximizing: true 
         });
         
@@ -100,17 +180,18 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
         
         this.flushCommands();
         
-        return { bestMove: null };
+        this._debugLog('visualizeSearch:ready', { rootId });
+        return this._buildResult(rootId);
     }
 
     getInitialConfig() {
-        const isRootPlayerRed = this.rootPlayer === WINNER_RED;
+        const isRootPlayer2 = this.rootPlayer === this.constants.player2;
         return { 
             showLevelIndicators: true,
             levelIndicatorType: 'minimax',
-            rootPlayerColor: isRootPlayerRed ? '#e74c3c' : '#3498db',    // Red or Blue
-            opponentColor: isRootPlayerRed ? '#3498db' : '#e74c3c',       // Blue or Red
-            enableTreeExpansion: true 
+            rootPlayerColor: isRootPlayer2 ? this.constants.rootPlayer2Color : this.constants.rootPlayer1Color,
+            opponentColor: isRootPlayer2 ? this.constants.rootPlayer1Color : this.constants.rootPlayer2Color,
+            enableTreeExpansion: this.constants.enableTreeExpansionMinimax
         };
     }
 
@@ -122,6 +203,7 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
             depth: currentData.depth + 1,
             isMaximizing: !currentData.isMaximizing,
             move: move,
+            moveOrder: currentData.children.length,
             value: null
         };
     }
@@ -137,17 +219,42 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
             value: null,
             depth: currentData.depth + 1,
             isMaximizing: !currentData.isMaximizing,
-            isTerminal: (childState.winner !== WINNER_NONE || childState.getAllValidMoves().length === 0)
+            isTerminal: this._isTerminalState(childState),
+            moveOrder: currentData.children.length
         };
     }
 
+    /**
+     * Optionales Move-Ordering für Visualisierung.
+     * Kann in Subklassen überschrieben werden (z. B. Alpha-Beta).
+     * @param {Array} validMoves
+     * @param {GameState} state
+     * @param {Object} currentData
+     * @returns {Array}
+     */
+    _orderMoves(validMoves, state, currentData) {
+        return validMoves;
+    }
+
     expandNodeChildren(nodeId, state) {
-        if (state.winner !== WINNER_NONE) return; // Terminal
+        const currentData = this.treeStructure.get(nodeId);
+        if (!currentData) return;
+
+        if (currentData.status === 'EVALUATED') {
+            this._debugLog('expandNodeChildren:skip-non-expandable', {
+                nodeId,
+                status: currentData.status,
+            });
+            return;
+        }
+
+        if (this._isTerminalState(state)) return;
         
         const validMoves = state.getAllValidMoves();
-        const currentData = this.treeStructure.get(nodeId);
+        const orderedMoves = this._orderMoves(validMoves, state, currentData);
+        this._debugLog('expandNodeChildren', { nodeId, validMovesCount: validMoves.length });
         
-        for (const move of validMoves) {
+        for (const move of orderedMoves) {
             const childState = state.clone();
             childState.makeMove(move);
             
@@ -175,14 +282,6 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
         this.checkNodeStatus(nodeId);
     }
 
-    // checkNodeStatus, handleNodeClick, evaluateNode remain mostly the same 
-    // but I need to make sure I don't delete them if they are not in the newString.
-    // I will use replace_string_in_file for parts, but since I am changing the class heritage and 
-    // removing methods, a full overwrite or large chunk replace is better.
-    // However, createNode is now in Base, but Minimax had `status='WAIT'` and `label=""`. Base has those defaults too.
-    
-    // I will replace from "class MinimaxTreeAdapter" down to "expandNodeChildren" end.
-
     /**
      * Prüft und aktualisiert den Status eines Knotens.
      */
@@ -190,11 +289,11 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
         const data = this.treeStructure.get(nodeId);
         if (!data) return;
         
-        if (data.status === 'EVALUATED') return;
+        if (data.status === 'EVALUATED' || data.status === 'PRUNED') return;
         
         let newStatus = 'WAIT';
         const state = this.nodeStates.get(nodeId);
-        const isTerminal = state && (state.winner !== WINNER_NONE || state.getAllValidMoves().length === 0);
+        const isTerminal = this._isTerminalState(state);
         
         // 1. Leaf Node (no children expanded or terminal)
         if (data.children.length === 0) {
@@ -241,6 +340,9 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
         
         // "Wenn ein Knoten mit Status Ready angeklickt wird: bewerte ihn"
         if (data.status === 'READY') {
+            if (typeof this.onActiveNodeChanged === 'function') {
+                this.onActiveNodeChanged(nodeId, data);
+            }
             this.commands = []; // Reset commands
             NodeStatusManager.setNodeStatus(nodeId, 'ACTIVE', [], this.treeStructure, this.commands);
             this.flushCommands();
@@ -249,13 +351,116 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
     }
 
     /**
+     * Bewertet einen terminalen Knoten relativ zum Root-Spieler.
+     * @param {GameState} state
+     * @returns {{value:number,labelText:string,statusesToAdd:string[]}}
+     */
+    _evaluateTerminalState(state) {
+        const statusesToAdd = ['EVALUATED'];
+        const opponent = this.rootPlayer === this.constants.player1 ? this.constants.player2 : this.constants.player1;
+
+        if (state.winner === this.rootPlayer) {
+            statusesToAdd.push(this.rootPlayer === this.constants.player1 ? 'WIN_BLUE' : 'WIN_RED');
+            return {
+                value: this.constants.valueWin,
+                labelText: `Win = +${this.constants.valueWin}`,
+                statusesToAdd,
+            };
+        }
+
+        if (state.winner === opponent) {
+            statusesToAdd.push(opponent === this.constants.player1 ? 'WIN_BLUE' : 'WIN_RED');
+            return {
+                value: this.constants.valueLoss,
+                labelText: `Loss = ${this.constants.valueLoss}`,
+                statusesToAdd,
+            };
+        }
+
+        statusesToAdd.push('DRAW');
+        return {
+            value: this.constants.valueDraw,
+            labelText: `Draw = ${this.constants.valueDraw}`,
+            statusesToAdd,
+        };
+    }
+
+    /**
+     * Liefert zusätzliche Visualisierungs-Status anhand des Werts.
+     * @param {number} value
+     * @returns {string[]}
+     */
+    _getValueStatuses(value) {
+        if (value === this.constants.valueWin) {
+            return [this.rootPlayer === this.constants.player1 ? 'WIN_BLUE' : 'WIN_RED'];
+        }
+        if (value === this.constants.valueLoss) {
+            return [this.rootPlayer === this.constants.player1 ? 'WIN_RED' : 'WIN_BLUE'];
+        }
+        return ['DRAW'];
+    }
+
+    /**
+     * Liefert Kantenfarbe entsprechend Gewinnerfarbe (statt Vorzeichenfarbe).
+     * @param {number} value
+     * @returns {string}
+     */
+    _getEdgeColorForValue(value) {
+        if (value === this.constants.valueWin) {
+            return this.rootPlayer === this.constants.player1
+                ? this.constants.rootPlayer1Color
+                : this.constants.rootPlayer2Color;
+        }
+
+        if (value === this.constants.valueLoss) {
+            return this.rootPlayer === this.constants.player1
+                ? this.constants.rootPlayer2Color
+                : this.constants.rootPlayer1Color;
+        }
+
+        return this.constants.edgeNeutralColor;
+    }
+
+    /**
+     * Markiert Best-Edges eines Inner-Nodes.
+     * @param {number} nodeId
+     * @param {number} bestValue
+     */
+    _highlightBestEdges(nodeId, bestValue) {
+        const data = this.treeStructure.get(nodeId);
+        if (!data) return;
+
+        data.children.forEach((childId) => {
+            const childData = this.treeStructure.get(childId);
+            if (!childData || childData.value !== bestValue) return;
+
+            const edgeColor = this._getEdgeColorForValue(bestValue);
+
+            this.commands.push({
+                action: 'HIGHLIGHT_EDGE',
+                from: nodeId,
+                to: childId,
+                color: edgeColor,
+                width: this.constants.edgeWidth,
+            });
+        });
+    }
+
+    /**
      * Führt die Bewertung eines Knotens durch.
      */
     evaluateNode(nodeId) {
         const data = this.treeStructure.get(nodeId);
         const state = this.nodeStates.get(nodeId);
+        if (!data || !state) {
+            this._debugLog('evaluateNode:missing-data', { nodeId });
+            return;
+        }
         
         this.commands = [];
+        this.stats.nodesVisited += 1;
+        this.stats.evaluatedNodes += 1;
+        this._notifyStatsChanged();
         
         let value = 0;
         let labelText = "";
@@ -265,45 +470,18 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
         
         // CASE 1: Leaf Node (Terminal)
         if (data.children.length === 0) {
-            // Bewertung RELATIV zum Root-Spieler, nicht absolut zu Blau/Rot
-            if (state.winner === this.rootPlayer) {
-                // Root-Spieler gewinnt → +1
-                value = VALUE_WIN;
-                const playerName = this.rootPlayer === WINNER_BLUE ? 'Blue' : 'Red';
-                labelText = `${playerName} Win = +${VALUE_WIN}`;
-                // Visuelle Status hängt davon ab, welche Farbe Root-Spieler ist
-                if (this.rootPlayer === WINNER_BLUE) {
-                    statusesToAdd.push('WIN_BLUE');
-                } else {
-                    statusesToAdd.push('WIN_RED');
-                }
-            } else if (state.winner !== WINNER_DRAW && state.winner !== null && state.winner !== undefined) {
-                // Gegner gewinnt → -1
-                value = VALUE_LOSS;
-                const playerName = this.rootPlayer === WINNER_BLUE ? 'Red' : 'Blue';
-                labelText = `${playerName} Wins = ${VALUE_LOSS}`;
-                // Visuelle Status für Gegner
-                if (this.rootPlayer === WINNER_BLUE) {
-                    statusesToAdd.push('WIN_RED');
-                } else {
-                    statusesToAdd.push('WIN_BLUE');
-                }
-            } else if (state.winner === WINNER_DRAW) {
-                // Draw
-                value = VALUE_DRAW;
-                labelText = "Remis = 0";
-                statusesToAdd.push('DRAW');
-            } else {
-                // Technically shouldn't happen for READY leaves in this logic unless logic gap
-                value = VALUE_DRAW;
-                labelText = "Val = 0";
-            }
+            const leafResult = this._evaluateTerminalState(state);
+            value = leafResult.value;
+            labelText = leafResult.labelText;
+            statusesToAdd = leafResult.statusesToAdd;
         } 
         // CASE 2: Inner Node
         else {
             const childValues = data.children.map(cid => {
                 const child = this.treeStructure.get(cid);
-                return child.value !== undefined && child.value !== null ? child.value : 0;
+                return child && child.value !== undefined && child.value !== null
+                    ? child.value
+                    : this.constants.valueDraw;
             });
             
             if (data.isMaximizing) {
@@ -316,39 +494,8 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
                 labelText = `Min = ${sign}${value}`;
             }
             
-            // Visualisierung des besten Pfades
-            data.children.forEach(childId => {
-                const childData = this.treeStructure.get(childId);
-                if (childData && childData.value === value) {
-                    let edgeColor = value > 0 ? '#2730ae' : value < 0 ? '#c0392b' : '#a4ae1c';
-                    this.commands.push({
-                        action: 'HIGHLIGHT_EDGE',
-                        from: nodeId,
-                        to: childId,
-                        color: edgeColor,
-                        width: 4
-                    });
-                }
-            });
-
-             // Apply board color for winning positions (propagation) - RELATIV zu Root-Spieler
-            if (value === VALUE_WIN) {
-                // Guter Wert für Root-Spieler (Maximierer)
-                if (this.rootPlayer === WINNER_BLUE) {
-                    statusesToAdd.push('WIN_BLUE');
-                } else {
-                    statusesToAdd.push('WIN_RED');
-                }
-            } else if (value === VALUE_LOSS) {
-                // Schlechter Wert für Root-Spieler (Gegner gewinnt)
-                if (this.rootPlayer === WINNER_BLUE) {
-                    statusesToAdd.push('WIN_RED');
-                } else {
-                    statusesToAdd.push('WIN_BLUE');
-                }
-            } else {
-                statusesToAdd.push('DRAW');
-            }
+            this._highlightBestEdges(nodeId, value);
+            statusesToAdd = ['EVALUATED', ...this._getValueStatuses(value)];
         }
         
         // Save value
@@ -363,7 +510,12 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
             id: nodeId,
             data: {
                 label: labelText,
-                metadata: { value: value }
+                metadata: {
+                    depth: data.depth,
+                    isMaximizing: data.isMaximizing,
+                    moveOrder: data.moveOrder,
+                    value: value,
+                }
             }
         });
         
@@ -371,6 +523,19 @@ class MinimaxTreeAdapter extends BaseTreeAdapter {
         if (data.parentId !== null) {
             this.checkNodeStatus(data.parentId);
         }
+
+        this._debugLog('evaluateNode:done', {
+            nodeId,
+            value,
+            status: data.status,
+            parentId: data.parentId,
+        });
+
+        if (typeof this.onActiveNodeChanged === 'function') {
+            this.onActiveNodeChanged(nodeId, data);
+        }
+
+        this._notifyStatsChanged();
         
         this.flushCommands();
     }

@@ -13,6 +13,35 @@
  */
 
 const TTTRenderer = {
+    /**
+     * Prüft, ob Renderer-Debug ausgegeben werden soll.
+     * @param {'debug'|'warn'|'error'|'critical'} level
+     * @returns {boolean}
+     */
+    _shouldLog(level = 'debug') {
+        if (typeof window === 'undefined' || !window.DebugConfig || !window.DEBUG_DOMAINS) {
+            return level === 'error' || level === 'critical';
+        }
+        return window.DebugConfig.shouldLog(window.DEBUG_DOMAINS.TTT_RENDERER, level);
+    },
+
+    /**
+     * Schreibt einen Debug-Logeintrag des Renderers.
+     * @param {'debug'|'warn'|'error'|'critical'} level
+     * @param {...any} args
+     */
+    _log(level, ...args) {
+        if (!this._shouldLog(level)) return;
+        if (level === 'warn') {
+            console.warn(...args);
+            return;
+        }
+        if (level === 'error' || level === 'critical') {
+            console.error(...args);
+            return;
+        }
+        console.log(...args);
+    },
     
     /**
      * Zeichnet das klassische 3x3 Board.
@@ -21,13 +50,13 @@ const TTTRenderer = {
      * @returns {void}
      */
     drawRegular(canvas, game) {
-        console.log('🖌️ TTTRenderer.drawRegular() aufgerufen');
-        console.log('   - Canvas:', canvas.width, 'x', canvas.height);
-        console.log('   - game:', game);
-        console.log('   - game.grid:', game?.grid);
+        this._log('debug', '🖌️ TTTRenderer.drawRegular() aufgerufen');
+        this._log('debug', '   - Canvas:', canvas.width, 'x', canvas.height);
+        this._log('debug', '   - game:', game);
+        this._log('debug', '   - game.grid:', game?.grid);
         
         if (!canvas || !game) {
-            console.error('❌ FEH LER: Canvas oder game ist null/undefined!');
+            this._log('error', '❌ FEH LER: Canvas oder game ist null/undefined!');
             return;
         }
         
@@ -36,7 +65,7 @@ const TTTRenderer = {
         const s = w / 3;
 
         ctx.clearRect(0, 0, w, h);
-        console.log('✅ Canvas gelöscht');
+        this._log('debug', '✅ Canvas gelöscht');
         
         // Gitterlinien
         ctx.strokeStyle = "#2c3e50"; 
@@ -49,17 +78,17 @@ const TTTRenderer = {
         ctx.moveTo(10, s); ctx.lineTo(w-10, s); 
         ctx.moveTo(10, s*2); ctx.lineTo(w-10, s*2);
         ctx.stroke();
-        console.log('✅ Gitterlinien gezeichnet');
+        this._log('debug', '✅ Gitterlinien gezeichnet');
 
         // Symbole
         for(let i=0; i<9; i++) {
             if(game.grid[i] === 0) continue;
             const cx = (i % 3) * s + s/2;
             const cy = Math.floor(i / 3) * s + s/2;
-            console.log(`   - Zeichne Symbol an Position ${i}: (${cx}, ${cy}) für Wert ${game.grid[i]}`);
+            this._log('debug', `   - Zeichne Symbol an Position ${i}: (${cx}, ${cy}) für Wert ${game.grid[i]}`);
             this._drawSymbol(ctx, cx, cy, s/3.5, game.grid[i]);
         }
-        console.log('✅ Symbole gezeichnet');
+        this._log('debug', '✅ Symbole gezeichnet');
     },
 
     /**

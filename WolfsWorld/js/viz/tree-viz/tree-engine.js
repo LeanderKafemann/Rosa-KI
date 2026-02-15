@@ -174,6 +174,16 @@ class TreeVizEngine {
             
             // Wenn auf Expansion-Symbol geklickt
             if (isExpandable && hitExpansion) {
+                window.parent.postMessage({
+                    type: 'NODE_FOCUSED',
+                    nodeId: node.id,
+                    boardData: node.boardData
+                }, '*');
+
+                if (this.config.enableActiveNodeTracking) {
+                    TreeFeaturesEngine.setActiveNode(node.id, this.nodes, this.activeNodeTracking);
+                }
+
                 if (isCollapsed) {
                     // Expand
                     this.expandNode({ nodeId: node.id });
@@ -270,12 +280,13 @@ class TreeVizEngine {
      * Fügt einen neuen Knoten hinzu
      */
     addNode(cmd) {
-        const { id, parentId, label, edgeLabel, color, value, position, boardData, boardType, status, metadata } = cmd;
+        const { id, parentId, label, edgeLabel, color, value, position, boardData, boardType, status, metadata, labelColor } = cmd;
 
         const node = {
             id,
             parentId: parentId !== undefined ? parentId : null,
             label: label || '',
+            labelColor: labelColor || '#000',
             color: color || '#4a90e2',
             value: value !== undefined ? value : null,
             boardData: boardData || null,
@@ -327,8 +338,10 @@ class TreeVizEngine {
         const props = cmd.data || cmd;
 
         if (props.label !== undefined) node.label = props.label;
+        if (props.labelColor !== undefined) node.labelColor = props.labelColor;
         if (props.color !== undefined) node.color = props.color;
         if (props.value !== undefined) node.value = props.value;
+        if (props.metadata !== undefined) node.metadata = props.metadata;
         if (props.boardData !== undefined) node.boardData = props.boardData;
 
         if (props.position) {
